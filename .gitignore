@@ -36,3 +36,9 @@ build/*
 csv/*
 .DS_Store
 .vscode/*
+
+# CMake / Makefiles
+CMakeFiles/*
+CMakeCache.txt
+Makefile
+*.cmake
