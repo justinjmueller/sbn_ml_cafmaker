@@ -5,19 +5,19 @@
 //    
 //    The invocation that generated this file was:
 //
-//       create_cpp_objects.py -f ../icarus_ana_output_lite.h5 -o ./sbn_h5_classes -d events -cn Event -d interactions -cn Interaction -d truth_interactions -cn TruthInteraction -d particles -cn Particle -d truth_particles -cn TruthParticle -d run_info -cn RunInfo -ns cafmaker::types
+//       create_cpp_objects.py -f ../icarus_ana_output_lite.h5 -o ./sbn_h5_classes -d events -cn Event -d interactions -cn Interaction -d truth_interactions -cn TruthInteraction -d particles -cn Particle -d truth_particles -cn TruthParticle -d run_info -cn RunInfo -ns dlp::types
 //
 
 
-#ifndef CAFMAKER_TYPES_SBN_H5_CLASSES_H
-#define CAFMAKER_TYPES_SBN_H5_CLASSES_H
+#ifndef DLP_TYPES_SBN_H5_CLASSES_H
+#define DLP_TYPES_SBN_H5_CLASSES_H
 
 #include <array>
 
 #include "H5Cpp.h"
 #include "buffer_view.h"
 
-namespace cafmaker::types
+namespace dlp::types
 {
 
   // This generic template will be overloaded
@@ -548,4 +548,4 @@ namespace cafmaker::types
 
 }
 
-#endif // CAFMAKER_TYPES_SBN_H5_CLASSES_H
+#endif // DLP_TYPES_SBN_H5_CLASSES_H

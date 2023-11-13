@@ -10,7 +10,7 @@
 
 #include "H5Cpp.h"
 
-namespace cafmaker
+namespace dlp
 {
 
   /// \brief Viewer type to work with
@@ -53,6 +53,6 @@ namespace cafmaker
       const hvl_t * fHandle;
   };
 
-} // cafmaker
+} // dlp
 
 #endif //SBN_CAFMAKER_BUFFERVIEW_H

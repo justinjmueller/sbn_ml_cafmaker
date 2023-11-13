@@ -5,13 +5,13 @@
 //    
 //    The invocation that generated this file was:
 //
-//       create_cpp_objects.py -f ../icarus_ana_output_lite.h5 -o ./sbn_h5_classes -d events -cn Event -d interactions -cn Interaction -d truth_interactions -cn TruthInteraction -d particles -cn Particle -d truth_particles -cn TruthParticle -d run_info -cn RunInfo -ns cafmaker::types
+//       create_cpp_objects.py -f ../icarus_ana_output_lite.h5 -o ./sbn_h5_classes -d events -cn Event -d interactions -cn Interaction -d truth_interactions -cn TruthInteraction -d particles -cn Particle -d truth_particles -cn TruthParticle -d run_info -cn RunInfo -ns dlp::types
 //
 
 #include "sbn_h5_classes.h"
 #include "H5Cpp.h"
 
-namespace cafmaker::types
+namespace dlp::types
 {
 
   
