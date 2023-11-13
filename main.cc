@@ -25,8 +25,12 @@ size_t get_nevents(H5::DataSpace &dsp)
   return nevents;
 }
 
-caf::SRInteractionDLP fill_interaction(dlp::types::TruthInteraction &in)
+caf::SRInteractionDLP fill_interaction(dlp::types::Interaction &in, std::vector<dlp::types::Particle> &particles)
 {
+  in.match.reset(&in.match_handle);
+  in.match_overlap.reset(&in.match_overlap_handle);
+  in.particle_ids.reset(&in.particle_ids_handle);
+
   caf::SRInteractionDLP ret;
   ret.coffset = in.coffset;
   ret.crthit_id = in.crthit_id;
@@ -44,14 +48,14 @@ caf::SRInteractionDLP fill_interaction(dlp::types::TruthInteraction &in)
   ret.is_fiducial = in.is_fiducial;
   ret.is_neutrino = in.is_neutrino;
   ret.is_principal_match = in.is_principal_match;
-  //ret.match = ;
-  //ret.match_overlap = ;
+  ret.match = std::vector<int64_t>(in.match.begin(), in.match.end());
+  ret.match_overlap = std::vector<float>(in.match_overlap.begin(), in.match_overlap.end());
   ret.matched = in.matched;
   ret.nu_id = in.nu_id;
   ret.num_particles = in.num_particles;
   ret.num_primaries = in.num_primaries;
   ret.particle_counts = in.particle_counts;
-  //ret.particle_ids = in.particle_ids;
+  ret.particle_ids = std::vector<int64_t>(in.particle_ids.begin(), in.particle_ids.end());
   ret.primary_counts = in.primary_counts;
   ret.size = in.size;
   ret.topology = in.topology;
@@ -59,6 +63,53 @@ caf::SRInteractionDLP fill_interaction(dlp::types::TruthInteraction &in)
   ret.vertex = in.vertex;
   ret.vertex_mode = in.vertex_mode;
   ret.volume_id = in.volume_id;
+
+  for(dlp::types::Particle &p : particles)
+  {
+    if(std::find(ret.particle_ids.begin(), ret.particle_ids.end(), p.id) != ret.particle_ids.end())
+    {
+      p.fragment_ids.reset(&p.fragment_ids_handle);
+      p.index.reset(&p.index_handle);
+      p.match.reset(&p.match_handle);
+      p.match_overlap.reset(&p.match_overlap_handle);
+      caf::SRParticleDLP part;
+      part.calo_ke = p.calo_ke;
+      part.coffset = p.coffset;
+      part.depositions_sum = p.depositions_sum;
+      part.end_dir = p.end_dir;
+      part.end_point = p.end_point;
+      part.fragment_ids = std::vector<int64_t>(p.fragment_ids.begin(), p.fragment_ids.end());
+      part.id = p.id;
+      part.image_id = p.image_id;
+      part.index = std::vector<int64_t>(p.index.begin(), p.index.end());
+      part.interaction_id = p.interaction_id;
+      part.is_ccrosser = p.is_ccrosser;
+      part.is_contained = p.is_contained;
+      part.is_primary = p.is_primary;
+      part.is_principal_match = p.is_principal_match;
+      part.is_valid = p.is_valid;
+      part.ke = p.ke;
+      part.length = p.length;
+      part.match = std::vector<int64_t>(p.match.begin(), p.match.end());
+      part.match_overlap = std::vector<float>(p.match_overlap.begin(), p.match_overlap.end());
+      part.matched = p.matched;
+      part.mcs_ke = p.mcs_ke;
+      part.momentum = p.momentum;
+      part.nu_id = p.nu_id;
+      part.num_fragments = p.num_fragments;
+      part.pdg_code = p.pdg_code;
+      part.pid = (int64_t)p.pid;
+      part.pid_scores = p.pid_scores;
+      part.primary_scores = p.primary_scores;
+      part.semantic_type = (int64_t)p.semantic_type;
+      part.size = p.size;
+      part.start_dir = p.start_dir;
+      part.start_point = p.start_point;
+      part.units = p.units;
+      part.volume_id = p.volume_id;
+      ret.particles.push_back(part);
+    }
+  }
 
   return ret;
 }
@@ -83,10 +134,11 @@ int main(int argc, char const *argv[])
   for(dlp::types::Event &evt : events)
   {
     caf::StandardRecord sr;
-    std::vector<dlp::types::TruthInteraction> interactions(get_product<dlp::types::TruthInteraction>(file, evt));
-    for(dlp::types::TruthInteraction &i : interactions)
-      sr.dlp_true_interaction.push_back(fill_interaction(i));
-    sr.ndlp_true = sr.dlp_true_interaction.size();
+    std::vector<dlp::types::Interaction> interactions(get_product<dlp::types::Interaction>(file, evt));
+    std::vector<dlp::types::Particle> particles(get_product<dlp::types::Particle>(file, evt));
+    for(dlp::types::Interaction &i : interactions)
+      sr.dlp.push_back(fill_interaction(i, particles));
+    sr.ndlp = sr.dlp.size();
   
     rec = &sr;
     rec_tree.Fill();
