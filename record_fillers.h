@@ -3,14 +3,16 @@
 #include "sbn_h5_classes.h"
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
 #include "sbnanaobj/StandardRecord/SRInteractionDLP.h"
-#include "sbnanaobj/StandardRecord/SRInteractionTruthDLP.h"
-#include "sbnanaobj/StandardRecord/SRIMatchDLP.h"
-#include "sbnanaobj/StandardRecord/SRPMatchDLP.h"
+//#include "sbnanaobj/StandardRecord/SRInteractionTruthDLP.h"
+//#include "sbnanaobj/StandardRecord/SRIMatchDLP.h"
+//#include "sbnanaobj/StandardRecord/SRPMatchDLP.h"
 
 #ifndef RECORD_FILLERS_H
 #define RECORD_FILLERS_H
 
-caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p)
+#define COPY(x,y) std::copy(y.begin(), y.end(), x)
+
+/*caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p)
 {
   p.children_counts.reset(&p.children_counts_handle);
   p.first_step.reset(&p.first_step_handle);
@@ -99,7 +101,7 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p)
   part.volume_id = p.volume_id;
   
   return part;
-}
+  }*/
 
 caf::SRParticleDLP fill_particle(dlp::types::Particle &p)
 {
@@ -113,8 +115,8 @@ caf::SRParticleDLP fill_particle(dlp::types::Particle &p)
   part.coffset = p.coffset;
   part.csda_ke = p.csda_ke;
   part.depositions_sum = p.depositions_sum;
-  part.end_dir = p.end_dir;
-  part.end_point = p.end_point;
+  COPY(part.end_dir, p.end_dir);
+  COPY(part.end_point, p.end_point);
   part.fragment_ids = std::vector<int64_t>(p.fragment_ids.begin(), p.fragment_ids.end());
   part.id = p.id;
   part.image_id = p.image_id;
@@ -131,23 +133,23 @@ caf::SRParticleDLP fill_particle(dlp::types::Particle &p)
   part.match_overlap = std::vector<float>(p.match_overlap.begin(), p.match_overlap.end());
   part.matched = p.matched;
   part.mcs_ke = p.mcs_ke;
-  part.momentum = p.momentum;
+  COPY(part.momentum, p.momentum);
   part.nu_id = p.nu_id;
   part.num_fragments = p.num_fragments;
   part.pdg_code = p.pdg_code;
   part.pid = (int64_t)p.pid;
-  part.pid_scores = p.pid_scores;
-  part.primary_scores = p.primary_scores;
+  COPY(part.pid_scores, p.pid_scores);
+  COPY(part.primary_scores, p.primary_scores);
   part.semantic_type = (int64_t)p.semantic_type;
   part.size = p.size;
-  part.start_dir = p.start_dir;
-  part.start_point = p.start_point;
-  part.units = p.units;
+  COPY(part.start_dir, p.start_dir);
+  COPY(part.start_point, p.start_point);
+  //part.units = p.units;
   part.volume_id = p.volume_id;
 
   return part;
 }
-
+/*
 caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &in, std::vector<caf::SRPMatchTruthDLP> &particles)
 {
   in.match.reset(&in.match_handle);
@@ -223,9 +225,9 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
     ret.particles.push_back(particles.at(id));
 
   return ret;
-}
+  }*/
 
-caf::SRInteractionDLP fill_interaction(dlp::types::Interaction &in, std::vector<caf::SRPMatchDLP> &particles)
+caf::SRInteractionDLP fill_interaction(dlp::types::Interaction &in, std::vector<caf::SRParticleDLP> &particles)
 {
   in.match.reset(&in.match_handle);
   in.match_overlap.reset(&in.match_overlap_handle);
@@ -254,14 +256,14 @@ caf::SRInteractionDLP fill_interaction(dlp::types::Interaction &in, std::vector<
   ret.nu_id = in.nu_id;
   ret.num_particles = in.num_particles;
   ret.num_primaries = in.num_primaries;
-  ret.particle_counts = in.particle_counts;
+  COPY(ret.particle_counts, in.particle_counts);
   ret.particle_ids = std::vector<int64_t>(in.particle_ids.begin(), in.particle_ids.end());
-  ret.primary_counts = in.primary_counts;
+  COPY(ret.primary_counts, in.primary_counts);
   ret.size = in.size;
-  ret.topology = in.topology;
-  ret.units = in.units;
-  ret.vertex = in.vertex;
-  ret.vertex_mode = in.vertex_mode;
+  //ret.topology = in.topology;
+  //ret.units = in.units;
+  COPY(ret.vertex, in.vertex);
+  //ret.vertex_mode = in.vertex_mode;
   ret.volume_id = in.volume_id;
   for(int64_t id : ret.particle_ids)
     ret.particles.push_back(particles.at(id));
