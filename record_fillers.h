@@ -12,7 +12,7 @@
 
 #define COPY(x,y) std::copy(y.begin(), y.end(), x)
 
-/*caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p)
+caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p)
 {
   p.children_counts.reset(&p.children_counts_handle);
   p.first_step.reset(&p.first_step_handle);
@@ -40,9 +40,9 @@
   part.csda_ke_tng = p.csda_ke_tng;
   part.depositions_sum = p.depositions_sum;
   part.distance_travel = p.distance_travel;
-  part.end_dir = p.end_dir;
-  part.end_point = p.end_point;
-  part.end_position = p.end_position;
+  COPY(part.end_dir,p.end_dir);
+  COPY(part.end_point,p.end_point);
+  COPY(part.end_position,p.end_position);
   part.energy_deposit = p.energy_deposit;
   part.energy_init = p.energy_init;
   part.first_step = std::vector<float>(p.first_step.begin(), p.first_step.end());
@@ -67,7 +67,7 @@
   part.mcs_ke = p.mcs_ke;
   part.mcs_ke_tng = p.mcs_ke_tng;
   part.mcst_index = p.mcst_index;
-  part.momentum = p.momentum;
+  COPY(part.momentum,p.momentum);
   part.nu_id = p.nu_id;
   part.num_fragments = p.num_fragments;
   part.num_voxels = p.num_voxels;
@@ -87,21 +87,21 @@
   part.semantic_type = (int64_t)p.semantic_type;
   part.shape = p.shape;
   part.size = p.size;
-  part.start_dir = p.start_dir;
-  part.start_point = p.start_point;
+  COPY(part.start_dir,p.start_dir);
+  COPY(part.start_point,p.start_point);
   part.t = p.t;
   part.track_id = p.track_id;
   part.truth_depositions_MeV_sum = p.truth_depositions_MeV_sum;
   part.truth_depositions_sum = p.truth_depositions_sum;
   part.truth_index = std::vector<int64_t>(p.truth_index.begin(), p.truth_index.end());
-  part.truth_momentum = p.truth_momentum;
+  COPY(part.truth_momentum,p.truth_momentum);
   part.truth_size = p.truth_size;
-  part.truth_start_dir = p.truth_start_dir;
+  COPY(part.truth_start_dir,p.truth_start_dir);
   part.units = p.units;
   part.volume_id = p.volume_id;
   
   return part;
-  }*/
+}
 
 caf::SRParticleDLP fill_particle(dlp::types::Particle &p)
 {
@@ -144,13 +144,13 @@ caf::SRParticleDLP fill_particle(dlp::types::Particle &p)
   part.size = p.size;
   COPY(part.start_dir, p.start_dir);
   COPY(part.start_point, p.start_point);
-  //part.units = p.units;
+  part.units = p.units;
   part.volume_id = p.volume_id;
 
   return part;
 }
-/*
-caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &in, std::vector<caf::SRPMatchTruthDLP> &particles)
+
+caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &in, std::vector<caf::SRParticleTruthDLP> &particles)
 {
   in.match.reset(&in.match_handle);
   in.match_overlap.reset(&in.match_overlap_handle);
@@ -207,25 +207,25 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
   ret.nu_truth_id = in.nu_truth_id;
   ret.num_particles = in.num_particles;
   ret.num_primaries = in.num_primaries;
-  ret.particle_counts = in.particle_counts;
+  COPY(ret.particle_counts,in.particle_counts);
   ret.particle_ids = std::vector<int64_t>(in.particle_ids.begin(), in.particle_ids.end());
-  ret.primary_counts = in.primary_counts;
+  COPY(ret.primary_counts,in.primary_counts);
   ret.size = in.size;
   ret.topology = in.topology;
   ret.truth_id = in.truth_id;
   ret.truth_particle_counts = std::vector<int64_t>(in.truth_particle_counts.begin(), in.truth_particle_counts.end());
   ret.truth_primary_counts = std::vector<int64_t>(in.truth_primary_counts.begin(), in.truth_primary_counts.end());
   ret.truth_topology = in.truth_topology;
-  ret.truth_vertex = in.truth_vertex;
+  COPY(ret.truth_vertex,in.truth_vertex);
   ret.units = in.units;
-  ret.vertex = in.vertex;
+  COPY(ret.vertex,in.vertex);
   ret.vertex_mode = in.vertex_mode;
   ret.volume_id = in.volume_id;
   for(int64_t id : ret.particle_ids)
     ret.particles.push_back(particles.at(id));
 
   return ret;
-  }*/
+}
 
 caf::SRInteractionDLP fill_interaction(dlp::types::Interaction &in, std::vector<caf::SRParticleDLP> &particles)
 {
@@ -260,10 +260,10 @@ caf::SRInteractionDLP fill_interaction(dlp::types::Interaction &in, std::vector<
   ret.particle_ids = std::vector<int64_t>(in.particle_ids.begin(), in.particle_ids.end());
   COPY(ret.primary_counts, in.primary_counts);
   ret.size = in.size;
-  //ret.topology = in.topology;
-  //ret.units = in.units;
+  ret.topology = in.topology;
+  ret.units = in.units;
   COPY(ret.vertex, in.vertex);
-  //ret.vertex_mode = in.vertex_mode;
+  ret.vertex_mode = in.vertex_mode;
   ret.volume_id = in.volume_id;
   for(int64_t id : ret.particle_ids)
     ret.particles.push_back(particles.at(id));
