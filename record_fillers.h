@@ -3,9 +3,6 @@
 #include "sbn_h5_classes.h"
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
 #include "sbnanaobj/StandardRecord/SRInteractionDLP.h"
-//#include "sbnanaobj/StandardRecord/SRInteractionTruthDLP.h"
-//#include "sbnanaobj/StandardRecord/SRIMatchDLP.h"
-//#include "sbnanaobj/StandardRecord/SRPMatchDLP.h"
 
 #ifndef RECORD_FILLERS_H
 #define RECORD_FILLERS_H

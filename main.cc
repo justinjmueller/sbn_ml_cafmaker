@@ -42,7 +42,7 @@ int main(int argc, char const *argv[])
 
       std::vector<caf::SRParticleDLP> caf_reco_particles;
       for(dlp::types::Particle &p : reco_particles)
-	caf_reco_particles.push_back(fill_particle(p));
+	      caf_reco_particles.push_back(fill_particle(p));
 
       std::vector<caf::SRParticleTruthDLP> caf_true_particles;
       for(dlp::types::TruthParticle &p : true_particles)
@@ -53,7 +53,7 @@ int main(int argc, char const *argv[])
 
       std::vector<caf::SRInteractionDLP> caf_reco_interactions;
       for(dlp::types::Interaction &i : reco_interactions)
-	caf_reco_interactions.push_back(fill_interaction(i, caf_reco_particles));
+	      caf_reco_interactions.push_back(fill_interaction(i, caf_reco_particles));
 
       std::vector<caf::SRInteractionTruthDLP> caf_true_interactions;
       for(dlp::types::TruthInteraction &i : true_interactions)
