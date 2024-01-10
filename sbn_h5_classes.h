@@ -5,7 +5,7 @@
 //    
 //    The invocation that generated this file was:
 //
-//       create_cpp_objects.py -f ../icarus_ana_output_lite.h5 -o ./sbn_h5_classes -d events -cn Event -d interactions -cn Interaction -d truth_interactions -cn TruthInteraction -d particles -cn Particle -d truth_particles -cn TruthParticle -d run_info -cn RunInfo -ns dlp::types
+//       create_cpp_objects.py -f /pnfs/icarus/scratch/users/mueller/ml_hdf5/mpvmpr/all_0_mlreco_ana_lite.h5 -o ./sbn_h5_classes -d events -cn Event -d interactions -cn Interaction -d truth_interactions -cn TruthInteraction -d particles -cn Particle -d truth_particles -cn TruthParticle -d run_info -cn RunInfo -ns dlp::types
 //
 
 
@@ -202,10 +202,10 @@ namespace dlp::types
     hdset_reg_ref_t index;
     hdset_reg_ref_t meta;
     hdset_reg_ref_t run_info;
-    hdset_reg_ref_t particles;
-    hdset_reg_ref_t truth_interactions;
     hdset_reg_ref_t truth_particles;
     hdset_reg_ref_t interactions;
+    hdset_reg_ref_t particles;
+    hdset_reg_ref_t truth_interactions;
     
     void SyncVectors();
     
@@ -213,10 +213,10 @@ namespace dlp::types
     const hdset_reg_ref_t& GetRef() const
     {
       if constexpr(std::is_same_v<T, RunInfo>) return run_info;
-      else if(std::is_same_v<T, Particle>) return particles;
-      else if(std::is_same_v<T, TruthInteraction>) return truth_interactions;
       else if(std::is_same_v<T, TruthParticle>) return truth_particles;
       else if(std::is_same_v<T, Interaction>) return interactions;
+      else if(std::is_same_v<T, Particle>) return particles;
+      else if(std::is_same_v<T, TruthInteraction>) return truth_interactions;
     }
     
   };
@@ -468,7 +468,7 @@ namespace dlp::types
     int64_t pdg_code;
     Pid pid;
     BufferView<float> position;
-    float sed_depositions_MeV_sum;
+    double sed_depositions_MeV_sum;
     BufferView<int64_t> sed_index;
     int64_t sed_size;
     SemanticType semantic_type;
@@ -481,7 +481,7 @@ namespace dlp::types
     double truth_depositions_MeV_sum;
     double truth_depositions_sum;
     BufferView<int64_t> truth_index;
-    std::array<float, 3> truth_momentum;
+    std::array<double, 3> truth_momentum;
     int64_t truth_size;
     std::array<double, 3> truth_start_dir;
     char * units;

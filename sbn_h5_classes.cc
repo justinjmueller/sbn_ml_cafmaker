@@ -5,7 +5,7 @@
 //    
 //    The invocation that generated this file was:
 //
-//       create_cpp_objects.py -f ../icarus_ana_output_lite.h5 -o ./sbn_h5_classes -d events -cn Event -d interactions -cn Interaction -d truth_interactions -cn TruthInteraction -d particles -cn Particle -d truth_particles -cn TruthParticle -d run_info -cn RunInfo -ns dlp::types
+//       create_cpp_objects.py -f /pnfs/icarus/scratch/users/mueller/ml_hdf5/mpvmpr/all_0_mlreco_ana_lite.h5 -o ./sbn_h5_classes -d events -cn Event -d interactions -cn Interaction -d truth_interactions -cn TruthInteraction -d particles -cn Particle -d truth_particles -cn TruthParticle -d run_info -cn RunInfo -ns dlp::types
 //
 
 #include "sbn_h5_classes.h"
@@ -80,10 +80,10 @@ namespace dlp::types
     ctype.insertMember("index", HOFFSET(Event, index), H5::PredType::STD_REF_DSETREG);
     ctype.insertMember("meta", HOFFSET(Event, meta), H5::PredType::STD_REF_DSETREG);
     ctype.insertMember("run_info", HOFFSET(Event, run_info), H5::PredType::STD_REF_DSETREG);
-    ctype.insertMember("particles", HOFFSET(Event, particles), H5::PredType::STD_REF_DSETREG);
-    ctype.insertMember("truth_interactions", HOFFSET(Event, truth_interactions), H5::PredType::STD_REF_DSETREG);
     ctype.insertMember("truth_particles", HOFFSET(Event, truth_particles), H5::PredType::STD_REF_DSETREG);
     ctype.insertMember("interactions", HOFFSET(Event, interactions), H5::PredType::STD_REF_DSETREG);
+    ctype.insertMember("particles", HOFFSET(Event, particles), H5::PredType::STD_REF_DSETREG);
+    ctype.insertMember("truth_interactions", HOFFSET(Event, truth_interactions), H5::PredType::STD_REF_DSETREG);
   
     return ctype;
   }
@@ -525,7 +525,7 @@ namespace dlp::types
     ctype.insertMember("pid", HOFFSET(TruthParticle, pid), pid_enumtype);
     
     ctype.insertMember("position", HOFFSET(TruthParticle, position_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
-    ctype.insertMember("sed_depositions_MeV_sum", HOFFSET(TruthParticle, sed_depositions_MeV_sum), H5::PredType::IEEE_F32LE);
+    ctype.insertMember("sed_depositions_MeV_sum", HOFFSET(TruthParticle, sed_depositions_MeV_sum), H5::PredType::IEEE_F64LE);
     ctype.insertMember("sed_index", HOFFSET(TruthParticle, sed_index_handle), H5::VarLenType(H5::PredType::STD_I64LE));
     ctype.insertMember("sed_size", HOFFSET(TruthParticle, sed_size), H5::PredType::STD_I64LE);
     
@@ -549,7 +549,7 @@ namespace dlp::types
     ctype.insertMember("truth_depositions_MeV_sum", HOFFSET(TruthParticle, truth_depositions_MeV_sum), H5::PredType::IEEE_F64LE);
     ctype.insertMember("truth_depositions_sum", HOFFSET(TruthParticle, truth_depositions_sum), H5::PredType::IEEE_F64LE);
     ctype.insertMember("truth_index", HOFFSET(TruthParticle, truth_index_handle), H5::VarLenType(H5::PredType::STD_I64LE));
-    ctype.insertMember("truth_momentum", HOFFSET(TruthParticle, truth_momentum), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{3}[0]));
+    ctype.insertMember("truth_momentum", HOFFSET(TruthParticle, truth_momentum), H5::ArrayType(H5::PredType::IEEE_F64LE, 1, &std::array<hsize_t, 1>{3}[0]));
     ctype.insertMember("truth_size", HOFFSET(TruthParticle, truth_size), H5::PredType::STD_I64LE);
     ctype.insertMember("truth_start_dir", HOFFSET(TruthParticle, truth_start_dir), H5::ArrayType(H5::PredType::IEEE_F64LE, 1, &std::array<hsize_t, 1>{3}[0]));
     
