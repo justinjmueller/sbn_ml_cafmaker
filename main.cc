@@ -37,40 +37,47 @@ int main(int argc, char const *argv[])
     std::vector<dlp::types::Event> events(get_events(file, -1));
     for(dlp::types::Event &evt : events)
     {
-      std::vector<dlp::types::Particle> reco_particles(get_product<dlp::types::Particle>(file, evt));
-      std::vector<dlp::types::TruthParticle> true_particles(get_product<dlp::types::TruthParticle>(file, evt));
+      try
+      {
+        std::vector<dlp::types::Particle> reco_particles(get_product<dlp::types::Particle>(file, evt));
+        std::vector<dlp::types::TruthParticle> true_particles(get_product<dlp::types::TruthParticle>(file, evt));
 
-      std::vector<caf::SRParticleDLP> caf_reco_particles;
-      for(dlp::types::Particle &p : reco_particles)
-	      caf_reco_particles.push_back(fill_particle(p));
+        std::vector<caf::SRParticleDLP> caf_reco_particles;
+        for(dlp::types::Particle &p : reco_particles)
+          caf_reco_particles.push_back(fill_particle(p));
 
-      std::vector<caf::SRParticleTruthDLP> caf_true_particles;
-      for(dlp::types::TruthParticle &p : true_particles)
-        caf_true_particles.push_back(fill_truth_particle(p));
-      
-      std::vector<dlp::types::Interaction> reco_interactions(get_product<dlp::types::Interaction>(file, evt));
-      std::vector<dlp::types::TruthInteraction> true_interactions(get_product<dlp::types::TruthInteraction>(file, evt));
+        std::vector<caf::SRParticleTruthDLP> caf_true_particles;
+        for(dlp::types::TruthParticle &p : true_particles)
+          caf_true_particles.push_back(fill_truth_particle(p));
+        
+        std::vector<dlp::types::Interaction> reco_interactions(get_product<dlp::types::Interaction>(file, evt));
+        std::vector<dlp::types::TruthInteraction> true_interactions(get_product<dlp::types::TruthInteraction>(file, evt));
 
-      std::vector<caf::SRInteractionDLP> caf_reco_interactions;
-      for(dlp::types::Interaction &i : reco_interactions)
-	      caf_reco_interactions.push_back(fill_interaction(i, caf_reco_particles));
+        std::vector<caf::SRInteractionDLP> caf_reco_interactions;
+        for(dlp::types::Interaction &i : reco_interactions)
+          caf_reco_interactions.push_back(fill_interaction(i, caf_reco_particles));
 
-      std::vector<caf::SRInteractionTruthDLP> caf_true_interactions;
-      for(dlp::types::TruthInteraction &i : true_interactions)
-        caf_true_interactions.push_back(fill_truth_interaction(i, caf_true_particles));
+        std::vector<caf::SRInteractionTruthDLP> caf_true_interactions;
+        for(dlp::types::TruthInteraction &i : true_interactions)
+          caf_true_interactions.push_back(fill_truth_interaction(i, caf_true_particles));
 
-      caf::StandardRecord sr;
-      sr.dlp = caf_reco_interactions;
-      sr.ndlp = caf_reco_interactions.size();
-      sr.dlp_true = caf_true_interactions;
-      sr.ndlp_true = caf_true_interactions.size();
-      sr.hdr.pot = 1;
-      sr.hdr.first_in_subrun = true;
-      pot->Fill(1);
-      nevt->Fill(1);
-  
-      rec = &sr;
-      rec_tree.Fill();
+        caf::StandardRecord sr;
+        sr.dlp = caf_reco_interactions;
+        sr.ndlp = caf_reco_interactions.size();
+        sr.dlp_true = caf_true_interactions;
+        sr.ndlp_true = caf_true_interactions.size();
+        sr.hdr.pot = 1;
+        sr.hdr.first_in_subrun = true;
+        pot->Fill(1);
+        nevt->Fill(1);
+    
+        rec = &sr;
+        rec_tree.Fill();
+      }
+      catch(const H5::ReferenceException & e)
+      {
+        std::cerr << "Found incomplete entry for event." << std::endl;
+      }
     }
     file.close();
   }
