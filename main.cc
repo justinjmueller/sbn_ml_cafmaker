@@ -18,18 +18,18 @@ int main(int argc, char const *argv[])
 {
   if(argc < 2)
   {
-    std::cerr << "Please provide at least one input file!" << std::endl;
+    std::cerr << "Usage: ./ReadHDF5 <output file> <input file(s)>" << std::endl;
     return 0;
   }
 
-  TFile caf("bnb_nucosmics.caf.root", "recreate");
+  TFile caf(argv[1], "recreate");
   TTree rec_tree("recTree", "Event tree for ML reconstruction");
   caf::StandardRecord *rec;
   rec_tree.Branch("rec", &rec);
 
   TH1F * pot = new TH1F("TotalPOT", "TotalPOT", 1, 0, 1);
   TH1F * nevt = new TH1F("TotalEvents", "TotalEvents", 1, 0, 1);
-  for(size_t n(1); n < argc; ++n)
+  for(size_t n(2); n < argc; ++n)
   {
     H5::H5File file(argv[n], H5F_ACC_RDONLY);
     std::cout << "Opened file: " << argv[n] << std::endl;
