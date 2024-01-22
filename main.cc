@@ -18,7 +18,7 @@ int main(int argc, char const *argv[])
 {
   if(argc < 2)
   {
-    std::cerr << "Usage: ./ReadHDF5 <output file> <input file(s)>" << std::endl;
+    std::cerr << "Usage: ./ReadHDF5 <output file> <event offset> <input file(s)>" << std::endl;
     return 0;
   }
 
@@ -29,7 +29,10 @@ int main(int argc, char const *argv[])
 
   TH1F * pot = new TH1F("TotalPOT", "TotalPOT", 1, 0, 1);
   TH1F * nevt = new TH1F("TotalEvents", "TotalEvents", 1, 0, 1);
-  for(size_t n(2); n < argc; ++n)
+
+  std::cout << "Offset is " << std::atoi(argv[2]) << std::endl;
+
+  for(size_t n(3); n < argc; ++n)
   {
     H5::H5File file(argv[n], H5F_ACC_RDONLY);
     std::cout << "Opened file: " << argv[n] << std::endl;
@@ -44,22 +47,22 @@ int main(int argc, char const *argv[])
 
         std::vector<caf::SRParticleDLP> caf_reco_particles;
         for(dlp::types::Particle &p : reco_particles)
-          caf_reco_particles.push_back(fill_particle(p));
+          caf_reco_particles.push_back(fill_particle(p, std::atoi(argv[2])));
 
         std::vector<caf::SRParticleTruthDLP> caf_true_particles;
         for(dlp::types::TruthParticle &p : true_particles)
-          caf_true_particles.push_back(fill_truth_particle(p));
+          caf_true_particles.push_back(fill_truth_particle(p, std::atoi(argv[2])));
         
         std::vector<dlp::types::Interaction> reco_interactions(get_product<dlp::types::Interaction>(file, evt));
         std::vector<dlp::types::TruthInteraction> true_interactions(get_product<dlp::types::TruthInteraction>(file, evt));
 
         std::vector<caf::SRInteractionDLP> caf_reco_interactions;
         for(dlp::types::Interaction &i : reco_interactions)
-          caf_reco_interactions.push_back(fill_interaction(i, caf_reco_particles));
+          caf_reco_interactions.push_back(fill_interaction(i, caf_reco_particles, std::atoi(argv[2])));
 
         std::vector<caf::SRInteractionTruthDLP> caf_true_interactions;
         for(dlp::types::TruthInteraction &i : true_interactions)
-          caf_true_interactions.push_back(fill_truth_interaction(i, caf_true_particles));
+          caf_true_interactions.push_back(fill_truth_interaction(i, caf_true_particles, std::atoi(argv[2])));
 
         caf::StandardRecord sr;
         sr.dlp = caf_reco_interactions;

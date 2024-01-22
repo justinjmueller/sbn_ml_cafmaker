@@ -9,7 +9,7 @@
 
 #define COPY(x,y) std::copy(y.begin(), y.end(), x)
 
-caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p)
+caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64_t offset=0)
 {
   p.children_counts.reset(&p.children_counts_handle);
   p.first_step.reset(&p.first_step_handle);
@@ -46,7 +46,7 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p)
   part.fragment_ids = std::vector<int64_t>(p.fragment_ids.begin(), p.fragment_ids.end());
   part.group_id = p.group_id;
   part.id = p.id;
-  part.image_id = p.image_id;
+  part.image_id = p.image_id+offset;
   part.index = std::vector<int64_t>(p.index.begin(), p.index.end());
   part.interaction_id = p.interaction_id;
   part.is_ccrosser = p.is_ccrosser;
@@ -100,7 +100,7 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p)
   return part;
 }
 
-caf::SRParticleDLP fill_particle(dlp::types::Particle &p)
+caf::SRParticleDLP fill_particle(dlp::types::Particle &p, uint64_t offset=0)
 {
   p.fragment_ids.reset(&p.fragment_ids_handle);
   p.index.reset(&p.index_handle);
@@ -116,7 +116,7 @@ caf::SRParticleDLP fill_particle(dlp::types::Particle &p)
   COPY(part.end_point, p.end_point);
   part.fragment_ids = std::vector<int64_t>(p.fragment_ids.begin(), p.fragment_ids.end());
   part.id = p.id;
-  part.image_id = p.image_id;
+  part.image_id = p.image_id+offset;
   part.index = std::vector<int64_t>(p.index.begin(), p.index.end());
   part.interaction_id = p.interaction_id;
   part.is_ccrosser = p.is_ccrosser;
@@ -147,7 +147,7 @@ caf::SRParticleDLP fill_particle(dlp::types::Particle &p)
   return part;
 }
 
-caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &in, std::vector<caf::SRParticleTruthDLP> &particles)
+caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &in, std::vector<caf::SRParticleTruthDLP> &particles, uint64_t offset=0)
 {
   in.match.reset(&in.match_handle);
   in.match_overlap.reset(&in.match_overlap_handle);
@@ -167,7 +167,7 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
   ret.flash_total_pe = in.flash_total_pE;
   ret.fmatched = in.fmatched;
   ret.id = in.id;
-  ret.image_id = in.image_id;
+  ret.image_id = in.image_id + offset;
   ret.is_ccrosser = in.is_ccrosser;
   ret.is_contained = in.is_contained;
   ret.is_fiducial = in.is_fiducial;
@@ -224,7 +224,7 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
   return ret;
 }
 
-caf::SRInteractionDLP fill_interaction(dlp::types::Interaction &in, std::vector<caf::SRParticleDLP> &particles)
+caf::SRInteractionDLP fill_interaction(dlp::types::Interaction &in, std::vector<caf::SRParticleDLP> &particles, uint64_t offset=0)
 {
   in.match.reset(&in.match_handle);
   in.match_overlap.reset(&in.match_overlap_handle);
@@ -241,7 +241,7 @@ caf::SRInteractionDLP fill_interaction(dlp::types::Interaction &in, std::vector<
   ret.flash_total_pe = in.flash_total_pE;
   ret.fmatched = in.fmatched;
   ret.id = in.id;
-  ret.image_id = in.image_id;
+  ret.image_id = in.image_id+offset;
   ret.is_ccrosser = in.is_ccrosser;
   ret.is_contained = in.is_contained;
   ret.is_fiducial = in.is_fiducial;
