@@ -11,7 +11,6 @@
 #include "H5Cpp.h"
 #include "sbn_h5_classes.h"
 #include "record_fillers.h"
-#include "sbnanaobj/StandardRecord/StandardRecord.h"
 
 /**
  * Some preliminary notes about the dataset structure: The top-level object
@@ -19,7 +18,6 @@
  * data, but rather it contains references to the locations in memory where
  * each other product (particles, interactions, etc) is stored.
 */
-
 
 /**
  * Checks the dimensions of the H5 DataSpace and calculates the number of
