@@ -19,7 +19,13 @@ typedef std::pair<size_t, size_t> index_t;
 
 int main(int argc, char const * argv[])
 {
-    // Check that the required arguments are present.
+    /**
+     * Check that the required arguments are present. The first argument is the
+     * name and path of the output CAF file. The second argument is the name
+     * and path of the input CAF which contains the reconstruction outputs from
+     * the standard reconstruction pathway. The third argument is the input
+     * HDF5 file with the ML reconstruction outputs for the same set of events.
+    */
     if(argc < 3)
     {
         std::cerr << "Usage: ./merge_sources <output_file> <input_caf_file> <input_h5_file>" << std::endl;
@@ -103,6 +109,14 @@ int main(int argc, char const * argv[])
         output_tree->Fill();
     }
 
+    /**
+     * Write the data into the output CAF file. In addition to the TTree
+     * containing the StandardRecord entries, there are also histograms for
+     * storing the total POT and the total number of events and some other
+     * TTrees storing environment stuff and metadata. The order probably
+     * doesn't matter, but this maintains the same exact order as in the input
+     * CAF file.
+    */
     TDirectoryFile *env = (TDirectoryFile*)input_caf.Get("env");
     env->Write();
     TH1D *total_pot = (TH1D*)input_caf.Get("TotalPOT");
@@ -113,6 +127,9 @@ int main(int argc, char const * argv[])
     TDirectoryFile *metadata = (TDirectoryFile*)input_caf.Get("metadata");
     metadata->Write();
     
+    /**
+     * Finally, close both the input and output files. 
+    */
     input_caf.Close();
     output_caf.Close();
 
