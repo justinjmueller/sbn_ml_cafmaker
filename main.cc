@@ -16,79 +16,102 @@
 
 int main(int argc, char const *argv[])
 {
-  if(argc < 2)
-  {
-    std::cerr << "Usage: ./ReadHDF5 <output file> <event offset> <input file(s)>" << std::endl;
-    return 0;
-  }
-
-  TFile caf(argv[1], "recreate");
-  TTree rec_tree("recTree", "Event tree for ML reconstruction");
-  caf::StandardRecord *rec;
-  rec_tree.Branch("rec", &rec);
-
-  TH1F * pot = new TH1F("TotalPOT", "TotalPOT", 1, 0, 1);
-  TH1F * nevt = new TH1F("TotalEvents", "TotalEvents", 1, 0, 1);
-
-  std::cout << "Offset is " << std::atoi(argv[2]) << std::endl;
-
-  for(size_t n(3); n < argc; ++n)
-  {
-    H5::H5File file(argv[n], H5F_ACC_RDONLY);
-    std::cout << "Opened file: " << argv[n] << std::endl;
-  
-    std::vector<dlp::types::Event> events(get_all_events(file));
-    for(dlp::types::Event &evt : events)
+    /**
+     * Check that the required arguments are present. The first argument is the
+     * name and path of the output CAF file. The second argument is the offset to
+     * add to each image_id, which may be useful in the case where each file has
+     * a separate indexing of images (from batch processing). The final
+     * argument(s) is/are a list of input H5 files.
+    */
+    if(argc < 4)
     {
-      try
-      {
-        std::vector<dlp::types::Particle> reco_particles(get_product<dlp::types::Particle>(file, evt));
-        std::vector<dlp::types::TruthParticle> true_particles(get_product<dlp::types::TruthParticle>(file, evt));
-
-        std::vector<caf::SRParticleDLP> caf_reco_particles;
-        for(dlp::types::Particle &p : reco_particles)
-          caf_reco_particles.push_back(fill_particle(p, std::atoi(argv[2])));
-
-        std::vector<caf::SRParticleTruthDLP> caf_true_particles;
-        for(dlp::types::TruthParticle &p : true_particles)
-          caf_true_particles.push_back(fill_truth_particle(p, std::atoi(argv[2])));
-        
-        std::vector<dlp::types::Interaction> reco_interactions(get_product<dlp::types::Interaction>(file, evt));
-        std::vector<dlp::types::TruthInteraction> true_interactions(get_product<dlp::types::TruthInteraction>(file, evt));
-
-        std::vector<caf::SRInteractionDLP> caf_reco_interactions;
-        for(dlp::types::Interaction &i : reco_interactions)
-          caf_reco_interactions.push_back(fill_interaction(i, caf_reco_particles, std::atoi(argv[2])));
-
-        std::vector<caf::SRInteractionTruthDLP> caf_true_interactions;
-        for(dlp::types::TruthInteraction &i : true_interactions)
-          caf_true_interactions.push_back(fill_truth_interaction(i, caf_true_particles, std::atoi(argv[2])));
-
-        caf::StandardRecord sr;
-        sr.dlp = caf_reco_interactions;
-        sr.ndlp = caf_reco_interactions.size();
-        sr.dlp_true = caf_true_interactions;
-        sr.ndlp_true = caf_true_interactions.size();
-        sr.hdr.pot = 1;
-        sr.hdr.first_in_subrun = true;
-        pot->Fill(1);
-        nevt->Fill(1);
-    
-        rec = &sr;
-        rec_tree.Fill();
-      }
-      catch(const H5::ReferenceException & e)
-      {
-        std::cerr << "Found incomplete entry for event." << std::endl;
-      }
+        std::cerr << "Usage: ./ReadHDF5 <output file> <event offset> <input file(s)>" << std::endl;
+        return 0;
     }
-    file.close();
-  }
-  rec_tree.Write();
-  pot->Write();
-  nevt->Write();
-  caf.Close();
 
-  return 0;
+    /**
+     * Configure the output CAF file. There must be a TTree with a specific
+     * name for holding the StandardRecord entries. The "rec" object is used
+     * as the connection between a locally-populated StandardRecord and the
+     * entries populating the TTree.
+    */
+    TFile caf(argv[1], "recreate");
+    TTree rec_tree("recTree", "Event tree for ML reconstruction");
+    caf::StandardRecord *rec = new caf::StandardRecord;
+    rec_tree.Branch("rec", &rec);
+
+    /**
+     * Create total POT and total event histograms. These are used internally
+     * within CAFAna for exposure/POT accounting. Since this is a standalone
+     * CAF generator with no actual POT information stored from the ML data
+     * products, only dummy values will be used.
+    */
+    TH1F * pot = new TH1F("TotalPOT", "TotalPOT", 1, 0, 1);
+    TH1F * nevt = new TH1F("TotalEvents", "TotalEvents", 1, 0, 1);
+
+    /**
+     * Begin main loop over input files. Each HDF5 file will be opened and
+     * copied into the same output CAF file.
+    */
+    for(size_t n(3); n < argc; ++n)
+    {
+        /**
+         * Configure the input HDF5 file and retrieve the list of all events.
+         * The dlp::types::Event class contains only references to the actual
+         * ML data products, so it is not overly heavy.
+        */
+        H5::H5File file(argv[n], H5F_ACC_RDONLY);
+        std::cout << "Opened file: " << argv[n] << std::endl;    
+        std::vector<dlp::types::Event> events(get_all_events(file));
+
+        /**
+         * Begin the main loop over events within the current HDF5 file.
+        */
+        for(dlp::types::Event &evt : events)
+        {
+            /**
+             * It is safest to reset the ML reconstruction output branches to
+             * prevent old products from remaining in the case where something
+             * unexpected happens.
+            */ 
+            rec->dlp.clear();
+            rec->ndlp = 0;
+            rec->dlp_true.clear();
+            rec->ndlp_true = 0;
+            try
+            {
+                /**
+                 * The package_event() function handles the copying of data
+                 * products from the event into the proper CAF class within
+                 * the StandardRecord.
+                */
+                package_event(rec, file, evt);
+                rec->hdr.pot = 1;
+                rec->hdr.first_in_subrun = true;
+                pot->Fill(1);
+                nevt->Fill(1);
+                rec_tree.Fill();
+            }
+            catch(const H5::ReferenceException & e)
+            {
+                std::cerr << "Found incomplete entry for event." << std::endl;
+            }
+        }
+        file.close();
+    }
+    /**
+     * Write the "rec" TTree, the POT, and the number events histograms to the
+     * output CAF file.
+    */
+    pot->Write();
+    nevt->Write();
+    rec_tree.Write();
+
+    /**
+     * Finally, close the output file. 
+    */
+    caf.Close();
+
+    return 0;
 }
 
