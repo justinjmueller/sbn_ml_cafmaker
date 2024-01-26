@@ -25,7 +25,7 @@
  * @param dsp the H5 DataSpace.
  * @return the number of events in the DataSpace.
 */
-size_t get_nevents(H5::DataSpace &dsp)
+size_t get_nevents(H5::DataSpace & dsp)
 {
   hsize_t dims_max = dsp.getSimpleExtentNdims();
   auto dims = new hsize_t[dims_max];
@@ -41,7 +41,7 @@ size_t get_nevents(H5::DataSpace &dsp)
  * @param index of the event to retrieve.
  * @return the specified dlp::types::Event object.
 */
-dlp::types::Event get_single_event(H5::H5File &file, int64_t index)
+dlp::types::Event get_single_event(H5::H5File & file, int64_t index)
 {
   H5::DataSet dataset(file.openDataSet("events"));
   H5::DataSpace dsp(dataset.getSpace());
@@ -71,7 +71,7 @@ dlp::types::Event get_single_event(H5::H5File &file, int64_t index)
  * @param file the input H5 file.
  * @return a vector of all dlp::types::Event objects in the file.
 */
-std::vector<dlp::types::Event> get_all_events(H5::H5File &file)
+std::vector<dlp::types::Event> get_all_events(H5::H5File & file)
 {
   H5::DataSet dataset(file.openDataSet("events"));
   H5::DataSpace dsp(dataset.getSpace());
@@ -91,7 +91,7 @@ std::vector<dlp::types::Event> get_all_events(H5::H5File &file)
  * requested products.
 */
 template <class T>
-std::vector<T> get_product(H5::H5File &file, dlp::types::Event &evt)
+std::vector<T> get_product(H5::H5File & file, dlp::types::Event & evt)
 {
   H5::DataSet ds_ref(file.openDataSet("events"));
   

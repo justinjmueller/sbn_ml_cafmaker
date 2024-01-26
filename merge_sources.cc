@@ -14,32 +14,39 @@
 #include "TTree.h"
 #include "TH1F.h"
 
+typedef std::pair<size_t, size_t> index_t;
+
 int main(int argc, char const * argv[])
 {
+    // Check that the required arguments are present.
     if(argc < 3)
     {
         std::cerr << "Usage: ./merge_sources <output_file> <input_caf_file> <input_h5_file>" << std::endl;
         return 0;
     }
 
-    TFile input_caf(argv[2], "read");
-    TTree *input_tree = (TTree*)input_caf.Get("recTree");
-    caf::StandardRecord *rec = new caf::StandardRecord;
-    input_tree->SetBranchAddress("rec", &rec);
-
-    std::cout << "Number of events in CAF tree: " << input_tree->GetEntries() << std::endl;
-
+    /**
+     * Configure the input HDF5 file. The merging code will need to access the
+     * event records in the file once it has been matched to an event from the
+     * input CAF file. This is done by building a map between (Run, Event No.)
+     * and the dlp::types::Event object. This class contains only references to
+     * the actual ML data products, so it is not overly heavy.
+    */
     H5::H5File input_h5(argv[3], H5F_ACC_RDONLY);
-    std::map<std::pair<size_t, size_t>, size_t> event_map;
+    std::map<index_t, size_t> event_map;
     std::vector<dlp::types::Event> events(get_all_events(input_h5));
     for(size_t e(0); e < events.size(); ++e)
     {
         try
         {
+            /**
+             * For each event in the input HDF5 file, the run info is retrieved
+             * and emplaced in a map that will allow for efficient lookup later
+             * when copying data into the output CAF file.
+            */
             std::vector<dlp::types::RunInfo> run_info(get_product<dlp::types::RunInfo>(input_h5, events.at(e)));
-            std::pair<size_t, size_t> index(std::make_pair(run_info.back().run, run_info.back().event));
+            index_t index(std::make_pair(run_info.back().run, run_info.back().event));
             event_map.insert(std::make_pair(index, e));
-            std::cout << "(Run, Event) = (" << index.first << ", " << index.second << ")" << std::endl;
         }
         catch(const H5::ReferenceException & e)
         {
@@ -47,12 +54,55 @@ int main(int argc, char const * argv[])
         }
     }
 
+    /**
+     * Configure the input CAF file. The merging code will need to attach to
+     * the "recTree.rec" branch (StandardRecord) in order to copy them over
+     * to a new file and simultaneously copy in the ML reconstruction outputs.
+    */
+    TFile input_caf(argv[2], "read");
+    TTree *input_tree = (TTree*)input_caf.Get("recTree");
+    caf::StandardRecord *rec = new caf::StandardRecord;
+    input_tree->SetBranchAddress("rec", &rec);
 
+    TFile output_caf(argv[1], "recreate");
+    TTree *output_tree = new TTree("recTree", "recTree");
+    output_tree->Branch("rec", &rec);
+
+    /**
+     * Begin main loop over records within the input CAF file. At each step,
+     * check that there is a matching event in the HDF5 input file.
+    */
     for(size_t n(0); n < input_tree->GetEntries(); ++n)
     {
         input_tree->GetEntry(n);
-        std::cout << "Number of slices: " << rec->nslc << std::endl;
+
+        /**
+         * It is safest to reset the ML reconstruction output branches to
+         * prevent old products from remaining in the case where no matching
+         * data products are found in the H5 file.
+        */ 
+        rec->dlp.clear();
+        rec->ndlp = 0;
+        rec->dlp_true.clear();
+        rec->ndlp_true = 0;
+
+        index_t index(std::make_pair(rec->hdr.run, rec->hdr.evt));
+        if(event_map.find(index) != event_map.end())
+        {
+            std::cout << "Matched Event " << index.second << " in Run " << index.first << " of CAF input to HDF5 event." << std::endl;
+            try
+            {
+                package_event(rec, input_h5, events[event_map[index]]);
+            }
+            catch(const H5::ReferenceException & e)
+            {
+                std::cerr << "Found incomplete entry for event." << std::endl;
+            }
+        }
+        output_tree->Fill();
     }
+    input_caf.Close();
+    output_caf.Close();
 
     return 0;
 }
