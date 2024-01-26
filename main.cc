@@ -37,7 +37,7 @@ int main(int argc, char const *argv[])
     H5::H5File file(argv[n], H5F_ACC_RDONLY);
     std::cout << "Opened file: " << argv[n] << std::endl;
   
-    std::vector<dlp::types::Event> events(get_events(file, -1));
+    std::vector<dlp::types::Event> events(get_all_events(file));
     for(dlp::types::Event &evt : events)
     {
       try

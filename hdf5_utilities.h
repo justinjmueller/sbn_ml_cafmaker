@@ -20,43 +20,50 @@ size_t get_nevents(H5::DataSpace &dsp)
 }
 
 /**
- * Retrieves the specified event(s) from the H5 file.
+ * Retrieves the specified event from the H5 file.
  * @param file the input H5 file.
- * @param index of the event to retrieve (-1 if all).
- * @return a vector of the requested events.
+ * @param index of the event to retrieve.
+ * @return the requested dlp::types::Event object.
 */
-std::vector<dlp::types::Event> get_events(H5::H5File &file, int64_t index)
+dlp::types::Event get_single_event(H5::H5File &file, int64_t index)
+{
+  H5::DataSet dataset(file.openDataSet("events"));
+  H5::DataSpace dsp(dataset.getSpace());
+
+  std::vector<dlp::types::Event> evt(1);
+  std::vector<hsize_t> start(1, index);
+  std::vector<hsize_t> count(1, 1);
+  dsp.selectHyperslab(H5S_SELECT_SET, count.data(), start.data());
+
+  H5::DataSpace memspace(H5S_SIMPLE);
+  std::vector<hsize_t> dims(dsp.getSimpleExtentNdims());
+  std::vector<hsize_t> dimsMax(dsp.getSimpleExtentNdims(), H5S_UNLIMITED);
+  dsp.getSimpleExtentDims(dims.data());
+  memspace.setExtentSimple(dsp.getSimpleExtentNdims(), dims.data(), dimsMax.data());
+  start[0] = 0;
+  count[0] = 1;
+  memspace.selectHyperslab(H5S_SELECT_SET, count.data(), start.data());
+
+  H5::CompType ctype(dlp::types::BuildCompType<dlp::types::Event>());
+  dataset.read(evt.data(), ctype, memspace, dsp);
+
+  return evt[0];
+}
+
+/**
+ * Retrieves all objects of class dlp::types::Event from the H5 file.
+ * @param file the input H5 file.
+ * @return a vector of all dlp::types::Event objects in the file.
+*/
+std::vector<dlp::types::Event> get_all_events(H5::H5File &file)
 {
   H5::DataSet dataset(file.openDataSet("events"));
   H5::DataSpace dsp(dataset.getSpace());
 
   std::vector<dlp::types::Event> evt;
-  if(index < 0)
-  {
-    evt.resize(get_nevents(dsp));
-    H5::CompType ctype(dlp::types::BuildCompType<dlp::types::Event>());
-    dataset.read(evt.data(), ctype, H5::DataSpace::ALL, H5::DataSpace::ALL);
-  }
-  else
-  {
-    evt.resize(1);
-    std::vector<hsize_t> start(1, index);
-    std::vector<hsize_t> count(1, 1);
-    dsp.selectHyperslab(H5S_SELECT_SET, count.data(), start.data());
-
-    H5::DataSpace memspace(H5S_SIMPLE);
-    std::vector<hsize_t> dims(dsp.getSimpleExtentNdims());
-    std::vector<hsize_t> dimsMax(dsp.getSimpleExtentNdims(), H5S_UNLIMITED);
-    dsp.getSimpleExtentDims(dims.data());
-    memspace.setExtentSimple(dsp.getSimpleExtentNdims(), dims.data(), dimsMax.data());
-    start[0] = 0;
-    count[0] = 1;
-    memspace.selectHyperslab(H5S_SELECT_SET, count.data(), start.data());
-  
-    H5::CompType ctype(dlp::types::BuildCompType<dlp::types::Event>());
-    dataset.read(evt.data(), ctype, memspace, dsp);
-  }
-
+  evt.resize(get_nevents(dsp));
+  H5::CompType ctype(dlp::types::BuildCompType<dlp::types::Event>());
+  dataset.read(evt.data(), ctype, H5::DataSpace::ALL, H5::DataSpace::ALL);
   return evt;
 }
 
