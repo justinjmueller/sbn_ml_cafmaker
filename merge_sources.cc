@@ -71,6 +71,13 @@ int main(int argc, char const * argv[])
     caf::StandardRecord *rec = new caf::StandardRecord;
     input_tree->SetBranchAddress("rec", &rec);
 
+    /**
+     * Configure the output CAF file. There must be a TTree with a specific
+     * name for holding the StandardRecord entries. Since the code is modifying
+     * in-place the "rec" object, the output TTree is set to track this same
+     * object. This means that calling TTree::GetEntry() and TTree::Fill() with
+     * no intermediate changes will effectively copy the StandardRecord entry.
+    */
     TFile output_caf(argv[1], "recreate");
     TTree *output_tree = new TTree("recTree", "records");
     output_tree->Branch("rec", &rec);
@@ -128,8 +135,9 @@ int main(int argc, char const * argv[])
     metadata->Write();
     
     /**
-     * Finally, close both the input and output files. 
+     * Finally, close both input files and the output file. 
     */
+    input_h5.close();
     input_caf.Close();
     output_caf.Close();
 
