@@ -11,8 +11,9 @@
 #include "sbnanaobj/StandardRecord/SRParticleDLP.h"
 #include "sbnanaobj/StandardRecord/SRParticleTruthDLP.h"
 #include "TFile.h"
+#include "TDirectoryFile.h"
 #include "TTree.h"
-#include "TH1F.h"
+#include "TH1D.h"
 
 typedef std::pair<size_t, size_t> index_t;
 
@@ -65,7 +66,7 @@ int main(int argc, char const * argv[])
     input_tree->SetBranchAddress("rec", &rec);
 
     TFile output_caf(argv[1], "recreate");
-    TTree *output_tree = new TTree("recTree", "recTree");
+    TTree *output_tree = new TTree("recTree", "records");
     output_tree->Branch("rec", &rec);
 
     /**
@@ -101,6 +102,17 @@ int main(int argc, char const * argv[])
         }
         output_tree->Fill();
     }
+
+    TDirectoryFile *env = (TDirectoryFile*)input_caf.Get("env");
+    env->Write();
+    TH1D *total_pot = (TH1D*)input_caf.Get("TotalPOT");
+    total_pot->Write();
+    TH1D *total_events = (TH1D*)input_caf.Get("TotalEvents");
+    total_events->Write();
+    output_tree->Write();
+    TDirectoryFile *metadata = (TDirectoryFile*)input_caf.Get("metadata");
+    metadata->Write();
+    
     input_caf.Close();
     output_caf.Close();
 
