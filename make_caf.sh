@@ -8,7 +8,6 @@ offset=0
 for i in "$@"
 do
     output=`sed 's/.\{3\}$//' <<< "${i}"`.caf.root
-    #echo $output
-    ./ReadHDF5 $output $offset $i
+    ./make_standalone $output $offset $i
     ((offset+=1000))
 done
