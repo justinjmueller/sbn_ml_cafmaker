@@ -17,4 +17,8 @@ add_executable(ReadHDF5 main.cc)
 target_link_libraries(ReadHDF5 PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB Objects ${sbnanaobj_LIBRARY_DIRS}/libsbnanaobj_StandardRecord.so ${ROOT_LIBRARIES})
 target_include_directories(ReadHDF5 PRIVATE ${HDF5_INCLUDE_DIR} ${SBNANAOBJ_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
 
+add_executable(merge_sources merge_sources.cc)
+target_link_libraries(merge_sources PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB Objects ${sbnanaobj_LIBRARY_DIRS}/libsbnanaobj_StandardRecord.so ${ROOT_LIBRARIES})
+target_include_directories(merge_sources PRIVATE ${HDF5_INCLUDE_DIR} ${SBNANAOBJ_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
+
 message("${sbnanaobj_LIBRARY_DIRS}")
