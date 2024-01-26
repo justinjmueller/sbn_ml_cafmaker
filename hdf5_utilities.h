@@ -1,7 +1,25 @@
+/**
+ * @file hdf5_utlities.h
+ * @brief Implementation of various functions for interacting with and
+ * retrieving data from H5 files.
+ * @author justin.mueller@colostate.edu
+*/
+
+#ifndef HDF5_UTILITIES_H
+#define HDF5_UTILITIES_H
+
 #include "H5Cpp.h"
 #include "sbn_h5_classes.h"
 #include "record_fillers.h"
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
+
+/**
+ * Some preliminary notes about the dataset structure: The top-level object
+ * is the dlp::types::Event class. The Event class does not itself contain all
+ * data, but rather it contains references to the locations in memory where
+ * each other product (particles, interactions, etc) is stored.
+*/
+
 
 /**
  * Checks the dimensions of the H5 DataSpace and calculates the number of
@@ -20,10 +38,10 @@ size_t get_nevents(H5::DataSpace &dsp)
 }
 
 /**
- * Retrieves the specified event from the H5 file.
+ * Retrieves the specified dlp::types::Event object from the H5 file.
  * @param file the input H5 file.
  * @param index of the event to retrieve.
- * @return the requested dlp::types::Event object.
+ * @return the specified dlp::types::Event object.
 */
 dlp::types::Event get_single_event(H5::H5File &file, int64_t index)
 {
@@ -98,3 +116,5 @@ std::vector<T> get_product(H5::H5File &file, dlp::types::Event &evt)
   ds_ref.read(data_product.data(), ctype, memspace, ref_region);
   return data_product;
 }
+
+#endif
