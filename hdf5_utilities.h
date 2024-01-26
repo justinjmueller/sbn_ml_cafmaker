@@ -3,6 +3,12 @@
 #include "record_fillers.h"
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
 
+/**
+ * Checks the dimensions of the H5 DataSpace and calculates the number of
+ * events present.
+ * @param dsp the H5 DataSpace.
+ * @return the number of events in the DataSpace.
+*/
 size_t get_nevents(H5::DataSpace &dsp)
 {
   hsize_t dims_max = dsp.getSimpleExtentNdims();
@@ -13,6 +19,12 @@ size_t get_nevents(H5::DataSpace &dsp)
   return nevents;
 }
 
+/**
+ * Retrieves the specified event(s) from the H5 file.
+ * @param file the input H5 file.
+ * @param index of the event to retrieve (-1 if all).
+ * @return a vector of the requested events.
+*/
 std::vector<dlp::types::Event> get_events(H5::H5File &file, int64_t index)
 {
   H5::DataSet dataset(file.openDataSet("events"));
@@ -48,6 +60,13 @@ std::vector<dlp::types::Event> get_events(H5::H5File &file, int64_t index)
   return evt;
 }
 
+/**
+ * Retrieves all products of a certain type from the H5 file.
+ * @tparam T the type of product to retrieve.
+ * @param file the input H5 file.
+ * @param evt the dlp::types::Event object containing the references to the
+ * requested products.
+*/
 template <class T>
 std::vector<T> get_product(H5::H5File &file, dlp::types::Event &evt)
 {
