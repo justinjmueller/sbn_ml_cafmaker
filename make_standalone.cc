@@ -85,7 +85,7 @@ int main(int argc, char const *argv[])
                  * products from the event into the proper CAF class within
                  * the StandardRecord.
                 */
-                package_event(rec, file, evt);
+                package_event(rec, file, evt, std::atoi(argv[2]));
                 rec->hdr.pot = 1;
                 rec->hdr.first_in_subrun = true;
                 pot->Fill(1);
