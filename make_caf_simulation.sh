@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! "$#" -ge 1 ]; then
-    echo "Usage: ./make_caf.sh [input_files]"
+    echo "Usage: ./make_caf_simulation.sh [input_files]"
 fi
 
 offset=0
