@@ -8,6 +8,6 @@ offset=0
 for i in "$@"
 do
     output=`sed 's/.\{3\}$//' <<< "${i}"`.caf.root
-    ./make_standalone $output $offset $i
+    ./make_standalone_simulation $output $offset $i
     ((offset+=1000))
 done
