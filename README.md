@@ -21,15 +21,23 @@ The repository can be easily built using CMake:
     make
 
 ## Merging
-The executable that handles the merging of the ML reconstruction outputs into an existing CAF (with the same events) is `merge_sources`. The executable takes as input a standard CAF file (not flattened) and the HDF5 with the reconstruction outputs of the same set of events. It uses the run number and event number to build a look-up table for events in the HDF5 file, then copies them into the `StandardRecord` during the main loop over entries in the CAF file. Finally, the output CAF file is written. The executable can be used as:
+The executable that handles the merging of the ML reconstruction outputs into an existing CAF (with the same events) is `merge_sources`. The executable takes as input a standard CAF file (not flattened) and the HDF5 with the reconstruction outputs of the same set of events. It uses the run number and event number to build a look-up table for events in the HDF5 file, then copies them into the `StandardRecord` during the main loop over entries in the CAF file. Finally, the output CAF file is written. There exists a separate executable for data (only contains reconstructed objects) and simulation (additionally has truth objects). The executable can be used as:
 
-    ./merge_sources <output_caf_file> <input_caf_file> <input_hdf5_file>
+    ./merge_sources_simulation <output_caf_file> <input_caf_file> <input_hdf5_file>
+
+or
+
+    ./merge_sources_data <output_caf_file> <input_caf_file> <input_hdf5_file>
 
 In the case where no ML reconstruction outputs exist for an event, none are written. If the ML classes within the `StandardRecord` are already filled, they are erased and replaced with the new inputs. This serves to allow efficient updating of reconstruction outputs in the future.
 
 ## Standalone
-The executable that handles the creation of standalone CAFs with only ML reconstruction outputs is `make_standalone`. The executable takes as input a list of input HDF5 files and places them in a single CAF output file. The executable can be used as:
+The executable that handles the creation of standalone CAFs with only ML reconstruction outputs is `make_standalone`. The executable takes as input a list of input HDF5 files and places them in a single CAF output file. There exists a separate executable for data (only contains reconstructed objects) and simulation (additionally has truth objects). The executable can be used as:
 
-    ./make_standalone <output_caf_file> <event_offset> <input_hdf5_file(s)>
+    ./make_standalone_simulation <output_caf_file> <event_offset> <input_hdf5_file(s)>
+
+or
+
+    ./make_standalone_data <output_caf_file> <event_offset> <input_hdf5_file(s)>
 
 The `event_offset` is used to introduce a offset to the `image_id` attribute of interactions and particles. This may be useful in some cases for breaking the degeneracy of `image_id`s in multiple input files. The list of HDF5 input files may be one or longer - the code will loop over the remaining arguments and produce a single output file.
