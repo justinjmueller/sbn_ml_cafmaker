@@ -86,6 +86,10 @@ int main(int argc, char const *argv[])
                  * the StandardRecord.
                 */
                 package_event(rec, file, evt, std::atoi(argv[2]));
+                std::vector<dlp::types::RunInfo> run_info(get_product<dlp::types::RunInfo>(file, evt));
+                rec->hdr.run = run_info[0].run;
+                rec->hdr.subrun = run_info[0].subrun;
+                rec->hdr.evt = run_info[0].event;
                 rec->hdr.pot = 1;
                 rec->hdr.first_in_subrun = true;
                 pot->Fill(1);
