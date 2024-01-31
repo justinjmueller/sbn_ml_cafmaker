@@ -80,11 +80,15 @@ namespace dlp::types
     ctype.insertMember("index", HOFFSET(Event, index), H5::PredType::STD_REF_DSETREG);
     ctype.insertMember("meta", HOFFSET(Event, meta), H5::PredType::STD_REF_DSETREG);
     ctype.insertMember("run_info", HOFFSET(Event, run_info), H5::PredType::STD_REF_DSETREG);
+    #ifdef MC_NOT_DATA
     ctype.insertMember("truth_particles", HOFFSET(Event, truth_particles), H5::PredType::STD_REF_DSETREG);
+    #endif
     ctype.insertMember("interactions", HOFFSET(Event, interactions), H5::PredType::STD_REF_DSETREG);
     ctype.insertMember("particles", HOFFSET(Event, particles), H5::PredType::STD_REF_DSETREG);
+    #ifdef MC_NOT_DATA
     ctype.insertMember("truth_interactions", HOFFSET(Event, truth_interactions), H5::PredType::STD_REF_DSETREG);
-  
+    #endif
+
     return ctype;
   }
   

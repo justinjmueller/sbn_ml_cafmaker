@@ -355,10 +355,12 @@ void package_event(caf::StandardRecord * rec, H5::H5File & file, dlp::types::Eve
      * of the SRParticleTruthDLP class, which will later be added to its parent
      * interaction.
     */
+    #ifdef MC_NOT_DATA
     std::vector<dlp::types::TruthParticle> true_particles(get_product<dlp::types::TruthParticle>(file, evt));
     std::vector<caf::SRParticleTruthDLP> caf_true_particles;
     for(dlp::types::TruthParticle &p : true_particles)
         caf_true_particles.push_back(fill_truth_particle(p, offset));
+    #endif
     
     /**
      * Retrieve the reconstructed interaction data products from the H5 file
@@ -377,15 +379,19 @@ void package_event(caf::StandardRecord * rec, H5::H5File & file, dlp::types::Eve
      * of the SRInteractionTruthDLP class, along with the subset of particles
      * in the event that belong to it.
     */
+    #ifdef MC_NOT_DATA
     std::vector<dlp::types::TruthInteraction> true_interactions(get_product<dlp::types::TruthInteraction>(file, evt));
     std::vector<caf::SRInteractionTruthDLP> caf_true_interactions;
     for(dlp::types::TruthInteraction &i : true_interactions)
         caf_true_interactions.push_back(fill_truth_interaction(i, caf_true_particles, offset));
+    #endif
 
     rec->dlp = caf_reco_interactions;
     rec->ndlp = caf_reco_interactions.size();
+    #ifdef MC_NOT_DATA
     rec->dlp_true = caf_true_interactions;
     rec->ndlp_true = caf_true_interactions.size();
+    #endif
 }
 
 #endif

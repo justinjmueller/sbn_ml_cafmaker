@@ -202,10 +202,14 @@ namespace dlp::types
     hdset_reg_ref_t index;
     hdset_reg_ref_t meta;
     hdset_reg_ref_t run_info;
+    #ifdef MC_NOT_DATA
     hdset_reg_ref_t truth_particles;
+    #endif
     hdset_reg_ref_t interactions;
     hdset_reg_ref_t particles;
+    #ifdef MC_NOT_DATA
     hdset_reg_ref_t truth_interactions;
+    #endif
     
     void SyncVectors();
     
@@ -213,10 +217,14 @@ namespace dlp::types
     const hdset_reg_ref_t& GetRef() const
     {
       if constexpr(std::is_same_v<T, RunInfo>) return run_info;
+      #ifdef MC_NOT_DATA
       else if(std::is_same_v<T, TruthParticle>) return truth_particles;
+      #endif
       else if(std::is_same_v<T, Interaction>) return interactions;
       else if(std::is_same_v<T, Particle>) return particles;
+      #ifdef MC_NOT_DATA
       else if(std::is_same_v<T, TruthInteraction>) return truth_interactions;
+      #endif
     }
     
   };
