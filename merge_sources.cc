@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <tuple>
 #include <ctype.h>
 #include "H5Cpp.h"
 #include "sbn_h5_classes.h"
@@ -15,7 +16,7 @@
 #include "TTree.h"
 #include "TH1D.h"
 
-typedef std::pair<size_t, size_t> index_t;
+typedef std::tuple<size_t, size_t, size_t> index_t;
 
 int main(int argc, char const * argv[])
 {
@@ -52,7 +53,7 @@ int main(int argc, char const * argv[])
              * when copying data into the output CAF file.
             */
             std::vector<dlp::types::RunInfo> run_info(get_product<dlp::types::RunInfo>(input_h5, events.at(e)));
-            index_t index(std::make_pair(run_info.back().run, run_info.back().event));
+            index_t index(run_info.back().run, run_info.back().subrun, run_info.back().event);
             event_map.insert(std::make_pair(index, e));
         }
         catch(const H5::ReferenceException & e)
@@ -100,10 +101,10 @@ int main(int argc, char const * argv[])
         rec->dlp_true.clear();
         rec->ndlp_true = 0;
 
-        index_t index(std::make_pair(rec->hdr.run, rec->hdr.evt));
+        index_t index(rec->hdr.run, rec->hdr.subrun, rec->hdr.evt);
         if(event_map.find(index) != event_map.end())
         {
-            std::cout << "Matched Event " << index.second << " in Run " << index.first << " of CAF input to HDF5 event." << std::endl;
+	    std::cout << "Matched Event " << std::get<2>(index) << " in (Run, Subrun) = (" << std::get<0>(index) << ", " << std::get<1>(index) << ") of CAF input to HDF5 event." << std::endl;
             try
             {
                 package_event(rec, input_h5, events[event_map[index]]);
