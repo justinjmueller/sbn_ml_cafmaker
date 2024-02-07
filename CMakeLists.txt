@@ -3,11 +3,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 project(sbn_ml_cafmaker)
 
-find_package(HDF5 REQUIRED COMPONENTS C CXX HL)
+find_package(HDF5 REQUIRED COMPONENTS C CXX HL CONFIG PATHS ${HDF5_INSTALL}/)
 find_package(sbnanaobj)
 find_package(ZLIB)
 find_package(ROOT REQUIRED)
 set(SBNANAOBJ_INCLUDE_DIRS "$ENV{MRB_SOURCE}/sbnanaobj/")
+set(HDF5_INCLUDE_DIR ${HDF5_INSTALL}/include/)
+file(GLOB HDF5_LIBRARIES ${HDF5_INSTALL}/lib/*.so)
 
 # The input HDF5 files for data do not have truth products in them, so the
 # same top-level "dlp::types::Event" class should not contain references to
@@ -47,5 +49,3 @@ target_include_directories(merge_sources_simulation PRIVATE ${HDF5_INCLUDE_DIR} 
 add_executable(merge_sources_data merge_sources.cc)
 target_link_libraries(merge_sources_data PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB libDLP_data ${sbnanaobj_LIBRARY_DIRS}/libsbnanaobj_StandardRecord.so ${ROOT_LIBRARIES})
 target_include_directories(merge_sources_data PRIVATE ${HDF5_INCLUDE_DIR} ${SBNANAOBJ_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
-
-message("${sbnanaobj_LIBRARY_DIRS}")
