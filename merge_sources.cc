@@ -104,7 +104,7 @@ int main(int argc, char const * argv[])
         index_t index(rec->hdr.run, rec->hdr.subrun, rec->hdr.evt);
         if(event_map.find(index) != event_map.end())
         {
-	    std::cout << "Matched Event " << std::get<2>(index) << " in (Run, Subrun) = (" << std::get<0>(index) << ", " << std::get<1>(index) << ") of CAF input to HDF5 event." << std::endl;
+	        std::cout << "Matched Event " << std::get<2>(index) << " in (Run, Subrun) = (" << std::get<0>(index) << ", " << std::get<1>(index) << ") of CAF input to HDF5 event." << std::endl;
             try
             {
                 package_event(rec, input_h5, events[event_map[index]]);

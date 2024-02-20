@@ -8,7 +8,6 @@ count=0
 shopt -s nullglob
 ALLFILES=($2/*.h5)
 LENGTH=${#ALLFILES[@]}
-#for ((j=0; j<${ALLFILES[@]}; j++))
 for ((j=0; j<$LENGTH; j++))
 do
     i=${ALLFILES[$j]}
