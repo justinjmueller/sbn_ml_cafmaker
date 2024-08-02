@@ -40,9 +40,16 @@ namespace dlp
          * for the BufferView class. It provides the necessary functionality to
          * iterate over the variable-length buffer in the HDF5 file.
         */
-        class forward_iterator : public std::iterator<std::forward_iterator_tag, T>
+        class forward_iterator
         {
             public:
+
+            using difference_type = std::ptrdiff_t;
+            using value_type = T;
+            using pointer = const T*;
+            using reference = const T&;
+            using iterator_category = std::forward_iterator_tag;
+
             /**
              * @brief Constructor for the forward_iterator class.
              * @param buffer The BufferView object to iterate over.
