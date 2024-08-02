@@ -43,7 +43,12 @@ namespace dlp
         class forward_iterator
         {
             public:
-
+            /**
+             * @brief Type definitions for the forward_iterator class.
+             * 
+             * These type definitions are required for the forward_iterator class
+             * to be used as an iterator.
+            */
             using difference_type = std::ptrdiff_t;
             using value_type = T;
             using pointer = const T*;

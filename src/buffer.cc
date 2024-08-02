@@ -10,7 +10,7 @@
 namespace dlp
 {
     /**
-     * @brief Default constructor for the BufferView class.
+     * @brief A default constructor for the BufferView class.
     */
     template <typename T>
     BufferView<T>::BufferView()
@@ -18,7 +18,7 @@ namespace dlp
     {}
 
     /**
-     * @brief Constructor for the BufferView class.
+     * @brief A constructor for the BufferView class.
      * @param handle The handle to the buffer in the HDF5 file.
     */
     template <typename T>
