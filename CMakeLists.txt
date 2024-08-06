@@ -24,9 +24,9 @@ target_link_libraries(dlp_simulation PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB)
 target_include_directories(dlp_simulation PRIVATE ${HDF5_INCLUDE_DIR})
 target_compile_definitions(dlp_simulation PRIVATE MC_NOT_DATA)
 
-add_library(libDLP_data SHARED ${SPINE_SOURCES})
-target_link_libraries(libDLP_data PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB)
-target_include_directories(libDLP_data PRIVATE ${HDF5_INCLUDE_DIR})
+add_library(dlp_data SHARED ${SPINE_SOURCES})
+target_link_libraries(dlp_data PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB)
+target_include_directories(dlp_data PRIVATE ${HDF5_INCLUDE_DIR})
 
 # This executable is meant for testing the HDF5 parsing capabilities of the
 # library. It simply connects to the input file and attempts to read the
