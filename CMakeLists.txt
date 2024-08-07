@@ -36,6 +36,13 @@ target_link_libraries(test_hdf5 PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB dlp_simulat
 target_include_directories(test_hdf5 PRIVATE ${HDF5_INCLUDE_DIR})
 target_compile_definitions(test_hdf5 PRIVATE MC_NOT_DATA REMOVE_THIS)
 
+# This executable is meant for testing the CAF reading capabilities of the
+# library. It connects to the input file and attempts to read the contents of
+# the first/passed event.
+add_executable(test_caf src/test_caf.cc)
+target_link_libraries(test_caf PRIVATE ${sbnanaobj_LIBRARY_DIRS}/libsbnanaobj_StandardRecord.so ${ROOT_LIBRARIES})
+target_include_directories(test_caf PRIVATE ${SBNANAOBJ_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
+
 # This executable is meant for cases where "ML-only" CAFs are desired. It will
 # produce a CAF file with only the ML reconstruction outputs available. There
 # are two versions: one for data and one for simulation
