@@ -5,6 +5,8 @@
 */
 #include <iostream>
 #include <vector>
+#include "TFile.h"
+#include "TTree.h"
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
 
 /**
@@ -29,6 +31,44 @@ int main(int argc, char const * argv[])
         return 0;
     }
     else if(argc == 3) event_number = std::stoi(argv[2]);
+
+    /**
+     * @brief Open the input file and check if it is valid.
+    */
+    TFile * f = new TFile(argv[1], "READ");
+    if(f->IsZombie())
+    {
+        std::cerr << "Error opening file: " << argv[1] << std::endl;
+        return 1;
+    }
+
+    /**
+     * @brief Create a StandardRecord object to hold the data from the CAF
+     * file.
+    */
+    caf::StandardRecord * sr = new caf::StandardRecord();
+
+    /**
+     * @brief Create a TTree object to hold the data from the CAF file and
+     * connect the StandardRecord object to it.
+    */
+    TTree * tree = (TTree*)f->Get("recTree");
+    tree->SetBranchAddress("rec", &sr);
+
+    /**
+     * @brief Read in the event from the CAF file and print out some basic
+     * information.
+    */
+    tree->GetEntry(event_number);
+    std::cout << "Run: " << sr->hdr.run << std::endl;
+    std::cout << "Subrun: " << sr->hdr.subrun << std::endl;
+    std::cout << "Event: " << sr->hdr.evt << std::endl;
+
+    /**
+     * @brief Clean up the memory and close the input file.
+    */
+    delete sr;
+    f->Close();
 
     return 0;
 }
