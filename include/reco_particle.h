@@ -30,14 +30,14 @@ namespace dlp::types
         std::array<float, 3> end_point;              //!< [cm] End point (vector) of the particle.
         BufferView<int32_t> fragment_ids;            //!< Fragment IDs comprising the particle.
         int64_t id;                                  //!< Particle ID.
-        BufferView<int64_t> index;                   //!< (???)
+        BufferView<int64_t> index;                   //!< List of coordinate indices that comprise the particle.
         int64_t interaction_id;                      //!< Parent interaction ID.
         bool is_cathode_crosser;                     //!< Whether the particle is a cathode-crosser.
         bool is_contained;                           //!< Whether the particle is contained.
         bool is_primary;                             //!< Whether the particle is a primary particle.
         //bool is_principal_match;                   //!< Whether the particle is the principal match.
-        bool is_valid;                               //!< (???) Whether the particle is valid.
-        double ke;                                   //!< (???) [MeV] Kinetic energy.
+        bool is_valid;                               //!< Whether the particle passes thresholds and counts towards topology.
+        double ke;                                   //!< [MeV] Kinetic energy according to assumed best energy estimator (CSDA, calorimetric, or MCS).
         double length;                               //!< [cm] Length of the particle.
         BufferView<int64_t> match_ids;               //!< Match ID.
         BufferView<float> match_overlaps;            //!< Match overlap.

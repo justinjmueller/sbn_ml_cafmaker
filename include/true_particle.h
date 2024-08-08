@@ -40,22 +40,22 @@ namespace dlp::types
         std::array<float, 3> end_position;           //!< [cm] End position (vector) of the particle.
         double energy_deposit;                       //!< [MeV] Energy deposited by the particle.
         double energy_init;                          //!< [MeV] Initial energy of the particle.
-        std::array<float, 3> first_step;             //!< (???) First step of the particle.
+        std::array<float, 3> first_step;             //!< [cm] Coordinates of the first step of the particle.
         BufferView<int64_t> fragment_ids;            //!< Fragment IDs comprising the particle.
         int64_t group_id;                            //!< Group ID of the particle.
         int64_t id;                                  //!< Particle ID.
         //int64_t image_id;                          //!< Image ID.
-        BufferView<int64_t> index;                   //!< (???)
+        BufferView<int64_t> index;                   //!< List of coordinate indices that comprise the particle.
         int64_t interaction_id;                      //!< Parent interaction ID.
         bool is_cathode_crosser;                     //!< Whether the particle is a cathode-crosser.
         bool is_contained;                           //!< Whether the particle is contained.
         bool is_primary;                             //!< Whether the particle is a primary particle.
         //bool is_principal_match;                   //!< Whether the particle is the principal match.
-        bool is_valid;                               //!< (???) Whether the particle is valid.
-        double ke;                                   //!< (???) [MeV] Kinetic energy.
-        std::array<float, 3> last_step;              //!< (???) Last step of the particle.
+        bool is_valid;                               //!< (Whether the particle passes thresholds and counts towards topology.
+        double ke;                                   //!< [MeV] Kinetic energy according to assumed best energy estimator (CSDA, calorimetric, or MCS).
+        std::array<float, 3> last_step;              //!< [cm] Coordinates of the last step of the particle.
         double length;                               //!< [cm] Length of the particle.
-        //double length_tng;                           //!< [cm] Length of the particle (true-nonghost).
+        //double length_tng;                         //!< [cm] Length of the particle (true-nonghost).
         BufferView<int64_t> match_ids;               //!< Match ID.
         BufferView<float> match_overlaps;            //!< Match overlap.
         bool is_matched;                             //!< Whether the particle is matched.
@@ -67,7 +67,7 @@ namespace dlp::types
         int64_t nu_id;                               //!< Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).
         //int64_t num_fragments;                     //!< Number of fragments comprising the particle.
         int64_t num_voxels;                          //!< Number of voxels comprising the particle.
-        float p;                                    //!< [MeV/c] Momentum magnitude.
+        float p;                                     //!< [MeV/c] Momentum magnitude.
         char * parent_creation_process;              //!< Geant4 creation process of the parent particle.
         int64_t parent_id;                           //!< Parent particle ID.
         int64_t parent_pdg_code;                     //!< PDG code of the parent particle.

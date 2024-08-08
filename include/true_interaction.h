@@ -33,7 +33,7 @@ namespace dlp::types
         double flash_total_pe;                       //!< [p.e.] Total PE of the matched flash.
         bool is_flash_matched;                       //!< Whether the flash is matched to the interaction.
         int64_t id;                                  //!< Interaction ID.
-        BufferView<int64_t> index;                   //!< (???)
+        BufferView<int64_t> index;                   //!< List of coordinate indices that comprise the interaction.
         bool is_cathode_crosser;                     //!< Whether the interaction is a cathode-crosser.
         bool is_contained;                           //!< Whether the interaction is contained.
         bool is_fiducial;                            //!< Whether the interaction has an interaction in the fiducial volume.
