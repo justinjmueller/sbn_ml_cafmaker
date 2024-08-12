@@ -22,41 +22,26 @@ namespace dlp::types
      */
     struct RecoInteraction
     {
-        double cathode_offset;                       //!< [cm] Distance from the cathode.
-        //int64_t crthit_id;                         //!< CRT hit ID for the matched CRT hit.
-        //uint8_t crthit_matched;                    //!< Whether the CRT hit is matched to the interaction (0 or 1).
-        //int64_t crthit_matched_particle_id;        //!< Particle ID corresponding to the matched CRT hit.
-        double flash_hypo_pe;                        //!< [p.e.] Total PE of the hypothesized flash.
-        int64_t flash_id;                            //!< [p.e.] Flash ID for the matched flash.
-        double flash_time;                           //!< [us] Time of the matched flash.
-        double flash_total_pe;                       //!< [p.e.] Total PE of the matched flash.
-        bool is_flash_matched;                       //!< Whether the flash is matched to the interaction.
-        int64_t id;                                  //!< Interaction ID.
-        BufferView<int64_t> index;                   //!< List of coordinate indices that comprise the interaction.
-        bool is_cathode_crosser;                     //!< Whether the interaction is a cathode-crosser.
-        bool is_contained;                           //!< Whether the interaction is contained.
-        bool is_fiducial;                            //!< Whether the interaction has an interaction in the fiducial volume.
-        //bool is_neutrino;                          //!< Whether the interaction is a neutrino interaction.
-        //bool is_principal_match;                   //!< (???) Whether the interaction is the principal match.
-        BufferView<int64_t> match_ids;               //!< Interaction IDs of the considered matches (correspond to true interactions).
-        BufferView<float> match_overlaps;            //!< Intersection over union (IoU) of the considered matches.
-        bool is_matched;                             //!< Whether the interaction is matched to a true interaction.
-        //int64_t nu_id;                             //!< Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).
-        //int64_t num_particles;                     //!< Number of particles in the interaction.
-        //int64_t num_primaries;                     //!< Number of primary particles in the interaction.
-        //std::array<int64_t, 7> particle_counts;    //!< Number of particles of each type in the interaction.
-        BufferView<int64_t> particle_ids;            //!< Particle IDs in the interaction.
-        //std::array<int64_t, 7> primary_counts;     //!< Number of primary particles of each type in the interaction.
-        //int64_t size;                              //!< [voxels] Size of the interaction.
-        char * topology;                             //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
-        char * units;                                //!< Units in which the position coordinates are expressed.
-        std::array<float, 3> vertex;                 //!< [cm] Vertex of the interaction in detector coordinates.
-        //char * vertex_mode;                        //!< (???)
-        //int64_t volume_id;                         //!< Volume ID of the interaction (0 = East Cryo/SBND, 1 = West Cryo)
-
-        // NEW
-        BufferView<float> module_ids;                //!< Module IDs of the interaction.
-        bool is_truth;                               //!< Whether the interaction is a truth interaction.
+        double cathode_offset;                              //!< Distance from the cathode.
+        double flash_hypo_pe;                               //!< Total PE of the hypothesized flash.
+        int64_t flash_id;                                   //!< Flash ID for the matched flash.
+        double flash_time;                                  //!< Time of the matched flash.
+        double flash_total_pe;                              //!< Total PE of the matched flash.
+        int64_t id;                                         //!< Interaction ID.
+        BufferView<int64_t> index;                          //!< List of coordinate indices that comprise the interaction.
+        bool is_cathode_crosser;                            //!< Whether the interaction is a cathode-crosser.
+        bool is_contained;                                  //!< Whether the interaction is contained.
+        bool is_fiducial;                                   //!< Whether the interaction has an interaction in the fiducial volume.
+        bool is_flash_matched;                              //!< Whether the flash is matched to the interaction.
+        bool is_matched;                                    //!< Whether the interaction is matched to a true interaction.
+        bool is_truth;                                      //!< Whether the interaction is a truth interaction.
+        BufferView<int64_t> match_ids;                      //!< Interaction IDs of the considered matches (correspond to true interactions).
+        BufferView<float> match_overlaps;                   //!< Intersection over union (IoU) of the considered matches.
+        BufferView<float> module_ids;                       //!< Module IDs of the interaction.
+        BufferView<int64_t> particle_ids;                   //!< Particle IDs in the interaction.
+        char * topology;                                    //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
+        char * units;                                       //!< Units in which the position coordinates are expressed.
+        std::array<float, 3> vertex;                        //!< Vertex of the interaction in detector coordinates.
 
         /**
          * @brief Synchronize the BufferView objects.

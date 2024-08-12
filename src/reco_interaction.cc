@@ -44,38 +44,25 @@ namespace dlp::types
 
         // Add the members of the RecoInteraction to the compound type.
         ctype.insertMember("cathode_offset", HOFFSET(RecoInteraction, cathode_offset), H5::PredType::IEEE_F64LE);
-        //ctype.insertMember("crthit_id", HOFFSET(RecoInteraction, crthit_id), H5::PredType::STD_I64LE);
-        //ctype.insertMember("crthit_matched", HOFFSET(RecoInteraction, crthit_matched), H5::PredType::STD_U8LE);
-        //ctype.insertMember("crthit_matched_particle_id", HOFFSET(RecoInteraction, crthit_matched_particle_id), H5::PredType::STD_I64LE);
         ctype.insertMember("flash_hypo_pe", HOFFSET(RecoInteraction, flash_hypo_pe), H5::PredType::IEEE_F64LE);
         ctype.insertMember("flash_id", HOFFSET(RecoInteraction, flash_id), H5::PredType::STD_I64LE);
         ctype.insertMember("flash_time", HOFFSET(RecoInteraction, flash_time), H5::PredType::IEEE_F64LE);
         ctype.insertMember("flash_total_pe", HOFFSET(RecoInteraction, flash_total_pe), H5::PredType::IEEE_F64LE);
-        ctype.insertMember("is_flash_matched", HOFFSET(RecoInteraction, is_flash_matched), H5::PredType::STD_U8LE);
         ctype.insertMember("id", HOFFSET(RecoInteraction, id), H5::PredType::STD_I64LE);
         ctype.insertMember("index", HOFFSET(RecoInteraction, index_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("is_cathode_crosser", HOFFSET(RecoInteraction, is_cathode_crosser), H5::PredType::STD_U8LE);
         ctype.insertMember("is_contained", HOFFSET(RecoInteraction, is_contained), H5::PredType::STD_U8LE);
         ctype.insertMember("is_fiducial", HOFFSET(RecoInteraction, is_fiducial), H5::PredType::STD_U8LE);
-        //ctype.insertMember("is_neutrino", HOFFSET(RecoInteraction, is_neutrino), H5::PredType::STD_U8LE);
-        //ctype.insertMember("is_principal_match", HOFFSET(RecoInteraction, is_principal_match), H5::PredType::STD_U8LE);
+        ctype.insertMember("is_flash_matched", HOFFSET(RecoInteraction, is_flash_matched), H5::PredType::STD_U8LE);
+        ctype.insertMember("is_matched", HOFFSET(RecoInteraction, is_matched), H5::PredType::STD_U8LE);
+        ctype.insertMember("is_truth", HOFFSET(RecoInteraction, is_truth), H5::PredType::STD_U8LE);
         ctype.insertMember("match_ids", HOFFSET(RecoInteraction, match_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("match_overlaps", HOFFSET(RecoInteraction, match_overlaps_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
-        ctype.insertMember("is_matched", HOFFSET(RecoInteraction, is_matched), H5::PredType::STD_U8LE);
-        //ctype.insertMember("nu_id", HOFFSET(RecoInteraction, nu_id), H5::PredType::STD_I64LE);
-        //ctype.insertMember("num_particles", HOFFSET(RecoInteraction, num_particles), H5::PredType::STD_I64LE);
-        //ctype.insertMember("num_primaries", HOFFSET(RecoInteraction, num_primaries), H5::PredType::STD_I64LE);
-        //ctype.insertMember("particle_counts", HOFFSET(RecoInteraction, particle_counts), H5::ArrayType(H5::PredType::STD_I64LE, 1, &std::array<hsize_t, 1>{7}[0]));
+        ctype.insertMember("module_ids", HOFFSET(RecoInteraction, module_ids_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
         ctype.insertMember("particle_ids", HOFFSET(RecoInteraction, particle_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
-        //ctype.insertMember("primary_counts", HOFFSET(RecoInteraction, primary_counts), H5::ArrayType(H5::PredType::STD_I64LE, 1, &std::array<hsize_t, 1>{7}[0]));
-        //ctype.insertMember("size", HOFFSET(RecoInteraction, size), H5::PredType::STD_I64LE);
         ctype.insertMember("topology", HOFFSET(RecoInteraction, topology), string_type);
         ctype.insertMember("units", HOFFSET(RecoInteraction, units), string_type);
         ctype.insertMember("vertex", HOFFSET(RecoInteraction, vertex), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{3}[0]));
-        //ctype.insertMember("vertex_mode", HOFFSET(RecoInteraction, vertex_mode), string_type);
-        //ctype.insertMember("volume_id", HOFFSET(RecoInteraction, volume_id), H5::PredType::STD_I64LE);
-        ctype.insertMember("module_ids", HOFFSET(RecoInteraction, module_ids_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
-        ctype.insertMember("is_truth", HOFFSET(RecoInteraction, is_truth), H5::PredType::STD_U8LE);
 
         return ctype;
     }

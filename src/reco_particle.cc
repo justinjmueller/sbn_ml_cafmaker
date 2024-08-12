@@ -58,7 +58,6 @@ namespace dlp::types
         ctype.insertMember("calo_ke", HOFFSET(RecoParticle, calo_ke), H5::PredType::IEEE_F64LE);
         ctype.insertMember("cathode_offset", HOFFSET(RecoParticle, cathode_offset), H5::PredType::IEEE_F64LE);
         ctype.insertMember("csda_ke", HOFFSET(RecoParticle, csda_ke), H5::PredType::IEEE_F64LE);
-        //ctype.insertMember("depositions_sum", HOFFSET(RecoParticle, depositions_sum), H5::PredType::IEEE_F64LE);
         ctype.insertMember("end_dir", HOFFSET(RecoParticle, end_dir), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("end_point", HOFFSET(RecoParticle, end_point), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("fragment_ids", HOFFSET(RecoParticle, fragment_ids_handle), H5::VarLenType(H5::PredType::STD_I32LE));
@@ -67,32 +66,27 @@ namespace dlp::types
         ctype.insertMember("interaction_id", HOFFSET(RecoParticle, interaction_id), H5::PredType::STD_I64LE);
         ctype.insertMember("is_cathode_crosser", HOFFSET(RecoParticle, is_cathode_crosser), H5::PredType::STD_U8LE);
         ctype.insertMember("is_contained", HOFFSET(RecoParticle, is_contained), H5::PredType::STD_U8LE);
+        ctype.insertMember("is_matched", HOFFSET(RecoParticle, is_matched), H5::PredType::STD_U8LE);
         ctype.insertMember("is_primary", HOFFSET(RecoParticle, is_primary), H5::PredType::STD_U8LE);
-        //ctype.insertMember("is_principal_match", HOFFSET(RecoParticle, is_principal_match), H5::PredType::STD_U8LE);
+        ctype.insertMember("is_truth", HOFFSET(RecoParticle, is_truth), H5::PredType::STD_U8LE);
         ctype.insertMember("is_valid", HOFFSET(RecoParticle, is_valid), H5::PredType::STD_U8LE);
         ctype.insertMember("ke", HOFFSET(RecoParticle, ke), H5::PredType::IEEE_F64LE);
         ctype.insertMember("length", HOFFSET(RecoParticle, length), H5::PredType::IEEE_F64LE);  
         ctype.insertMember("match_ids", HOFFSET(RecoParticle, match_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("match_overlaps", HOFFSET(RecoParticle, match_overlaps_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
-        ctype.insertMember("is_matched", HOFFSET(RecoParticle, is_matched), H5::PredType::STD_U8LE);
         ctype.insertMember("mcs_ke", HOFFSET(RecoParticle, mcs_ke), H5::PredType::IEEE_F64LE);
+        ctype.insertMember("module_ids", HOFFSET(RecoParticle, module_ids_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
         ctype.insertMember("momentum", HOFFSET(RecoParticle, momentum), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{3}[0]));
-        //ctype.insertMember("nu_id", HOFFSET(RecoParticle, nu_id), H5::PredType::STD_I64LE);
-        //ctype.insertMember("num_fragments", HOFFSET(RecoParticle, num_fragments), H5::PredType::STD_I64LE);
+        ctype.insertMember("p", HOFFSET(RecoParticle, p), H5::PredType::IEEE_F32LE);
         ctype.insertMember("pdg_code", HOFFSET(RecoParticle, pdg_code), H5::PredType::STD_I64LE);
         ctype.insertMember("pid", HOFFSET(RecoParticle, pid), pid_enumtype);
         ctype.insertMember("pid_scores", HOFFSET(RecoParticle, pid_scores), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{5}[0]));
+        ctype.insertMember("ppn_ids", HOFFSET(RecoParticle, ppn_ids_handle), H5::VarLenType(H5::PredType::STD_I32LE));
         ctype.insertMember("primary_scores", HOFFSET(RecoParticle, primary_scores), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{2}[0]));
         ctype.insertMember("shape", HOFFSET(RecoParticle, shape), semantic_type_enumtype);
-        //ctype.insertMember("size", HOFFSET(RecoParticle, size), H5::PredType::STD_I64LE);
         ctype.insertMember("start_dir", HOFFSET(RecoParticle, start_dir), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("start_point", HOFFSET(RecoParticle, start_point), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("units", HOFFSET(RecoParticle, units), string_type);
-        //ctype.insertMember("volume_id", HOFFSET(RecoParticle, volume_id), H5::PredType::STD_I64LE);
-        ctype.insertMember("module_ids", HOFFSET(RecoParticle, module_ids_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
-        ctype.insertMember("is_truth", HOFFSET(RecoParticle, is_truth), H5::PredType::STD_U8LE);
-        ctype.insertMember("p", HOFFSET(RecoParticle, p), H5::PredType::IEEE_F32LE);
-        ctype.insertMember("ppn_ids", HOFFSET(RecoParticle, ppn_ids_handle), H5::VarLenType(H5::PredType::STD_I32LE));
 
         return ctype;
     }
