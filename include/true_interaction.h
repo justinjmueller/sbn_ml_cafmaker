@@ -89,14 +89,14 @@ namespace dlp::types
         // NEW
         BufferView<int32_t> module_ids;              //!< Module IDs of the interaction.
         bool is_truth;                               //!< Whether the interaction is a truth interaction.
-        BufferView<int64_t> index_adapt;             //!< (???)
-        BufferView<int64_t> index_g4;                //!< (???)
+        BufferView<int64_t> index_adapt;             //!< Index corresponding to the true interaction in the adapted cluster label points.
+        BufferView<int64_t> index_g4;                //!< Index corresponding to the true interaction in the G4 points (effectively SED).
         int64_t lepton_pdg_code;                     //!< PDG code of the lepton in the interaction.
         double q3;                                   //!< [GeV/c] Momentum transfer (Q3) of the neutrino interaction.
         double lepton_p;                             //!< [GeV/c] Momentum of the lepton in the interaction.
         double lepton_theta;                         //!< [rad] Angle between incoming and outgoing leptons.
         std::array<float, 3> nu_momentum;            //!< [GeV/c] Momentum of the neutrino.
-        int64_t interaction_id;                      //!< (???) Interaction ID.
+        int64_t interaction_id;                      //!< Deprecated.
         double energy_transfer;                      //!< [GeV] Energy transfer of the neutrino interaction.
 
         /**

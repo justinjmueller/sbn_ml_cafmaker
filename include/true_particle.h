@@ -99,15 +99,15 @@ namespace dlp::types
         BufferView<float> module_ids;                //!< Module IDs of the particle.
         bool is_truth;                               //!< Whether the particle is a truth particle.
         int64_t orig_id;                             //!< Original ID of the particle.
-        BufferView<int64_t> index_adapt;             //!< (???)
-        BufferView<int64_t> index_g4;                //!< (???)
-        int64_t gen_id;                              //!< (???) Generator ID of the particle.
-        int64_t interaction_primary;                 //!< (???) 
-        int64_t group_primary;                       //!< (???)
-        BufferView<int64_t> children_id;             //!< (???) ID of the children.
+        BufferView<int64_t> index_adapt;             //!< Index corresponding to the true particle in the adapted cluster label points.
+        BufferView<int64_t> index_g4;                //!< Index corresponding to the true particle in the G4 points (effectively SED).
+        int64_t gen_id;                              //!< Generator ID of the particle (may differ from Geant4 or Supera ID).
+        int64_t interaction_primary;                 //!< Whether the particle is a primary within its interaction (equivalent to is_primary).
+        int64_t group_primary;                       //!< Whether the particle is a primary within its group.
+        BufferView<int64_t> children_id;             //!< List of particle ID of children particles.
         std::array<float, 3> end_momentum;           //!< [MeV/c] Momentum (vector) of the particle at the end.
         float end_p;                                 //!< [MeV/c] Momentum magnitude of the particle at the end.
-        int64_t orig_interaction_id;                 //!< (???) Original interaction ID.
+        int64_t orig_interaction_id;                 //!< Interaction ID as it was stored in the parent LArCV file under the interaction_id attribute.
         std::array<double, 3> truth_end_dir;         //!< Unit direction vector calculated at the truth particle end point.
         
         /**

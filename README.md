@@ -141,10 +141,10 @@ The `event_offset` is used to introduce a offset to the `image_id` attribute of 
 | flash_total_pe                 | double                    | p.e.  | Total PE of the matched flash.                                                             |
 | id                             | int64_t                   | None  | Interaction ID.                                                                            |
 | index                          | std::vector<int64_t>      | None  | List of coordinate indices that comprise the interaction.                                  |
-| index_adapt                    | std::vector<int64_t>      | None  | (???)                                                                                      |
-| index_g4                       | std::vector<int64_t>      | None  | (???)                                                                                      |
+| index_adapt                    | std::vector<int64_t>      | None  | Index corresponding to the true interaction in the adapted cluster label points.           |
+| index_g4                       | std::vector<int64_t>      | None  | Index corresponding to the true interaction in the G4 points (effectively SED).            |
 | inelasticity                   | double                    | None  | Inelasticity of the neutrino interaction.                                                  |
-| interaction_id                 | int64_t                   | None  | (???) Interaction ID.                                                                      |
+| interaction_id                 | int64_t                   | None  | Deprecated.                                                                                |
 | interaction_mode               | InteractionMode           | None  | Interaction mode of the neutrino.                                                          |
 | interaction_type               | InteractionType           | None  | Interaction type of the neutrino.                                                          |
 | is_cathode_crosser             | bool                      | None  | Whether the interaction is a cathode-crosser.                                              |
@@ -195,7 +195,7 @@ The `event_offset` is used to introduce a offset to the `image_id` attribute of 
 | calo_ke                        | double                    | MeV   | Calorimetric kinetic energy.                                                               |
 | cathode_offset                 | double                    | cm    | Distance from the cathode.                                                                 |
 | children_counts                | std::vector<int64_t>      | None  | Number of children of the particle.                                                        |
-| children_id                    | std::vector<int64_t>      | None  | (???) ID of the children.                                                                  |
+| children_id                    | std::vector<int64_t>      | None  | List of particle ID of children particles.                                                 |
 | creation_process               | char *                    | None  | Geant4 creation process of the particle.                                                   |
 | csda_ke                        | double                    | MeV   | Continuous-slowing-down-approximation kinetic energy.                                      |
 | end_dir                        | std::array<float, 3>      | None  | Unit direction vector calculated at the particle end point.                                |
@@ -207,15 +207,15 @@ The `event_offset` is used to introduce a offset to the `image_id` attribute of 
 | energy_init                    | double                    | MeV   | Initial energy of the particle.                                                            |
 | first_step                     | std::array<float, 3>      | cm    | Coordinates of the first step of the particle.                                             |
 | fragment_ids                   | std::vector<int64_t>      | None  | Fragment IDs comprising the particle.                                                      |
-| gen_id                         | int64_t                   | None  | (???) Generator ID of the particle.                                                        |
+| gen_id                         | int64_t                   | None  | Generator ID of the particle (may differ from Geant4 or Supera ID).                        |
 | group_id                       | int64_t                   | None  | Group ID of the particle.                                                                  |
-| group_primary                  | int64_t                   | None  | (???)                                                                                      |
+| group_primary                  | int64_t                   | None  | Whether the particle is a primary within its group.                                        |
 | id                             | int64_t                   | None  | Particle ID.                                                                               |
 | index                          | std::vector<int64_t>      | None  | List of coordinate indices that comprise the particle.                                     |
-| index_adapt                    | std::vector<int64_t>      | None  | (???)                                                                                      |
-| index_g4                       | std::vector<int64_t>      | None  | (???)                                                                                      |
+| index_adapt                    | std::vector<int64_t>      | None  | Index corresponding to the true particle in the adapted cluster label points.              |
+| index_g4                       | std::vector<int64_t>      | None  | Index corresponding to the true particle in the G4 points (effectively SED).               |
 | interaction_id                 | int64_t                   | None  | Parent interaction ID.                                                                     |
-| interaction_primary            | int64_t                   | None  | (???)                                                                                      |
+| interaction_primary            | int64_t                   | None  | Whether the particle is a primary within its interaction (equivalent to is_primary).       |
 | is_cathode_crosser             | bool                      | None  | Whether the particle is a cathode-crosser.                                                 |
 | is_contained                   | bool                      | None  | Whether the particle is contained.                                                         |
 | is_matched                     | bool                      | None  | Whether the particle is matched.                                                           |
@@ -235,7 +235,7 @@ The `event_offset` is used to introduce a offset to the `image_id` attribute of 
 | nu_id                          | int64_t                   | None  | Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).          |
 | num_voxels                     | int64_t                   | None  | Number of voxels comprising the particle.                                                  |
 | orig_id                        | int64_t                   | None  | Original ID of the particle.                                                               |
-| orig_interaction_id            | int64_t                   | None  | (???) Original interaction ID.                                                             |
+| orig_interaction_id            | int64_t                   | None  | Interaction ID as it was stored in the parent LArCV file under the interaction_id attribute. |
 | p                              | float                     | MeV/c | Momentum magnitude.                                                                        |
 | parent_creation_process        | char *                    | None  | Geant4 creation process of the parent particle.                                            |
 | parent_id                      | int64_t                   | None  | Parent particle ID.                                                                        |
