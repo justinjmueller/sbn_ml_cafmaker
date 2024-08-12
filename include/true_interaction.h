@@ -44,30 +44,30 @@ namespace dlp::types
         bool is_matched;                             //!< Whether the interaction is matched to a true interaction.
         double bjorken_x;                            //!< Bjorken x of the neutrino interaction.
         char * creation_process;                     //!< Creation process of the neutrino.
-        CurrentType nu_current_type;                 //!< Current type of the neutrino.
+        CurrentType current_type;                    //!< Current type of the neutrino.
         //double nu_distance_travel;                 //!< [cm] Distance traveled by the neutrino.
         //double nu_energy_deposit;                  //!< [GeV] Energy deposited by the neutrino.
-        double nu_energy_init;                       //!< [GeV] Initial energy of the neutrino.
-        double nu_hadronic_invariant_mass;           //!< [GeV] Hadronic invariant mass of the neutrino.
+        double energy_init;                          //!< [GeV] Initial energy of the neutrino.
+        double hadronic_invariant_mass;              //!< [GeV] Hadronic invariant mass of the neutrino.
         int64_t nu_id;                               //!< Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).
         double inelasticity;                         //!< Inelasticity of the neutrino interaction.
         InteractionMode interaction_mode;            //!< Interaction mode of the neutrino.
         InteractionType interaction_type;            //!< Interaction type of the neutrino.
         int64_t lepton_track_id;                     //!< Track ID of the lepton in the neutrino interaction.
         //int64_t nu_mcst_index;                     //!< MCST index of the neutrino interaction.
-        int64_t nu_mct_index;                        //!< Index of the neutrino in the original MCTruth array.
-        double q2;                                   //!< [GeV] Momentum transfer (Q^2) of the neutrino interaction.
-        double q0;                                   //!< [GeV] Energy transfer (Q0) of the neutrino interaction.
-        int64_t nu_nucleon;                          //!< Nucleon in the neutrino interaction.
+        int64_t mct_index;                           //!< Index of the neutrino in the original MCTruth array.
+        double momentum_transfer;                    //!< [GeV] Momentum transfer (Q^2) of the neutrino interaction.
+        double energy_transfer;                      //!< [GeV] Energy transfer (Q0) of the neutrino interaction.
+        int64_t nucleon;                             //!< Nucleon in the neutrino interaction.
         //int64_t nu_num_voxels;                     //!< Number of voxels in the neutrino interaction.
-        std::array<float, 3> nu_p;                   //!< [GeV] Momentum (vector) of the neutrino.
-        int64_t nu_pdg_code;                         //!< PDG code of the neutrino.
+        std::array<float, 3> momentum;               //!< [GeV] Momentum (vector) of the neutrino.
+        int64_t pdg_code;                            //!< PDG code of the neutrino.
         std::array<float, 3> position;               //!< [cm] Position of the neutrino interaction.
-        int64_t nu_quark;                            //!< Quark in the neutrino interaction.
+        int64_t quark;                               //!< Quark in the neutrino interaction.
         //double nu_t;                               //!< (???)
-        int64_t nu_target;                           //!< Target in the neutrino interaction.
-        double nu_theta;                             //!< [rad] Angle of the neutrino interaction.
-        int64_t nu_track_id;                         //!< Track ID of the neutrino interaction.
+        int64_t target;                              //!< Target in the neutrino interaction.
+        double theta;                                //!< [rad] Angle of the neutrino interaction.
+        int64_t track_id;                            //!< Track ID of the neutrino interaction.
         //int64_t nu_truth_id;                       //!< Truth ID of the neutrino interaction.
         //int64_t num_particles;                     //!< Number of particles in the interaction.
         //int64_t num_primaries;                     //!< Number of primary particles in the interaction.
@@ -80,11 +80,11 @@ namespace dlp::types
         //BufferView<int64_t> truth_particle_counts; //!< Number of particles of each type in the interaction.
         //BufferView<int64_t> truth_primary_counts;  //!< Number of primary particles of each type in the interaction.
         //char * truth_topology;                     //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
-        std::array<float, 3> truth_vertex;           //!< [cm] Vertex of the interaction in detector coordinates (truth).
+        std::array<float, 3> vertex;                 //!< [cm] Vertex of the interaction in detector coordinates (truth).
         char * units;                                //!< Units in which the position coordinates are expressed.
         std::array<float, 3> reco_vertex;            //!< [cm] Vertex of the interaction in detector coordinates (reco).
-        //char * vertex_mode;                          //!< (???)
-        //int64_t volume_id;                           //!< Volume ID of the interaction (0 = East Cryo/SBND, 1 = West Cryo)
+        //char * vertex_mode;                        //!< (???)
+        //int64_t volume_id;                         //!< Volume ID of the interaction (0 = East Cryo/SBND, 1 = West Cryo)
 
         // NEW
         BufferView<int32_t> module_ids;              //!< Module IDs of the interaction.
@@ -92,10 +92,8 @@ namespace dlp::types
         BufferView<int64_t> index_adapt;             //!< Index corresponding to the true interaction in the adapted cluster label points.
         BufferView<int64_t> index_g4;                //!< Index corresponding to the true interaction in the G4 points (effectively SED).
         int64_t lepton_pdg_code;                     //!< PDG code of the lepton in the interaction.
-        double q3;                                   //!< [GeV/c] Momentum transfer (Q3) of the neutrino interaction.
+        double momentum_transfer_mag;                //!< [GeV/c] Momentum transfer (Q3) of the neutrino interaction.
         double lepton_p;                             //!< [GeV/c] Momentum of the lepton in the interaction.
-        double lepton_theta;                         //!< [rad] Angle between incoming and outgoing leptons.
-        std::array<float, 3> nu_momentum;            //!< [GeV/c] Momentum of the neutrino.
         int64_t interaction_id;                      //!< Deprecated.
         double energy_transfer;                      //!< [GeV] Energy transfer of the neutrino interaction.
 
