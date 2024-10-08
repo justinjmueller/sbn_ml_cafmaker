@@ -23,6 +23,7 @@ namespace dlp::types
     struct RecoInteraction
     {
         double cathode_offset;                              //!< Distance from the cathode.
+        float depositions_sum;                              //!< TO DO.
         double flash_hypo_pe;                               //!< Total PE of the hypothesized flash.
         int64_t flash_id;                                   //!< Flash ID for the matched flash.
         double flash_time;                                  //!< Time of the matched flash.
@@ -37,10 +38,15 @@ namespace dlp::types
         bool is_truth;                                      //!< Whether the interaction is a truth interaction.
         BufferView<int64_t> match_ids;                      //!< Interaction IDs of the considered matches (correspond to true interactions).
         BufferView<float> match_overlaps;                   //!< Intersection over union (IoU) of the considered matches.
-        BufferView<float> module_ids;                       //!< Module IDs of the interaction.
+        BufferView<int64_t> module_ids;                     //!< Module IDs of the interaction.
+        int64_t num_particles;                              //!< TO DO.
+        int64_t nu_id;                                      //!< TO DO.
+        std::array<int64_t, 6> particle_counts;             //!< TO DO.
+        std::array<int64_t, 6> primary_particle_counts;     //!< TO DO.
         BufferView<int64_t> particle_ids;                   //!< Particle IDs in the interaction.
-        char * topology;                                    //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
-        char * units;                                       //!< Units in which the position coordinates are expressed.
+        int64_t size;                                       //!< TO DO.
+        std::string topology;                               //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
+        std::string units;                                  //!< Units in which the position coordinates are expressed.
         std::array<float, 3> vertex;                        //!< Vertex of the interaction in detector coordinates.
 
         /**

@@ -80,18 +80,18 @@ namespace dlp::types
         ctype.insertMember("truth_interactions", HOFFSET(Event, truth_interactions), H5::PredType::STD_REF_DSETREG);
         ctype.insertMember("truth_particles", HOFFSET(Event, truth_particles), H5::PredType::STD_REF_DSETREG);
         #endif
-        ctype.insertMember("crthits", HOFFSET(Event, crthits), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("depositions", HOFFSET(Event, depositions), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("depositions_label", HOFFSET(Event, depositions_label), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("depositions_q_label", HOFFSET(Event, depositions_q_label), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("flash_cryoE", HOFFSET(Event, flash_cryoE), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("flash_cryoW", HOFFSET(Event, flash_cryoW), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("info", HOFFSET(Event, info), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("points", HOFFSET(Event, points), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("points_g4", HOFFSET(Event, points_g4), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("points_label", HOFFSET(Event, points_label), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("sources", HOFFSET(Event, sources), H5::PredType::STD_REF_DSETREG);
-        ctype.insertMember("sources_label", HOFFSET(Event, sources_label), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("crthits", HOFFSET(Event, crthits), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("depositions", HOFFSET(Event, depositions), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("depositions_label", HOFFSET(Event, depositions_label), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("depositions_q_label", HOFFSET(Event, depositions_q_label), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("flash_cryoE", HOFFSET(Event, flash_cryoE), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("flash_cryoW", HOFFSET(Event, flash_cryoW), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("info", HOFFSET(Event, info), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("points", HOFFSET(Event, points), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("points_g4", HOFFSET(Event, points_g4), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("points_label", HOFFSET(Event, points_label), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("sources", HOFFSET(Event, sources), H5::PredType::STD_REF_DSETREG);
+        //ctype.insertMember("sources_label", HOFFSET(Event, sources_label), H5::PredType::STD_REF_DSETREG);
 
         return ctype;
     }
