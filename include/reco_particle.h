@@ -25,8 +25,10 @@ namespace dlp::types
         double calo_ke;                                     //!< Calorimetric kinetic energy.
         double cathode_offset;                              //!< Distance from the cathode.
         double csda_ke;                                     //!< Continuous-slowing-down-approximation kinetic energy.
-        std::array<float, 3> end_dir;                       //!< Unit direction vector calculated at the particle end point.
-        std::array<float, 3> end_point;                     //!< End point (vector) of the particle.
+      //std::array<float, 3> end_dir;                       //!< Unit direction vector calculated at the particle end point.
+      float end_dir[3];
+      //std::array<float, 3> end_point;                     //!< End point (vector) of the particle.
+      float end_point[3];
         float depositions_sum;                              //!< TO DO.
         BufferView<int32_t> fragment_ids;                    //!< Fragment IDs comprising the particle.
         int64_t id;                                         //!< Particle ID.
@@ -45,18 +47,23 @@ namespace dlp::types
         BufferView<float> match_overlaps;                   //!< Match overlap.
         double mcs_ke;                                      //!< Multiple Coulomb scattering kinetic energy.
         BufferView<int64_t> module_ids;                     //!< Module IDs of the particle.
-        std::array<float, 3> momentum;                      //!< Momentum (vector) of the particle.
+      //std::array<float, 3> momentum;                      //!< Momentum (vector) of the particle.
+      float momentum[3];
         int64_t num_fragments;                              //!< TO DO.
         float p;                                            //!< Momentum magnitude.
         int64_t pdg_code;                                   //!< PDG code of the particle.
         Pid pid;                                            //!< Particle ID (see Pid enumeration).
-        std::array<float, 6> pid_scores;                    //!< PID softmax scores.
+      //std::array<float, 6> pid_scores;                    //!< PID softmax scores.
+      float pid_scores[6];
         BufferView<int32_t> ppn_ids;                        //!< PPN IDs of the particle.
-        std::array<float, 2> primary_scores;                //!< Primary softmax scores.
+      //std::array<float, 2> primary_scores;                //!< Primary softmax scores.
+      float primary_scores[2];
         Shape shape;                                        //!< Semantic type of the particle (see SemanticType enumeration).
         int64_t size;                                       //!< TO DO.
-        std::array<float, 3> start_dir;                     //!< Unit direction vector calculated at the particle start point.
-        std::array<float, 3> start_point;                   //!< Start point (vector) of the particle.
+      //std::array<float, 3> start_dir;                     //!< Unit direction vector calculated at the particle start point.
+      float start_dir[3];
+      //std::array<float, 3> start_point;                   //!< Start point (vector) of the particle.
+      float start_point[3];
         std::string units;                                  //!< Units in which the position coordinates are expressed.
     
         /**

@@ -23,7 +23,8 @@ namespace dlp::types
     {
         std::string ancestor_creation_process;              //!< Geant4 creation process of the ancestor particle.
         int64_t ancestor_pdg_code;                          //!< PDG code of the ancestor particle.
-        std::array<float, 3> ancestor_position;             //!< Position of the ancestor particle.
+      //std::array<float, 3> ancestor_position;             //!< Position of the ancestor particle.
+      float ancestor_position[3];
         double ancestor_t;                                  //!< Time of the ancestor particle.
         int64_t ancestor_track_id;                          //!< Track ID of the ancestor particle.
         double calo_ke;                                     //!< Calorimetric kinetic energy.
@@ -38,15 +39,20 @@ namespace dlp::types
         int64_t depositions_g4_sum;                         //!< TO DO.
         float depositions_q_sum;                            //!< TO DO.
         double distance_travel;                             //!< TO DO.
-        std::array<float, 3> end_dir;                       //!< Unit direction vector calculated at the particle end point.
-        std::array<float, 3> end_momentum;                  //!< Momentum (vector) of the particle at the end.
+      //std::array<float, 3> end_dir;                       //!< Unit direction vector calculated at the particle end point.
+      float end_dir[3];
+      //std::array<float, 3> end_momentum;                  //!< Momentum (vector) of the particle at the end.
+      float end_momentum[3];
         float end_p;                                        //!< Momentum magnitude of the particle at the end.
-        std::array<float, 3> end_point;                     //!< End point (vector) of the particle.
-        std::array<float, 3> end_position;                  //!< End position (vector) of the particle.
+      //std::array<float, 3> end_point;                     //!< End point (vector) of the particle.
+      float end_point[3];
+      //std::array<float, 3> end_position;                  //!< End position (vector) of the particle.
+      float end_position[3];
         double end_t;                                       //!< TO DO.
         double energy_deposit;                              //!< Energy deposited by the particle.
         double energy_init;                                 //!< Initial energy of the particle.
-        std::array<float, 3> first_step;                    //!< Coordinates of the first step of the particle.
+      //std::array<float, 3> first_step;                    //!< Coordinates of the first step of the particle.
+      float first_step[3];
         BufferView<int32_t> fragment_ids;                   //!< Fragment IDs comprising the particle.
         int64_t gen_id;                                     //!< Generator ID of the particle (may differ from Geant4 or Supera ID).
         int64_t group_id;                                   //!< Group ID of the particle.
@@ -64,7 +70,8 @@ namespace dlp::types
         bool is_truth;                                      //!< Whether the particle is a truth particle.
         bool is_valid;                                      //!< (Whether the particle passes thresholds and counts towards topology.
         double ke;                                          //!< Kinetic energy according to assumed best energy estimator (CSDA, calorimetric, or MCS).
-        std::array<float, 3> last_step;                     //!< Coordinates of the last step of the particle.
+      //std::array<float, 3> last_step;                     //!< Coordinates of the last step of the particle.
+      float last_step[3];
         double length;                                      //!< Length of the particle.
         double mass;                                        //!< TO DO.
         BufferView<int64_t> match_ids;                      //!< Match ID.
@@ -73,7 +80,8 @@ namespace dlp::types
         int64_t mcst_index;                                 //!< MCST index.
         int64_t mct_index;                                  //!< Index of the particle in the original MCTruth array..
         BufferView<int64_t> module_ids;                     //!< Module IDs of the particle.
-        std::array<float, 3> momentum;                      //!< Momentum (vector) of the particle.
+      //std::array<float, 3> momentum;                      //!< Momentum (vector) of the particle.
+      float momentum[3];
         int64_t num_fragments;                              //!< TO DO.
         int64_t nu_id;                                      //!< Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).
         int64_t num_voxels;                                 //!< Number of voxels comprising the particle.
@@ -83,21 +91,27 @@ namespace dlp::types
         std::string parent_creation_process;                //!< Geant4 creation process of the parent particle.
         int64_t parent_id;                                  //!< Parent particle ID.
         int64_t parent_pdg_code;                            //!< PDG code of the parent particle.
-        std::array<float, 3> parent_position;               //!< Position of the parent particle.
+      //std::array<float, 3> parent_position;               //!< Position of the parent particle.
+      float parent_position[3];
         double parent_t;                                    //!< Time of the parent particle.
         int64_t parent_track_id;                            //!< Track ID of the parent particle.
         int64_t pdg_code;                                   //!< PDG code of the particle.
         Pid pid;                                            //!< Particle ID (see Pid enumeration).
-        std::array<float, 3> position;                      //!< Position of the particle.
-        std::array<float, 3> reco_end_dir;                  //!< TO DO.
+      //std::array<float, 3> position;                      //!< Position of the particle.
+      float position[3];
+      //std::array<float, 3> reco_end_dir;                  //!< TO DO.
+      float reco_end_dir[3];
         double reco_length;                                 //!< TO DO.
-        std::array<float, 3> reco_start_dir;                //!< TO DO.
+      //std::array<float, 3> reco_start_dir;                //!< TO DO.
+      float reco_start_dir[3];
         Shape shape;                                        //!< Semantic type of the particle (see SemanticType enumeration).
         int64_t size;                                       //!< TO DO.
         int64_t size_adapt;                                 //!< TO DO.
         int64_t size_g4;                                    //!< TO DO.
-        std::array<float, 3> start_dir;                     //!< Unit direction vector calculated at the particle start point.
-        std::array<float, 3> start_point;                   //!< Start point (vector) of the particle.
+      //std::array<float, 3> start_dir;                     //!< Unit direction vector calculated at the particle start point.
+      float start_dir[3];
+      //std::array<float, 3> start_point;                   //!< Start point (vector) of the particle.
+      float start_point[3];
         double t;                                           //!< Time of the particle.
         int64_t track_id;                                   //!< Track ID of the particle.
         std::string units;                                  //!< Units in which the position coordinates are expressed.

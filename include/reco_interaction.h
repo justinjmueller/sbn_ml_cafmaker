@@ -41,13 +41,16 @@ namespace dlp::types
         BufferView<int64_t> module_ids;                     //!< Module IDs of the interaction.
         int64_t num_particles;                              //!< TO DO.
         int64_t nu_id;                                      //!< TO DO.
-        std::array<int64_t, 6> particle_counts;             //!< TO DO.
-        std::array<int64_t, 6> primary_particle_counts;     //!< TO DO.
+      //std::array<int64_t, 6> particle_counts;             //!< TO DO.
+      int64_t particle_counts[6];
+      //std::array<int64_t, 6> primary_particle_counts;     //!< TO DO.
+      int64_t primary_particle_counts[6];
         BufferView<int64_t> particle_ids;                   //!< Particle IDs in the interaction.
         int64_t size;                                       //!< TO DO.
         std::string topology;                               //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
         std::string units;                                  //!< Units in which the position coordinates are expressed.
-        std::array<float, 3> vertex;                        //!< Vertex of the interaction in detector coordinates.
+      //std::array<float, 3> vertex;                        //!< Vertex of the interaction in detector coordinates.
+      float vertex[3];
 
         /**
          * @brief Synchronize the BufferView objects.

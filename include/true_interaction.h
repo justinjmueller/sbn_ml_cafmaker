@@ -60,20 +60,25 @@ namespace dlp::types
         BufferView<float> match_overlaps;                   //!< Intersection over union (IoU) of the considered matches.
         int64_t mct_index;                                  //!< Index of the neutrino in the original MCTruth array.
         BufferView<int64_t> module_ids;                     //!< Module IDs of the interaction.
-        std::array<float, 3> momentum;                      //!< Momentum (vector) of the neutrino.
+      //std::array<float, 3> momentum;                      //!< Momentum (vector) of the neutrino.
+      float momentum[3];
         double momentum_transfer;                           //!< Momentum transfer (Q^2) of the neutrino interaction.
         double momentum_transfer_mag;                       //!< Momentum transfer (Q3) of the neutrino interaction.
         int64_t num_particles;                              //!< TO DO.
         int64_t nu_id;                                      //!< Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).
         int64_t nucleon;                                    //!< Nucleon in the neutrino interaction.
         int64_t orig_id;                                    //!< Original ID of the interaction.
-        std::array<int64_t, 6> particle_counts;             //!< TO DO.
+      //std::array<int64_t, 6> particle_counts;             //!< TO DO.
+      int64_t particle_counts[6];
         BufferView<int64_t> particle_ids;                   //!< Particle IDs in the interaction.
         int64_t pdg_code;                                   //!< PDG code of the neutrino.
-        std::array<float, 3> position;                      //!< Position of the neutrino interaction.
-        std::array<int64_t, 6> primary_particle_counts;     //!< TO DO.
+      //std::array<float, 3> position;                      //!< Position of the neutrino interaction.
+      float position[3];
+      //std::array<int64_t, 6> primary_particle_counts;     //!< TO DO.
+      int64_t primary_particle_counts[6];
         int64_t quark;                                      //!< Quark in the neutrino interaction.
-        std::array<float, 3> reco_vertex;                   //!< Vertex of the interaction in detector coordinates (reco).
+      //std::array<float, 3> reco_vertex;                   //!< Vertex of the interaction in detector coordinates (reco).
+      float reco_vertex[3];
         int64_t size;                                       //!< TO DO.
         int64_t size_adapt;                                 //!< TO DO.
         int64_t size_g4;                                    //!< TO DO.
@@ -82,7 +87,8 @@ namespace dlp::types
         std::string topology;                               //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
         int64_t track_id;                                   //!< Track ID of the neutrino interaction.
         std::string units;                                  //!< Units in which the position coordinates are expressed.
-        std::array<float, 3> vertex;                        //!< Vertex of the interaction in detector coordinates (truth).
+      //std::array<float, 3> vertex;                        //!< Vertex of the interaction in detector coordinates (truth).
+      float vertex[3];
 
         /**
          * @brief Synchronize the BufferView objects.
