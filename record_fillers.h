@@ -173,8 +173,7 @@ caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset=0)
   std::copy(std::begin(p.end_dir), std::end(p.end_dir), std::begin(part.end_dir));
   //part.end_point = p.end_point;
   std::copy(std::begin(p.end_point), std::end(p.end_point), std::begin(part.end_point));
-  part.fragment_ids = std::vector<int32_t>(p.fragment_ids.begin(), p.fragment_ids.end());
-  
+  part.fragment_ids = std::vector<int32_t>(p.fragment_ids.begin(), p.fragment_ids.end());  
   part.id = p.id;
   part.index = std::vector<int64_t>(p.index.begin(), p.index.end());
   part.interaction_id = p.interaction_id;
