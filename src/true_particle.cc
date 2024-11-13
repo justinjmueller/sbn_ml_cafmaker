@@ -62,12 +62,7 @@ namespace dlp::types
         ctype.insertMember("children_id", HOFFSET(TruthParticle, children_id_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("creation_process", HOFFSET(TruthParticle, creation_process), string_type);
         ctype.insertMember("csda_ke", HOFFSET(TruthParticle, csda_ke), H5::PredType::IEEE_F64LE);
-	ctype.insertMember("depositions_adapt_sum", HOFFSET(TruthParticle, depositions_adapt_sum), H5::PredType::IEEE_F32LE);
-	ctype.insertMember("depositions_adapt_q_sum", HOFFSET(TruthParticle, depositions_adapt_q_sum), H5::PredType::IEEE_F32LE);
-	ctype.insertMember("depositions_g4_sum", HOFFSET(TruthParticle, depositions_g4_sum), H5::PredType::IEEE_F32LE);
-	ctype.insertMember("depositions_sum", HOFFSET(TruthParticle, depositions_sum), H5::PredType::IEEE_F32LE);
-	ctype.insertMember("depositions_q_sum", HOFFSET(TruthParticle, depositions_q_sum), H5::PredType::IEEE_F32LE);	
-	ctype.insertMember("distance_travel", HOFFSET(TruthParticle, distance_travel), H5::PredType::IEEE_F64LE);
+        ctype.insertMember("csda_ke_per_pid", HOFFSET(TruthParticle, csda_ke_per_pid), H5::ArrayType(H5::PredType::IEEE_F64LE,  1, &std::array<hsize_t, 1>{6}[0]));
         ctype.insertMember("end_dir", HOFFSET(TruthParticle, end_dir), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("end_momentum", HOFFSET(TruthParticle, end_momentum), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("end_p", HOFFSET(TruthParticle, end_p), H5::PredType::IEEE_F32LE);
@@ -100,6 +95,7 @@ namespace dlp::types
         ctype.insertMember("match_ids", HOFFSET(TruthParticle, match_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("match_overlaps", HOFFSET(TruthParticle, match_overlaps_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
         ctype.insertMember("mcs_ke", HOFFSET(TruthParticle, mcs_ke), H5::PredType::IEEE_F64LE);
+        ctype.insertMember("mcs_ke_per_pid", HOFFSET(TruthParticle, mcs_ke_per_pid), H5::ArrayType(H5::PredType::IEEE_F64LE,  1, &std::array<hsize_t, 1>{6}[0]));
         ctype.insertMember("mcst_index", HOFFSET(TruthParticle, mcst_index), H5::PredType::STD_I64LE);
         ctype.insertMember("mct_index", HOFFSET(TruthParticle, mct_index), H5::PredType::STD_I64LE);
         ctype.insertMember("module_ids", HOFFSET(TruthParticle, module_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));

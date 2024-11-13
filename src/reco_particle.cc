@@ -59,7 +59,7 @@ namespace dlp::types
         ctype.insertMember("calo_ke", HOFFSET(RecoParticle, calo_ke), H5::PredType::IEEE_F64LE);
         ctype.insertMember("cathode_offset", HOFFSET(RecoParticle, cathode_offset), H5::PredType::IEEE_F64LE);
         ctype.insertMember("csda_ke", HOFFSET(RecoParticle, csda_ke), H5::PredType::IEEE_F64LE);
-	ctype.insertMember("depositions_sum", HOFFSET(RecoParticle, depositions_sum), H5::PredType::IEEE_F32LE);
+        ctype.insertMember("csda_ke_per_pid", HOFFSET(RecoParticle, csda_ke_per_pid), H5::ArrayType(H5::PredType::IEEE_F64LE, 1, &std::array<hsize_t, 1>{6}[0]));
         ctype.insertMember("end_dir", HOFFSET(RecoParticle, end_dir), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("end_point", HOFFSET(RecoParticle, end_point), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("fragment_ids", HOFFSET(RecoParticle, fragment_ids_handle), H5::VarLenType(H5::PredType::STD_I32LE));
@@ -78,6 +78,7 @@ namespace dlp::types
 	ctype.insertMember("mass", HOFFSET(RecoParticle, mass), H5::PredType::IEEE_F64LE);
         ctype.insertMember("match_overlaps", HOFFSET(RecoParticle, match_overlaps_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
         ctype.insertMember("mcs_ke", HOFFSET(RecoParticle, mcs_ke), H5::PredType::IEEE_F64LE);
+        ctype.insertMember("mcs_ke_per_pid", HOFFSET(RecoParticle, mcs_ke_per_pid), H5::ArrayType(H5::PredType::IEEE_F64LE, 1, &std::array<hsize_t, 1>{6}[0]));
         ctype.insertMember("module_ids", HOFFSET(RecoParticle, module_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("momentum", HOFFSET(RecoParticle, momentum), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{3}[0]));
 	ctype.insertMember("num_fragments", HOFFSET(RecoParticle, num_fragments), H5::PredType::STD_I64LE);

@@ -32,6 +32,7 @@ namespace dlp::types
         BufferView<int64_t> children_id;                    //!< List of particle ID of children particles.
         std::string creation_process;                       //!< Geant4 creation process of the particle.
         double csda_ke;                                     //!< Continuous-slowing-down-approximation kinetic energy.
+        double csda_ke_per_pid[6];                          //!< CSDA kinetic energy per PID.
         float depositions_adapt_sum;                        //!< TO DO.
         float depositions_adapt_q_sum;                      //!< TO DO.
         float depositions_sum;                              //!< TO DO.
@@ -70,6 +71,7 @@ namespace dlp::types
         BufferView<int64_t> match_ids;                      //!< Match ID.
         BufferView<float> match_overlaps;                   //!< Match overlap.
         double mcs_ke;                                      //!< Multiple Coulomb scattering kinetic energy.
+        double mcs_ke_per_pid[6];                           //!< MCS kinetic energy per PID.
         int64_t mcst_index;                                 //!< MCST index.
         int64_t mct_index;                                  //!< Index of the particle in the original MCTruth array..
         BufferView<int64_t> module_ids;                     //!< Module IDs of the particle.

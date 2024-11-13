@@ -25,6 +25,7 @@ namespace dlp::types
         double calo_ke;                                     //!< Calorimetric kinetic energy.
         double cathode_offset;                              //!< Distance from the cathode.
         double csda_ke;                                     //!< Continuous-slowing-down-approximation kinetic energy.
+        double csda_ke_per_pid[6];                          //!< CSDA kinetic energy per PID.
         float end_dir[3];                                   //!< Unit direction vector calculated at the particle end point.
         float end_point[3];                                 //!< End point (vector) of the particle.
         float depositions_sum;                              //!< TO DO.
@@ -44,6 +45,7 @@ namespace dlp::types
         BufferView<int64_t> match_ids;                      //!< Match ID.
         BufferView<float> match_overlaps;                   //!< Match overlap.
         double mcs_ke;                                      //!< Multiple Coulomb scattering kinetic energy.
+        double mcs_ke_per_pid[6];                           //!< MCS kinetic energy per PID.
         BufferView<int64_t> module_ids;                     //!< Module IDs of the particle.
         float momentum[3];                                  //!< Momentum (vector) of the particle.
         int64_t num_fragments;                              //!< TO DO.
