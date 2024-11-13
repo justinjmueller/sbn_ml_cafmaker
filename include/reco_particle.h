@@ -52,6 +52,9 @@ namespace dlp::types
         Pid pid;                                            //!< Particle ID (see Pid enumeration).
         float pid_scores[6];                                //!< PID softmax scores.
         BufferView<int32_t> ppn_ids;                        //!< PPN IDs of the particle.
+        float primary_scores[2];                            //!< Primary softmax scores.
+        Shape shape;                                        //!< Semantic type of the particle (see Shape enumeration).
+        int64_t size;                                       //!< Number of voxels comprising the particle.
         float start_dir[3];                                 //!< Unit direction vector calculated at the particle start point.
         float start_point[3];                               //!< Start point (vector) of the particle.
         std::string units;                                  //!< Units in which the position coordinates are expressed.
