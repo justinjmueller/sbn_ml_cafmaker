@@ -41,10 +41,9 @@ namespace dlp::types
         BufferView<float> match_overlaps;                   //!< Intersection over union (IoU) of the considered matches.
         BufferView<int64_t> module_ids;                     //!< Module IDs of the interaction.
         int64_t num_particles;                              //!< TO DO.
-        int64_t nu_id;                                      //!< TO DO.
         int64_t particle_counts[6];                         //!< TO DO.
-        int64_t primary_particle_counts[6];                 //!< TO DO.
         BufferView<int64_t> particle_ids;                   //!< Particle IDs in the interaction.
+        int64_t primary_particle_counts[6];                 //!< TO DO.
         int64_t size;                                       //!< TO DO.
         std::string topology;                               //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
         std::string units;                                  //!< Units in which the position coordinates are expressed.

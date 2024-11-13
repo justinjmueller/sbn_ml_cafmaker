@@ -27,11 +27,11 @@ namespace dlp::types
         double cathode_offset;                              //!< Distance from the cathode.
         std::string creation_process;                       //!< Creation process of the neutrino.
         CurrentType current_type;                           //!< Current type of the neutrino.
-        float depositions_adapt_sum;                        //!< TO DO.
         float depositions_adapt_q_sum;                      //!< TO DO.
+        float depositions_adapt_sum;                        //!< TO DO.
         int64_t depositions_g4_sum;                         //!< TO DO.
-        float depositions_sum;                              //!< TO DO.
         float depositions_q_sum;                            //!< TO DO.
+        float depositions_sum;                              //!< TO DO.
         double energy_init;                                 //!< Initial energy of the neutrino.
         double energy_transfer;                             //!< Energy transfer (Q0) of the neutrino interaction.
         double flash_hypo_pe;                               //!< Total PE of the hypothesized flash.
@@ -64,9 +64,9 @@ namespace dlp::types
         float momentum[3];                                  //!< Momentum (vector) of the neutrino.
         double momentum_transfer;                           //!< Momentum transfer (Q^2) of the neutrino interaction.
         double momentum_transfer_mag;                       //!< Momentum transfer (Q3) of the neutrino interaction.
-        int64_t num_particles;                              //!< TO DO.
         int64_t nu_id;                                      //!< Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).
         int64_t nucleon;                                    //!< Nucleon in the neutrino interaction.
+        int64_t num_particles;                              //!< TO DO.
         int64_t orig_id;                                    //!< Original ID of the interaction.
         int64_t particle_counts[6];                         //!< TO DO.
         BufferView<int64_t> particle_ids;                   //!< Particle IDs in the interaction.

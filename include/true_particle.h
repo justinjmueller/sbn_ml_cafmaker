@@ -33,11 +33,11 @@ namespace dlp::types
         std::string creation_process;                       //!< Geant4 creation process of the particle.
         double csda_ke;                                     //!< Continuous-slowing-down-approximation kinetic energy.
         double csda_ke_per_pid[6];                          //!< CSDA kinetic energy per PID.
-        float depositions_adapt_sum;                        //!< TO DO.
         float depositions_adapt_q_sum;                      //!< TO DO.
-        float depositions_sum;                              //!< TO DO.
+        float depositions_adapt_sum;                        //!< TO DO.
         int64_t depositions_g4_sum;                         //!< TO DO.
         float depositions_q_sum;                            //!< TO DO.
+        float depositions_sum;                              //!< TO DO.
         double distance_travel;                             //!< TO DO.
         float end_dir[3];                                   //!< Unit direction vector calculated at the particle end point.
         float end_momentum[3];                              //!< Momentum (vector) of the particle at the end.
@@ -76,8 +76,8 @@ namespace dlp::types
         int64_t mct_index;                                  //!< Index of the particle in the original MCTruth array..
         BufferView<int64_t> module_ids;                     //!< Module IDs of the particle.
         float momentum[3];                                  //!< Momentum (vector) of the particle.
-        int64_t num_fragments;                              //!< TO DO.
         int64_t nu_id;                                      //!< Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).
+        int64_t num_fragments;                              //!< TO DO.
         int64_t num_voxels;                                 //!< Number of voxels comprising the particle.
         int64_t orig_id;                                    //!< Original ID of the particle.
         int64_t orig_interaction_id;                        //!< Interaction ID as it was stored in the parent LArCV file under the interaction_id attribute.

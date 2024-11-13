@@ -26,9 +26,9 @@ namespace dlp::types
         double cathode_offset;                              //!< Distance from the cathode.
         double csda_ke;                                     //!< Continuous-slowing-down-approximation kinetic energy.
         double csda_ke_per_pid[6];                          //!< CSDA kinetic energy per PID.
+        float depositions_sum;                              //!< TO DO.
         float end_dir[3];                                   //!< Unit direction vector calculated at the particle end point.
         float end_point[3];                                 //!< End point (vector) of the particle.
-        float depositions_sum;                              //!< TO DO.
         BufferView<int32_t> fragment_ids;                   //!< Fragment IDs comprising the particle.
         int64_t id;                                         //!< Particle ID.
         BufferView<int64_t> index;                          //!< List of coordinate indices that comprise the particle.
@@ -60,6 +60,7 @@ namespace dlp::types
         float start_dir[3];                                 //!< Unit direction vector calculated at the particle start point.
         float start_point[3];                               //!< Start point (vector) of the particle.
         std::string units;                                  //!< Units in which the position coordinates are expressed.
+        double vertex_distance;                             //!< Distance from the vertex.
     
         /**
          * @brief Synchronize the BufferView objects.
