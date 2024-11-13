@@ -16,6 +16,9 @@ namespace dlp::types
     */
     void RecoInteraction::SyncVectors()
     {
+        flash_ids.reset(&flash_ids_handle);
+        flash_times.reset(&flash_times_handle);
+        flash_volume_ids.reset(&flash_volume_ids_handle);
         index.reset(&index_handle);
         match_ids.reset(&match_ids_handle);
         match_overlaps.reset(&match_overlaps_handle);
@@ -46,9 +49,10 @@ namespace dlp::types
         ctype.insertMember("cathode_offset", HOFFSET(RecoInteraction, cathode_offset), H5::PredType::IEEE_F64LE);
 	ctype.insertMember("depositions_sum", HOFFSET(RecoInteraction, depositions_sum), H5::PredType::IEEE_F32LE);
         ctype.insertMember("flash_hypo_pe", HOFFSET(RecoInteraction, flash_hypo_pe), H5::PredType::IEEE_F64LE);
-        ctype.insertMember("flash_id", HOFFSET(RecoInteraction, flash_id), H5::PredType::STD_I64LE);
-        ctype.insertMember("flash_time", HOFFSET(RecoInteraction, flash_time), H5::PredType::IEEE_F64LE);
+        ctype.insertMember("flash_ids", HOFFSET(RecoInteraction, flash_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
+        ctype.insertMember("flash_times", HOFFSET(RecoInteraction, flash_times_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
         ctype.insertMember("flash_total_pe", HOFFSET(RecoInteraction, flash_total_pe), H5::PredType::IEEE_F64LE);
+        ctype.insertMember("flash_volume_ids", HOFFSET(RecoInteraction, flash_volume_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("id", HOFFSET(RecoInteraction, id), H5::PredType::STD_I64LE);
         ctype.insertMember("index", HOFFSET(RecoInteraction, index_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("is_cathode_crosser", HOFFSET(RecoInteraction, is_cathode_crosser), H5::PredType::STD_U8LE);

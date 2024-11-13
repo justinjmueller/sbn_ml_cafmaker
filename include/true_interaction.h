@@ -35,9 +35,10 @@ namespace dlp::types
         double energy_init;                                 //!< Initial energy of the neutrino.
         double energy_transfer;                             //!< Energy transfer (Q0) of the neutrino interaction.
         double flash_hypo_pe;                               //!< Total PE of the hypothesized flash.
-        int64_t flash_id;                                   //!< Flash ID for the matched flash.
-        double flash_time;                                  //!< Time of the matched flash.
+        BufferView<int32_t> flash_ids;                      //!< Flash ID for the matched flashes.
+        BufferView<float> flash_times;                      //!< Time of the matched flashes.
         double flash_total_pe;                              //!< Total PE of the matched flash.
+        BufferView<int32_t> flash_volume_ids;               //!< Volume IDs of the matched flashes.
         double hadronic_invariant_mass;                     //!< Hadronic invariant mass of the neutrino.
         int64_t id;                                         //!< Interaction ID.
         BufferView<int64_t> index;                          //!< List of coordinate indices that comprise the interaction.
@@ -95,6 +96,9 @@ namespace dlp::types
         */
         void SyncVectors();
 
+        hvl_t flash_ids_handle;
+        hvl_t flash_times_handle;
+        hvl_t flash_volume_ids_handle;
         hvl_t index_handle;
         hvl_t match_ids_handle;
         hvl_t match_overlaps_handle;

@@ -25,9 +25,10 @@ namespace dlp::types
         double cathode_offset;                              //!< Distance from the cathode.
         float depositions_sum;                              //!< TO DO.
         double flash_hypo_pe;                               //!< Total PE of the hypothesized flash.
-        int64_t flash_id;                                   //!< Flash ID for the matched flash.
-        double flash_time;                                  //!< Time of the matched flash.
+        BufferView<int32_t> flash_ids;                      //!< Flash IDs for the matched flashes.
+        BufferView<float> flash_times;                      //!< Time of the matched flash.
         double flash_total_pe;                              //!< Total PE of the matched flash.
+        BufferView<int32_t> flash_volume_ids;               //!< Volume IDs of the matched flashes.
         int64_t id;                                         //!< Interaction ID.
         BufferView<int64_t> index;                          //!< List of coordinate indices that comprise the interaction.
         bool is_cathode_crosser;                            //!< Whether the interaction is a cathode-crosser.
@@ -60,6 +61,9 @@ namespace dlp::types
         */
         void SyncVectors();
 
+        hvl_t flash_ids_handle;
+        hvl_t flash_times_handle;
+        hvl_t flash_volume_ids_handle;
         hvl_t index_handle;
         hvl_t match_ids_handle;
         hvl_t match_overlaps_handle;
