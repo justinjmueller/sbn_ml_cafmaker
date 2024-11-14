@@ -21,18 +21,18 @@ file(GLOB SPINE_SOURCES src/*.cc)
 # built and linked against.
 add_library(dlp_simulation SHARED ${SPINE_SOURCES})
 target_link_libraries(dlp_simulation PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB)
-target_include_directories(dlp_simulation PRIVATE ${HDF5_INCLUDE_DIR})
+target_include_directories(dlp_simulation PRIVATE ${HDF5_INCLUDE_DIR} ${SBNANAOBJ_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
 target_compile_definitions(dlp_simulation PRIVATE MC_NOT_DATA)
 
 add_library(dlp_data SHARED ${SPINE_SOURCES})
 target_link_libraries(dlp_data PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB)
-target_include_directories(dlp_data PRIVATE ${HDF5_INCLUDE_DIR})
+target_include_directories(dlp_data PRIVATE ${HDF5_INCLUDE_DIR} ${SBNANAOBJ_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
 
 # This executable is meant for testing the HDF5 parsing capabilities of the
 # library. It simply connects to the input file and attempts to read the
 # contents of the first/passed event.
 add_executable(test_hdf5 test_hdf5.cc)
-target_link_libraries(test_hdf5 PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB dlp_simulation)
+target_link_libraries(test_hdf5 PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB dlp_simulation ${sbnanaobj_LIBRARY_DIRS}/libsbnanaobj_StandardRecord.so ${ROOT_LIBRARIES})
 target_include_directories(test_hdf5 PRIVATE ${HDF5_INCLUDE_DIR})
 target_compile_definitions(test_hdf5 PRIVATE MC_NOT_DATA REMOVE_THIS)
 
