@@ -32,7 +32,6 @@ namespace dlp::types
     {
         // Set the size of the compound type to the size of the RunInfo.
         H5::CompType ctype(sizeof(RunInfo));
-        std::cout << "Refactored RunInfo loaded." << std::endl;
 
         // Add the members of the RunInfo to the compound type.
         ctype.insertMember("run", HOFFSET(RunInfo, run), H5::PredType::STD_I64LE);

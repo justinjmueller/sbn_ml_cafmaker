@@ -39,18 +39,7 @@ namespace dlp::types
         hdset_reg_ref_t truth_interactions;
         hdset_reg_ref_t truth_particles;
         #endif
-        //hdset_reg_ref_t crthits;
-        //hdset_reg_ref_t depositions;
-        //hdset_reg_ref_t depositions_label;
-        //hdset_reg_ref_t depositions_q_label;
-        //hdset_reg_ref_t flash_cryoE;
-        //hdset_reg_ref_t flash_cryoW;
-        //hdset_reg_ref_t info;
-        //hdset_reg_ref_t points;
-        //hdset_reg_ref_t points_g4;
-        //hdset_reg_ref_t points_label;
-        //hdset_reg_ref_t sources;
-        //hdset_reg_ref_t sources_label;
+        
         /**
          * @brief Synchronize the BufferView objects.
          * 

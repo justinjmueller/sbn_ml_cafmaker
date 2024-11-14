@@ -40,7 +40,6 @@ namespace dlp::types
     {
         // Set the size of the compound type to the size of the TruthParticle.
         H5::CompType ctype(sizeof(TruthParticle));
-        std::cout << "Refactored TruthParticle loaded." << std::endl;
 
         // Create a string type for the string fields in the TruthParticle.
         H5::StrType string_type(H5::PredType::C_S1, H5T_VARIABLE);

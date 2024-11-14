@@ -44,7 +44,6 @@ namespace dlp::types
     {
         // Set the size of the compound type to the size of the RecoParticle.
         H5::CompType ctype(sizeof(RecoParticle));
-        std::cout << "Refactored RecoParticle loaded." << std::endl;
 	
         // Create a string type for the string fields in the RecoParticle.
         H5::StrType string_type(H5::PredType::C_S1, H5T_VARIABLE);
