@@ -26,7 +26,7 @@ namespace dlp::types
         float depositions_sum;                              //!< TO DO.
         double flash_hypo_pe;                               //!< Total PE of the hypothesized flash.
         BufferView<int32_t> flash_ids;                      //!< Flash IDs for the matched flashes.
-        BufferView<float> flash_times;                      //!< Time of the matched flash.
+        BufferView<float> flash_times;                      //!< Time of the matched flashes
         double flash_total_pe;                              //!< Total PE of the matched flash.
         BufferView<int32_t> flash_volume_ids;               //!< Volume IDs of the matched flashes.
         int64_t id;                                         //!< Interaction ID.
