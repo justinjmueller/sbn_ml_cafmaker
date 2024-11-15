@@ -32,6 +32,7 @@ namespace dlp::types
         int64_t depositions_g4_sum;                         //!< TO DO.
         float depositions_q_sum;                            //!< TO DO.
         float depositions_sum;                              //!< TO DO.
+        double distance_travel;                             //!< Distance traveled by the neutrino from production to the interaction.
         double energy_init;                                 //!< Initial energy of the neutrino.
         double energy_transfer;                             //!< Energy transfer (Q0) of the neutrino interaction.
         double flash_hypo_pe;                               //!< Total PE of the hypothesized flash.
@@ -41,9 +42,6 @@ namespace dlp::types
         BufferView<int32_t> flash_volume_ids;               //!< Volume IDs of the matched flashes.
         double hadronic_invariant_mass;                     //!< Hadronic invariant mass of the neutrino.
         int64_t id;                                         //!< Interaction ID.
-        BufferView<int64_t> index;                          //!< List of coordinate indices that comprise the interaction.
-        BufferView<int64_t> index_adapt;                    //!< Index corresponding to the true interaction in the adapted cluster label points.
-        BufferView<int64_t> index_g4;                       //!< Index corresponding to the true interaction in the G4 points (effectively SED).
         double inelasticity;                                //!< Inelasticity of the neutrino interaction.
         int64_t interaction_id;                             //!< Deprecated.
         InteractionMode interaction_mode;                   //!< Interaction mode of the neutrino.
@@ -99,13 +97,10 @@ namespace dlp::types
         hvl_t flash_ids_handle;
         hvl_t flash_times_handle;
         hvl_t flash_volume_ids_handle;
-        hvl_t index_handle;
         hvl_t match_ids_handle;
         hvl_t match_overlaps_handle;
         hvl_t particle_ids_handle;
         hvl_t module_ids_handle;
-        hvl_t index_adapt_handle;
-        hvl_t index_g4_handle;
     };
 
     /**

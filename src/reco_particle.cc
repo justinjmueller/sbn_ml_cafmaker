@@ -89,6 +89,7 @@ namespace dlp::types
         ctype.insertMember("ppn_ids", HOFFSET(RecoParticle, ppn_ids_handle), H5::VarLenType(H5::PredType::STD_I32LE));
         ctype.insertMember("primary_scores", HOFFSET(RecoParticle, primary_scores), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{2}[0]));
         ctype.insertMember("shape", HOFFSET(RecoParticle, shape), semantic_type_enumtype);
+        ctype.insertMember("shower_split_angle", HOFFSET(RecoParticle, shower_split_angle), H5::PredType::IEEE_F64LE);
 	    ctype.insertMember("size", HOFFSET(RecoParticle, size), H5::PredType::STD_I64LE);
         ctype.insertMember("start_dir", HOFFSET(RecoParticle, start_dir), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("start_point", HOFFSET(RecoParticle, start_point), H5::ArrayType(H5::PredType::IEEE_F32LE, 1, &std::array<hsize_t, 1>{3}[0]));

@@ -53,9 +53,6 @@ namespace dlp::types
         int64_t group_id;                                   //!< Group ID of the particle.
         int64_t group_primary;                              //!< Whether the particle is a primary within its group.
         int64_t id;                                         //!< Particle ID.
-        BufferView<int64_t> index;                          //!< List of coordinate indices that comprise the particle.
-        BufferView<int64_t> index_adapt;                    //!< Index corresponding to the true particle in the adapted cluster label points.
-        BufferView<int64_t> index_g4;                       //!< Index corresponding to the true particle in the G4 points (effectively SED).
         int64_t interaction_id;                             //!< Parent interaction ID.
         int64_t interaction_primary;                        //!< Whether the particle is a primary within its interaction (equivalent to is_primary).
         bool is_cathode_crosser;                            //!< Whether the particle is a cathode-crosser.
@@ -92,7 +89,9 @@ namespace dlp::types
         Pid pid;                                            //!< Particle ID (see Pid enumeration).
         float position[3];                                  //!< Position of the particle.
         float reco_end_dir[3];                              //!< TO DO.
+        double reco_ke;                                     //!< TO DO.
         double reco_length;                                 //!< TO DO.
+        float reco_momentum[3];                             //!< TO DO.
         float reco_start_dir[3];                            //!< TO DO.
         Shape shape;                                        //!< Semantic type of the particle (see SemanticType enumeration).
         int64_t size;                                       //!< TO DO.
@@ -117,12 +116,9 @@ namespace dlp::types
 
         hvl_t children_counts_handle;
         hvl_t fragment_ids_handle;
-        hvl_t index_handle;
         hvl_t match_ids_handle;
         hvl_t match_overlaps_handle;
         hvl_t module_ids_handle;
-        hvl_t index_adapt_handle;
-        hvl_t index_g4_handle;
         hvl_t children_id_handle;
     };
     /**

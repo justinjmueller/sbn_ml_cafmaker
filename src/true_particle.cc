@@ -18,12 +18,9 @@ namespace dlp::types
     {
         children_counts.reset(&children_counts_handle);
         fragment_ids.reset(&fragment_ids_handle);
-        index.reset(&index_handle);
         match_ids.reset(&match_ids_handle);
         match_overlaps.reset(&match_overlaps_handle);
         module_ids.reset(&module_ids_handle);
-        index_adapt.reset(&index_adapt_handle);
-        index_g4.reset(&index_g4_handle);
         children_id.reset(&children_id_handle);
     }
 
@@ -82,9 +79,6 @@ namespace dlp::types
         ctype.insertMember("group_id", HOFFSET(TruthParticle, group_id), H5::PredType::STD_I64LE);
         ctype.insertMember("group_primary", HOFFSET(TruthParticle, group_primary), H5::PredType::STD_I64LE);
         ctype.insertMember("id", HOFFSET(TruthParticle, id), H5::PredType::STD_I64LE);
-        ctype.insertMember("index", HOFFSET(TruthParticle, index_handle), H5::VarLenType(H5::PredType::STD_I64LE));
-        ctype.insertMember("index_adapt", HOFFSET(TruthParticle, index_adapt_handle), H5::VarLenType(H5::PredType::STD_I64LE));
-        ctype.insertMember("index_g4", HOFFSET(TruthParticle, index_g4_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("interaction_id", HOFFSET(TruthParticle, interaction_id), H5::PredType::STD_I64LE);
         ctype.insertMember("interaction_primary", HOFFSET(TruthParticle, interaction_primary), H5::PredType::STD_I64LE);
         ctype.insertMember("is_cathode_crosser", HOFFSET(TruthParticle, is_cathode_crosser), H5::PredType::STD_U8LE);
@@ -121,7 +115,9 @@ namespace dlp::types
         ctype.insertMember("pid", HOFFSET(TruthParticle, pid), pid_enumtype);
         ctype.insertMember("position", HOFFSET(TruthParticle, position), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("reco_end_dir", HOFFSET(TruthParticle, reco_end_dir), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));
+        ctype.insertMember("reco_ke", HOFFSET(TruthParticle, reco_ke), H5::PredType::IEEE_F64LE);
         ctype.insertMember("reco_length", HOFFSET(TruthParticle, reco_length), H5::PredType::IEEE_F64LE);
+        ctype.insertMember("reco_momentum", HOFFSET(TruthParticle, reco_momentum), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("reco_start_dir", HOFFSET(TruthParticle, reco_start_dir), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));
         ctype.insertMember("shape", HOFFSET(TruthParticle, shape), semantic_type_enumtype);	
         ctype.insertMember("size", HOFFSET(TruthParticle, size), H5::PredType::STD_I64LE);

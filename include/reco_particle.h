@@ -31,7 +31,6 @@ namespace dlp::types
         float end_point[3];                                 //!< End point (vector) of the particle.
         BufferView<int32_t> fragment_ids;                   //!< Fragment IDs comprising the particle.
         int64_t id;                                         //!< Particle ID.
-        BufferView<int64_t> index;                          //!< List of coordinate indices that comprise the particle.
         int64_t interaction_id;                             //!< Parent interaction ID.
         bool is_cathode_crosser;                            //!< Whether the particle is a cathode-crosser.
         bool is_contained;                                  //!< Whether the particle is contained.
@@ -56,6 +55,7 @@ namespace dlp::types
         BufferView<int32_t> ppn_ids;                        //!< PPN IDs of the particle.
         float primary_scores[2];                            //!< Primary softmax scores.
         Shape shape;                                        //!< Semantic type of the particle (see Shape enumeration).
+        double shower_split_angle;                          //!< TO DO.
         int64_t size;                                       //!< Number of voxels comprising the particle.
         float start_dir[3];                                 //!< Unit direction vector calculated at the particle start point.
         float start_point[3];                               //!< Start point (vector) of the particle.
