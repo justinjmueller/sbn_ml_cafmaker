@@ -10,6 +10,7 @@ def main(filename, dataset=None):
                 print(key)
         else:
             res = {}
+            count = -1
             for i in f[dataset].dtype.descr:
                 if type(i[1]) == str and i[1] in type_map.keys():
                     res[i[0]] = type_map[i[1]]
@@ -18,7 +19,9 @@ def main(filename, dataset=None):
                 else:
                     res[i[0]] = i[1]
             for key in sorted(res):
+                count += 1
                 print(f'{key:<20}: {res[key]}')
+            print(f'\n{count} attributes found.')
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Print attributes of an HDF5 file or dataset')
