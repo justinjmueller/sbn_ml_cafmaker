@@ -26,9 +26,6 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64
     p.children_counts.reset(&p.children_counts_handle);
     p.children_id.reset(&p.children_id_handle);
     p.fragment_ids.reset(&p.fragment_ids_handle);
-    p.index.reset(&p.index_handle);
-    p.index_adapt.reset(&p.index_adapt_handle);
-    p.index_g4.reset(&p.index_g4_handle);
     p.match_ids.reset(&p.match_ids_handle);
     p.match_overlaps.reset(&p.match_overlaps_handle);
     p.module_ids.reset(&p.module_ids_handle);
@@ -66,9 +63,6 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64
     part.group_id = p.group_id;
     part.group_primary = p.group_primary;
     part.id = p.id;
-    part.index = std::vector<int64_t>(p.index.begin(), p.index.end());
-    part.index_adapt = std::vector<int64_t>(p.index_adapt.begin(), p.index_adapt.end());
-    part.index_g4 = std::vector<int64_t>(p.index_g4.begin(), p.index_g4.end());
     part.interaction_id = p.interaction_id;
     part.interaction_primary = p.interaction_primary;
     part.is_cathode_crosser = p.is_cathode_crosser;
@@ -105,7 +99,9 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64
     part.pid = (int64_t)p.pid;
     std::copy(std::begin(p.position), std::end(p.position), std::begin(part.position));
     std::copy(std::begin(p.reco_end_dir), std::end(p.reco_end_dir), std::begin(part.reco_end_dir));
+    part.reco_ke = p.reco_ke;
     part.reco_length = p.reco_length;
+    std::copy(std::begin(p.reco_momentum), std::end(p.reco_momentum), std::begin(part.reco_momentum));
     std::copy(std::begin(p.reco_start_dir), std::end(p.reco_start_dir), std::begin(part.reco_start_dir));
     part.shape = (int64_t)p.shape;
     part.size = p.size;
@@ -123,7 +119,6 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64
 caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset)
 {
     p.fragment_ids.reset(&p.fragment_ids_handle);
-    p.index.reset(&p.index_handle);
     p.match_ids.reset(&p.match_ids_handle);
     p.match_overlaps.reset(&p.match_overlaps_handle);
     p.module_ids.reset(&p.module_ids_handle);
@@ -139,7 +134,6 @@ caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset)
     std::copy(std::begin(p.end_point), std::end(p.end_point), std::begin(part.end_point));
     part.fragment_ids = std::vector<int32_t>(p.fragment_ids.begin(), p.fragment_ids.end());  
     part.id = p.id;
-    part.index = std::vector<int64_t>(p.index.begin(), p.index.end());
     part.interaction_id = p.interaction_id;
     part.is_cathode_crosser = p.is_cathode_crosser;
     part.is_contained = p.is_contained;
@@ -164,6 +158,7 @@ caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset)
     part.ppn_ids = std::vector<int32_t>(p.ppn_ids.begin(), p.ppn_ids.end());
     std::copy(std::begin(p.primary_scores), std::end(p.primary_scores), std::begin(part.primary_scores));
     part.shape = (int64_t)p.shape;
+    part.shower_split_angle = p.shower_split_angle;
     part.size = p.size;
     std::copy(std::begin(p.start_dir), std::end(p.start_dir), std::begin(part.start_dir));
     std::copy(std::begin(p.start_point), std::end(p.start_point), std::begin(part.start_point));
@@ -178,12 +173,9 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
     in.flash_ids.reset(&in.flash_ids_handle);
     in.flash_times.reset(&in.flash_times_handle);
     in.flash_volume_ids.reset(&in.flash_volume_ids_handle);
-    in.index.reset(&in.index_handle);
     in.match_ids.reset(&in.match_ids_handle);
     in.match_overlaps.reset(&in.match_overlaps_handle);
     in.module_ids.reset(&in.module_ids_handle);
-    in.index_adapt.reset(&in.index_adapt_handle);
-    in.index_g4.reset(&in.index_g4_handle);
     in.particle_ids.reset(&in.particle_ids_handle);
 
     caf::SRInteractionTruthDLP ret;
@@ -196,6 +188,7 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
     ret.depositions_g4_sum = in.depositions_g4_sum;
     ret.depositions_q_sum = in.depositions_q_sum;
     ret.depositions_sum = in.depositions_sum;
+    ret.distance_travel = in.distance_travel;
     ret.energy_init = in.energy_init;
     ret.energy_transfer = in.energy_transfer;
     ret.flash_hypo_pe = in.flash_hypo_pe;
@@ -205,9 +198,6 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
     ret.flash_volume_ids = std::vector<int64_t>(in.flash_volume_ids.begin(), in.flash_volume_ids.end());
     ret.hadronic_invariant_mass = in.hadronic_invariant_mass;
     ret.id = in.id;
-    ret.index = std::vector<int64_t>(in.index.begin(), in.index.end());
-    ret.index_adapt = std::vector<int64_t>(in.index_adapt.begin(), in.index_adapt.end());
-    ret.index_g4 = std::vector<int64_t>(in.index_g4.begin(), in.index_g4.end());
     ret.inelasticity = in.inelasticity;
     ret.interaction_id = in.interaction_id;
     ret.interaction_mode = (int64_t)in.interaction_mode;
@@ -259,7 +249,6 @@ caf::SRInteractionDLP fill_interaction(dlp::types::RecoInteraction &in, std::vec
     in.flash_ids.reset(&in.flash_ids_handle);
     in.flash_times.reset(&in.flash_times_handle);
     in.flash_volume_ids.reset(&in.flash_volume_ids_handle);
-    in.index.reset(&in.index_handle);
     in.match_ids.reset(&in.match_ids_handle);
     in.match_overlaps.reset(&in.match_overlaps_handle);
     in.module_ids.reset(&in.module_ids_handle);
@@ -274,7 +263,6 @@ caf::SRInteractionDLP fill_interaction(dlp::types::RecoInteraction &in, std::vec
     ret.flash_total_pe = in.flash_total_pe;
     ret.flash_volume_ids = std::vector<int64_t>(in.flash_volume_ids.begin(), in.flash_volume_ids.end());
     ret.id = in.id;
-    ret.index = std::vector<int64_t>(in.index.begin(), in.index.end());
     ret.is_cathode_crosser = in.is_cathode_crosser;
     ret.is_contained = in.is_contained;
     ret.is_fiducial = in.is_fiducial;
