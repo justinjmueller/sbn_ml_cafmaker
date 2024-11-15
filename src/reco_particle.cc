@@ -24,7 +24,6 @@ namespace dlp::types
     void RecoParticle::SyncVectors()
     {
         fragment_ids.reset(&fragment_ids_handle);
-        index.reset(&index_handle);
         match_ids.reset(&match_ids_handle);
         match_overlaps.reset(&match_overlaps_handle);
         module_ids.reset(&module_ids_handle);
