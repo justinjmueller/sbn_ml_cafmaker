@@ -6,7 +6,8 @@ from tqdm import tqdm
 import subprocess
 import os.path
 
-SUFF = '_spine_cuts_v2_lite_cuts_v2.h5'
+SUFF = '_lite.h5'
+
 EXEC = '/exp/icarus/app/users/mueller/spineprod/cafmaker/spine_cafmaker/build/merge_sources_simulation'
 
 CREATE_DB = """
@@ -15,7 +16,8 @@ larcv_name text NOT NULL PRIMARY KEY,
 parent_name text NOT NULL,
 standard_name text,
 hdf5_name text,
-flat_name text
+flat_name text,
+flat_time integer DEFAULT 0
 );
 """
 
@@ -76,7 +78,7 @@ def main(definition, update, hdf5, flat):
 
     # Find HDF5 files and add them to the table.
     if hdf5 is not None:
-        files = glob(f'{hdf5}/*.h5')
+        files = glob(f'{hdf5}/*{SUFF}')
         print(os.path.basename(files[0])[:-len(SUFF)])
         pbar = tqdm(files)
         pbar.set_description('Inserting HDF5 files')
@@ -87,18 +89,34 @@ def main(definition, update, hdf5, flat):
         conn.commit()
 
     # Produce the flat files.
-    if flat is not None:
+    if flat is not None and hdf5 is not None:
         command(curs, 'SELECT hdf5_name, standard_name FROM dataset WHERE flat_name IS NULL AND hdf5_name IS NOT NULL AND standard_name IS NOT NULL;')
         files = [x for x in curs.fetchall()]
         pbar = tqdm(files)
         pbar.set_description('Producing flat files')
         for f in pbar:
-            hdf5_name = '/pnfs/icarus/persistent/users/mueller/fall2024/nominal_primaryonly/hdf5/' + f[0]
+            hdf5_name = hdf5 + f[0]
             caf_name = samweb.locateFile(f[1])[0]['full_path'].split(':')[1] + '/' + f[1]
             flat_name = flat + f[0][:-len(SUFF)]+'_flat.root'
             subprocess.run([EXEC, './tmp.root', caf_name, hdf5_name], capture_output=False)
             subprocess.run(['flatten_caf', './tmp.root', flat_name], capture_output=True)
-            command(curs, 'UPDATE dataset SET flat_name=? WHERE hdf5_name=?;', (flat_name, f[0]))
+            time = os.path.getmtime(hdf5_name)
+            command(curs, 'UPDATE dataset SET flat_name=?, flat_time=? WHERE hdf5_name=?;', (flat_name, time, f[0]))
+        conn.commit()
+
+        # Check for hdf5 files with modified time stamps newer than the flat files.
+        command(curs, 'SELECT hdf5_name, standard_name, flat_time FROM dataset WHERE hdf5_name IS NOT NULL AND flat_name IS NOT NULL;')
+        files = [(x[0], x[1]) for x in curs.fetchall() if os.path.getmtime(hdf5+x[0]) > x[2]]
+        pbar = tqdm(files)
+        pbar.set_description('Updating flat files')
+        for f in pbar:
+            hdf5_name = hdf5 + f[0]
+            caf_name = samweb.locateFile(f[1])[0]['full_path'].split(':')[1] + '/' + f[1]
+            flat_name = flat + f[0][:-len(SUFF)]+'_flat.root'
+            subprocess.run([EXEC, './tmp.root', caf_name, hdf5_name], capture_output=False)
+            subprocess.run(['flatten_caf', './tmp.root', flat_name], capture_output=True)
+            time = os.path.getmtime(hdf5_name)
+            command(curs, 'UPDATE dataset SET flat_name=?, flat_time=? WHERE hdf5_name=?;', (flat_name, time, f[0]))
         conn.commit()
 
 if __name__ == '__main__':
