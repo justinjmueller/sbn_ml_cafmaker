@@ -98,7 +98,7 @@ def main(definition, update, hdf5, flat):
             hdf5_name = hdf5 + f[0]
             caf_name = samweb.locateFile(f[1])[0]['full_path'].split(':')[1] + '/' + f[1]
             flat_name = flat + f[0][:-len(SUFF)]+'_flat.root'
-            subprocess.run([EXEC, './tmp.root', caf_name, hdf5_name], capture_output=False)
+            subprocess.run([EXEC, './tmp.root', caf_name, hdf5_name], capture_output=True)
             subprocess.run(['flatten_caf', './tmp.root', flat_name], capture_output=True)
             time = os.path.getmtime(hdf5_name)
             command(curs, 'UPDATE dataset SET flat_name=?, flat_time=? WHERE hdf5_name=?;', (flat_name, time, f[0]))
@@ -113,7 +113,7 @@ def main(definition, update, hdf5, flat):
             hdf5_name = hdf5 + f[0]
             caf_name = samweb.locateFile(f[1])[0]['full_path'].split(':')[1] + '/' + f[1]
             flat_name = flat + f[0][:-len(SUFF)]+'_flat.root'
-            subprocess.run([EXEC, './tmp.root', caf_name, hdf5_name], capture_output=False)
+            subprocess.run([EXEC, './tmp.root', caf_name, hdf5_name], capture_output=True)
             subprocess.run(['flatten_caf', './tmp.root', flat_name], capture_output=True)
             time = os.path.getmtime(hdf5_name)
             command(curs, 'UPDATE dataset SET flat_name=?, flat_time=? WHERE hdf5_name=?;', (flat_name, time, f[0]))
