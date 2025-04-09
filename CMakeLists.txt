@@ -66,3 +66,17 @@ target_include_directories(merge_sources_simulation PRIVATE ${HDF5_INCLUDE_DIR} 
 add_executable(merge_sources_data merge_sources.cc)
 target_link_libraries(merge_sources_data PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB dlp_data ${sbnanaobj_LIBRARY_DIRS}/libsbnanaobj_StandardRecord.so ${ROOT_LIBRARIES})
 target_include_directories(merge_sources_data PRIVATE ${HDF5_INCLUDE_DIR} ${SBNANAOBJ_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
+
+# This executable is meant for merging already existing CAFs (holding Pandora
+# reconstruction outputs) with ML reconstructions outputs. This is different
+# from the previous one in that it is meant to be used with one-to-many merging
+# of one CAF file with many HDF5 files. There are two versions available: one
+# for data and one for simulation.
+add_executable(merge_sources_simulation_multi merge_sources_multi.cc)
+target_compile_definitions(merge_sources_simulation_multi PRIVATE MC_NOT_DATA)
+target_link_libraries(merge_sources_simulation_multi PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB dlp_simulation ${sbnanaobj_LIBRARY_DIRS}/libsbnanaobj_StandardRecord.so ${ROOT_LIBRARIES})
+target_include_directories(merge_sources_simulation_multi PRIVATE ${HDF5_INCLUDE_DIR} ${SBNANAOBJ_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
+
+add_executable(merge_sources_data_multi merge_sources_multi.cc)
+target_link_libraries(merge_sources_data_multi PRIVATE ${HDF5_LIBRARIES} ZLIB::ZLIB dlp_data ${sbnanaobj_LIBRARY_DIRS}/libsbnanaobj_StandardRecord.so ${ROOT_LIBRARIES})
+target_include_directories(merge_sources_data_multi PRIVATE ${HDF5_INCLUDE_DIR} ${SBNANAOBJ_INCLUDE_DIRS} ${ROOT_INCLUDE_DIRS})
