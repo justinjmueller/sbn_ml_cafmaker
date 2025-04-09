@@ -17,11 +17,12 @@ namespace dlp::types
     void TruthParticle::SyncVectors()
     {
         children_counts.reset(&children_counts_handle);
+        children_id.reset(&children_id_handle);
         fragment_ids.reset(&fragment_ids_handle);
         match_ids.reset(&match_ids_handle);
         match_overlaps.reset(&match_overlaps_handle);
         module_ids.reset(&module_ids_handle);
-        children_id.reset(&children_id_handle);
+        orig_children_id.reset(&orig_children_id_handle);
     }
 
     /**
@@ -75,8 +76,6 @@ namespace dlp::types
         ctype.insertMember("energy_init", HOFFSET(TruthParticle, energy_init), H5::PredType::IEEE_F64LE);
         ctype.insertMember("first_step", HOFFSET(TruthParticle, first_step), H5::ArrayType(H5::PredType::IEEE_F32LE,  1, &std::array<hsize_t, 1>{3}[0]));	
         ctype.insertMember("fragment_ids", HOFFSET(TruthParticle, fragment_ids_handle), H5::VarLenType(H5::PredType::STD_I32LE));
-        ctype.insertMember("gen_id", HOFFSET(TruthParticle, gen_id), H5::PredType::STD_I64LE);
-        ctype.insertMember("group_id", HOFFSET(TruthParticle, group_id), H5::PredType::STD_I64LE);
         ctype.insertMember("group_primary", HOFFSET(TruthParticle, group_primary), H5::PredType::STD_I64LE);
         ctype.insertMember("id", HOFFSET(TruthParticle, id), H5::PredType::STD_I64LE);
         ctype.insertMember("interaction_id", HOFFSET(TruthParticle, interaction_id), H5::PredType::STD_I64LE);
@@ -102,8 +101,11 @@ namespace dlp::types
         ctype.insertMember("nu_id", HOFFSET(TruthParticle, nu_id), H5::PredType::STD_I64LE);
 	    ctype.insertMember("num_fragments", HOFFSET(TruthParticle, num_fragments), H5::PredType::STD_I64LE);
         ctype.insertMember("num_voxels", HOFFSET(TruthParticle, num_voxels), H5::PredType::STD_I64LE);
+        ctype.insertMember("orig_children_id", HOFFSET(TruthParticle, orig_children_id_handle), H5::VarLenType(H5::PredType::STD_I64LE));
+        ctype.insertMember("orig_group_id", HOFFSET(TruthParticle, orig_group_id), H5::PredType::STD_I64LE);
         ctype.insertMember("orig_id", HOFFSET(TruthParticle, orig_id), H5::PredType::STD_I64LE);
         ctype.insertMember("orig_interaction_id", HOFFSET(TruthParticle, orig_interaction_id), H5::PredType::STD_I64LE);
+        ctype.insertMember("orig_parent_id", HOFFSET(TruthParticle, orig_parent_id), H5::PredType::STD_I64LE);
         ctype.insertMember("p", HOFFSET(TruthParticle, p), H5::PredType::IEEE_F32LE);
         ctype.insertMember("parent_creation_process", HOFFSET(TruthParticle, parent_creation_process), string_type);
         ctype.insertMember("parent_id", HOFFSET(TruthParticle, parent_id), H5::PredType::STD_I64LE);

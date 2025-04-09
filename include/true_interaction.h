@@ -27,16 +27,17 @@ namespace dlp::types
         double cathode_offset;                              //!< Distance from the cathode.
         std::string creation_process;                       //!< Creation process of the neutrino.
         CurrentType current_type;                           //!< Current type of the neutrino.
-        float depositions_adapt_q_sum;                      //!< TO DO.
-        float depositions_adapt_sum;                        //!< TO DO.
-        int64_t depositions_g4_sum;                         //!< TO DO.
-        float depositions_q_sum;                            //!< TO DO.
-        float depositions_sum;                              //!< TO DO.
+        float depositions_adapt_q_sum;                      //!< Total tagged (reco non-ghost) charge deposited [ADC].
+        float depositions_adapt_sum;                        //!< Total tagged (reco non-ghost) energy deposited [MeV].
+        int64_t depositions_g4_sum;                         //!< Total energy deposited energy at the G4 level [MeV].
+        float depositions_q_sum;                            //!< Total tagged (true non-ghost) charge deposited [ADC].
+        float depositions_sum;                              //!< Total tagged (true non-ghost) energy deposited [MeV].
         double distance_travel;                             //!< Distance traveled by the neutrino from production to the interaction.
         double energy_init;                                 //!< Initial energy of the neutrino.
         double energy_transfer;                             //!< Energy transfer (Q0) of the neutrino interaction.
         double flash_hypo_pe;                               //!< Total PE of the hypothesized flash.
         BufferView<int32_t> flash_ids;                      //!< Flash ID for the matched flashes.
+        BufferView<float> flash_scores;                     //!< Flash score for the matched flashes.
         BufferView<float> flash_times;                      //!< Time of the matched flashes.
         double flash_total_pe;                              //!< Total PE of the matched flash.
         BufferView<int32_t> flash_volume_ids;               //!< Volume IDs of the matched flashes.
@@ -64,18 +65,20 @@ namespace dlp::types
         double momentum_transfer_mag;                       //!< Momentum transfer (Q3) of the neutrino interaction.
         int64_t nu_id;                                      //!< Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).
         int64_t nucleon;                                    //!< Nucleon in the neutrino interaction.
-        int64_t num_particles;                              //!< TO DO.
+        int64_t num_particles;                              //!< Number of particles in the interaction.
+        int64_t num_primary_particles;                      //!< Number of primary particles in the interaction.
         int64_t orig_id;                                    //!< Original ID of the interaction.
-        int64_t particle_counts[6];                         //!< TO DO.
+        int64_t particle_counts[6];                         //!< Number of particles of each type in the interaction.
         BufferView<int64_t> particle_ids;                   //!< Particle IDs in the interaction.
         int64_t pdg_code;                                   //!< PDG code of the neutrino.
         float position[3];                                  //!< Position of the neutrino interaction.
-        int64_t primary_particle_counts[6];                 //!< TO DO.
+        int64_t primary_particle_counts[6];                 //!< Number of primary particles of each type in the interaction.
+        BufferView<int64_t> primary_particle_ids;           //!< Particle IDs of the primary particles in the interaction.
         int64_t quark;                                      //!< Quark in the neutrino interaction.
         float reco_vertex[3];                               //!< Vertex of the interaction in detector coordinates (reco).
-        int64_t size;                                       //!< TO DO.
-        int64_t size_adapt;                                 //!< TO DO.
-        int64_t size_g4;                                    //!< TO DO.
+        int64_t size;                                       //!< Number of true non-ghost true-tagged space points.
+        int64_t size_adapt;                                 //!< Number of reco non-ghost true-tagged space points.
+        int64_t size_g4;                                    //!< Number of (rasterized) g4 energy depositions (no detector effects).
         int64_t target;                                     //!< Target in the neutrino interaction.
         double theta;                                       //!< Angle of the neutrino interaction.
         std::string topology;                               //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
@@ -95,12 +98,14 @@ namespace dlp::types
         void SyncVectors();
 
         hvl_t flash_ids_handle;
+        hvl_t flash_scores_handle;
         hvl_t flash_times_handle;
         hvl_t flash_volume_ids_handle;
         hvl_t match_ids_handle;
         hvl_t match_overlaps_handle;
-        hvl_t particle_ids_handle;
         hvl_t module_ids_handle;
+        hvl_t particle_ids_handle;
+        hvl_t primary_particle_ids_handle;
     };
 
     /**

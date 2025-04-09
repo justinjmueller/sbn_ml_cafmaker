@@ -17,11 +17,13 @@ namespace dlp::types
     void RecoInteraction::SyncVectors()
     {
         flash_ids.reset(&flash_ids_handle);
+        flash_scores.reset(&flash_scores_handle);
         flash_times.reset(&flash_times_handle);
         flash_volume_ids.reset(&flash_volume_ids_handle);
         match_ids.reset(&match_ids_handle);
         match_overlaps.reset(&match_overlaps_handle);
         particle_ids.reset(&particle_ids_handle);
+        primary_particle_ids.reset(&primary_particle_ids_handle);
         module_ids.reset(&module_ids_handle);
     }
 
@@ -48,6 +50,7 @@ namespace dlp::types
 	    ctype.insertMember("depositions_sum", HOFFSET(RecoInteraction, depositions_sum), H5::PredType::IEEE_F32LE);
         ctype.insertMember("flash_hypo_pe", HOFFSET(RecoInteraction, flash_hypo_pe), H5::PredType::IEEE_F64LE);
         ctype.insertMember("flash_ids", HOFFSET(RecoInteraction, flash_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
+        ctype.insertMember("flash_scores", HOFFSET(RecoInteraction, flash_scores_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
         ctype.insertMember("flash_times", HOFFSET(RecoInteraction, flash_times_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
         ctype.insertMember("flash_total_pe", HOFFSET(RecoInteraction, flash_total_pe), H5::PredType::IEEE_F64LE);
         ctype.insertMember("flash_volume_ids", HOFFSET(RecoInteraction, flash_volume_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
@@ -62,9 +65,11 @@ namespace dlp::types
         ctype.insertMember("match_overlaps", HOFFSET(RecoInteraction, match_overlaps_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
         ctype.insertMember("module_ids", HOFFSET(RecoInteraction, module_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
 	    ctype.insertMember("num_particles", HOFFSET(RecoInteraction, num_particles), H5::PredType::STD_I64LE);
+        ctype.insertMember("num_primary_particles", HOFFSET(RecoInteraction, num_primary_particles), H5::PredType::STD_I64LE);
 	    ctype.insertMember("particle_counts", HOFFSET(RecoInteraction, particle_counts), H5::ArrayType(H5::PredType::STD_I64LE, 1, &std::array<hsize_t, 1>{6}[0]));
         ctype.insertMember("particle_ids", HOFFSET(RecoInteraction, particle_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
 	    ctype.insertMember("primary_particle_counts", HOFFSET(RecoInteraction, primary_particle_counts), H5::ArrayType(H5::PredType::STD_I64LE, 1, &std::array<hsize_t,1>{6}[0]));
+        ctype.insertMember("primary_particle_ids", HOFFSET(RecoInteraction, primary_particle_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
 	    ctype.insertMember("size", HOFFSET(RecoInteraction, size), H5::PredType::STD_I64LE);
         ctype.insertMember("topology", HOFFSET(RecoInteraction, topology), string_type);
         ctype.insertMember("units", HOFFSET(RecoInteraction, units), string_type);

@@ -23,9 +23,10 @@ namespace dlp::types
     struct RecoInteraction
     {
         double cathode_offset;                              //!< Distance from the cathode.
-        float depositions_sum;                              //!< TO DO.
+        float depositions_sum;                              //!< Total tagged (true non-ghost) energy deposited [MeV].
         double flash_hypo_pe;                               //!< Total PE of the hypothesized flash.
         BufferView<int32_t> flash_ids;                      //!< Flash IDs for the matched flashes.
+        BufferView<float> flash_scores;                     //!< Score of the matched flashes.
         BufferView<float> flash_times;                      //!< Time of the matched flashes
         double flash_total_pe;                              //!< Total PE of the matched flash.
         BufferView<int32_t> flash_volume_ids;               //!< Volume IDs of the matched flashes.
@@ -39,11 +40,13 @@ namespace dlp::types
         BufferView<int64_t> match_ids;                      //!< Interaction IDs of the considered matches (correspond to true interactions).
         BufferView<float> match_overlaps;                   //!< Intersection over union (IoU) of the considered matches.
         BufferView<int64_t> module_ids;                     //!< Module IDs of the interaction.
-        int64_t num_particles;                              //!< TO DO.
-        int64_t particle_counts[6];                         //!< TO DO.
+        int64_t num_particles;                              //!< The number of particles in the interaction.
+        int64_t num_primary_particles;                      //!< The number of primary particles in the interaction.
+        int64_t particle_counts[6];                         //!< The number of particles of each type in the interaction.
         BufferView<int64_t> particle_ids;                   //!< Particle IDs in the interaction.
-        int64_t primary_particle_counts[6];                 //!< TO DO.
-        int64_t size;                                       //!< TO DO.
+        int64_t primary_particle_counts[6];                 //!< The number of primary particles of each type in the interaction.
+        BufferView<int64_t> primary_particle_ids;           //!< Primary particle IDs in the interaction.
+        int64_t size;                                       //!< The size of the interaction (number of voxels).
         std::string topology;                               //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
         std::string units;                                  //!< Units in which the position coordinates are expressed.
         float vertex[3];                                    //!< Vertex of the interaction in detector coordinates.
@@ -60,12 +63,14 @@ namespace dlp::types
         void SyncVectors();
 
         hvl_t flash_ids_handle;
+        hvl_t flash_scores_handle;
         hvl_t flash_times_handle;
         hvl_t flash_volume_ids_handle;
         hvl_t match_ids_handle;
         hvl_t match_overlaps_handle;
-        hvl_t particle_ids_handle;
         hvl_t module_ids_handle;
+        hvl_t particle_ids_handle;
+        hvl_t primary_particle_ids_handle;
     };
 
     /**

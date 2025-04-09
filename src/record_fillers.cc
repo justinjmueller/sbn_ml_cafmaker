@@ -29,6 +29,7 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64
     p.match_ids.reset(&p.match_ids_handle);
     p.match_overlaps.reset(&p.match_overlaps_handle);
     p.module_ids.reset(&p.module_ids_handle);
+    p.orig_children_id.reset(&p.orig_children_id_handle);
 
     caf::SRParticleTruthDLP part;
     part.ancestor_creation_process = p.ancestor_creation_process;
@@ -59,7 +60,6 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64
     part.energy_init = p.energy_init;
     std::copy(std::begin(p.first_step), std::end(p.first_step), std::begin(part.first_step));
     part.fragment_ids = std::vector<int32_t>(p.fragment_ids.begin(), p.fragment_ids.end());
-    part.gen_id = p.gen_id;
     part.group_id = p.group_id;
     part.group_primary = p.group_primary;
     part.id = p.id;
@@ -86,8 +86,11 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64
     part.nu_id = p.nu_id;
     part.num_fragments = p.num_fragments;
     part.num_voxels = p.num_voxels;
+    part.orig_children_id = std::vector<int64_t>(p.orig_children_id.begin(), p.orig_children_id.end());
+    part.orig_group_id = p.orig_group_id;
     part.orig_id = p.orig_id;
     part.orig_interaction_id = p.orig_interaction_id;
+    part.orig_parent_id = p.orig_parent_id;
     part.p = p.p;
     part.parent_creation_process = p.parent_creation_process;
     part.parent_id = p.parent_id;
@@ -125,11 +128,15 @@ caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset)
     p.ppn_ids.reset(&p.ppn_ids_handle);
 
     caf::SRParticleDLP part;
+    part.axial_spread = p.axial_spread;
     part.calo_ke = p.calo_ke;
     part.cathode_offset = p.cathode_offset;
+    std::copy(std::begin(p.chi2_per_pid), std::end(p.chi2_per_pid), std::begin(part.chi2_per_pid));
+    part.chi2_pid = (int64_t)p.chi2_pid;
     part.csda_ke = p.csda_ke;
     std::copy(std::begin(p.csda_ke_per_pid), std::end(p.csda_ke_per_pid), std::begin(part.csda_ke_per_pid));
     part.depositions_sum = p.depositions_sum;
+    part.directional_spread = p.directional_spread;
     std::copy(std::begin(p.end_dir), std::end(p.end_dir), std::begin(part.end_dir));
     std::copy(std::begin(p.end_point), std::end(p.end_point), std::begin(part.end_point));
     part.fragment_ids = std::vector<int32_t>(p.fragment_ids.begin(), p.fragment_ids.end());  
@@ -158,10 +165,11 @@ caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset)
     part.ppn_ids = std::vector<int32_t>(p.ppn_ids.begin(), p.ppn_ids.end());
     std::copy(std::begin(p.primary_scores), std::end(p.primary_scores), std::begin(part.primary_scores));
     part.shape = (int64_t)p.shape;
-    part.shower_split_angle = p.shower_split_angle;
     part.size = p.size;
+    part.start_dedx = p.start_dedx;
     std::copy(std::begin(p.start_dir), std::end(p.start_dir), std::begin(part.start_dir));
     std::copy(std::begin(p.start_point), std::end(p.start_point), std::begin(part.start_point));
+    part.start_straightness = p.start_straightness;
     part.units = p.units;  
     part.vertex_distance = p.vertex_distance;
 
@@ -171,12 +179,14 @@ caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset)
 caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &in, std::vector<caf::SRParticleTruthDLP> &particles, uint64_t offset)
 {
     in.flash_ids.reset(&in.flash_ids_handle);
+    in.flash_scores.reset(&in.flash_scores_handle);
     in.flash_times.reset(&in.flash_times_handle);
     in.flash_volume_ids.reset(&in.flash_volume_ids_handle);
     in.match_ids.reset(&in.match_ids_handle);
     in.match_overlaps.reset(&in.match_overlaps_handle);
     in.module_ids.reset(&in.module_ids_handle);
     in.particle_ids.reset(&in.particle_ids_handle);
+    in.primary_particle_ids.reset(&in.primary_particle_ids_handle);
 
     caf::SRInteractionTruthDLP ret;
     ret.bjorken_x = in.bjorken_x;
@@ -193,6 +203,7 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
     ret.energy_transfer = in.energy_transfer;
     ret.flash_hypo_pe = in.flash_hypo_pe;
     ret.flash_ids = std::vector<int64_t>(in.flash_ids.begin(), in.flash_ids.end());
+    ret.flash_scores = std::vector<float>(in.flash_scores.begin(), in.flash_scores.end());
     ret.flash_times = std::vector<float>(in.flash_times.begin(), in.flash_times.end());
     ret.flash_total_pe = in.flash_total_pe;
     ret.flash_volume_ids = std::vector<int64_t>(in.flash_volume_ids.begin(), in.flash_volume_ids.end());
@@ -221,12 +232,14 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
     ret.nu_id = in.nu_id;
     ret.nucleon = in.nucleon;
     ret.num_particles = in.num_particles;
+    ret.num_primary_particles = in.num_primary_particles;
     ret.orig_id = in.orig_id;
     std::copy(std::begin(in.particle_counts), std::end(in.particle_counts), std::begin(ret.particle_counts));
     ret.particle_ids = std::vector<int64_t>(in.particle_ids.begin(), in.particle_ids.end());
     ret.pdg_code = in.pdg_code;
     std::copy(std::begin(in.position), std::end(in.position), std::begin(ret.position));
     std::copy(std::begin(in.primary_particle_counts), std::end(in.primary_particle_counts), std::begin(ret.primary_particle_counts));
+    ret.primary_particle_ids = std::vector<int64_t>(in.primary_particle_ids.begin(), in.primary_particle_ids.end());
     ret.quark = in.quark;
     std::copy(std::begin(in.reco_vertex), std::end(in.reco_vertex), std::begin(ret.reco_vertex));
     ret.size = in.size;
@@ -247,18 +260,21 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
 caf::SRInteractionDLP fill_interaction(dlp::types::RecoInteraction &in, std::vector<caf::SRParticleDLP> &particles, uint64_t offset)
 {
     in.flash_ids.reset(&in.flash_ids_handle);
+    in.flash_scores.reset(&in.flash_scores_handle);
     in.flash_times.reset(&in.flash_times_handle);
     in.flash_volume_ids.reset(&in.flash_volume_ids_handle);
     in.match_ids.reset(&in.match_ids_handle);
     in.match_overlaps.reset(&in.match_overlaps_handle);
     in.module_ids.reset(&in.module_ids_handle);
     in.particle_ids.reset(&in.particle_ids_handle);
+    in.primary_particle_ids.reset(&in.primary_particle_ids_handle);
 
     caf::SRInteractionDLP ret;
     ret.cathode_offset = in.cathode_offset;
     ret.depositions_sum = in.depositions_sum;
     ret.flash_hypo_pe = in.flash_hypo_pe;
     ret.flash_ids = std::vector<int64_t>(in.flash_ids.begin(), in.flash_ids.end());
+    ret.flash_scores = std::vector<float>(in.flash_scores.begin(), in.flash_scores.end());
     ret.flash_times = std::vector<float>(in.flash_times.begin(), in.flash_times.end());
     ret.flash_total_pe = in.flash_total_pe;
     ret.flash_volume_ids = std::vector<int64_t>(in.flash_volume_ids.begin(), in.flash_volume_ids.end());
@@ -273,9 +289,11 @@ caf::SRInteractionDLP fill_interaction(dlp::types::RecoInteraction &in, std::vec
     ret.match_overlaps = std::vector<float>(in.match_overlaps.begin(), in.match_overlaps.end());
     ret.module_ids = std::vector<int64_t>(in.module_ids.begin(), in.module_ids.end());
     ret.num_particles = in.num_particles;
+    ret.num_primary_particles = in.num_primary_particles;
     std::copy(std::begin(in.particle_counts), std::end(in.particle_counts), std::begin(ret.particle_counts));
     ret.particle_ids = std::vector<int64_t>(in.particle_ids.begin(), in.particle_ids.end());
     std::copy(std::begin(in.primary_particle_counts), std::end(in.primary_particle_counts), std::begin(ret.primary_particle_counts));
+    ret.primary_particle_ids = std::vector<int64_t>(in.primary_particle_ids.begin(), in.primary_particle_ids.end());
     ret.size = in.size;
     ret.topology = in.topology;
     ret.units = in.units;
