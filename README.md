@@ -1,7 +1,7 @@
 # Introduction
 CAF (Common Analysis Framework) files are used in SBN analyses either through the CAFAna framework or through various standalone projects. In either case, they are a common starting point for many analyzers. The standard pathway for making CAFs only includes reconstruction outputs which are available in the artROOT files after the final step of the reconstruction chain.
 
-The `lartpc_mlreco3d` package ([Github](https://github.com/DeepLearnPhysics/lartpc_mlreco3d)) implements an end-to-end reconstruction chain with a machine learning algorithms at the heart of point classification, clustering, and particle identification. The reconstruction chain uses LArCV files as input and produces HDF5 files with the outputs of the reconstruction. This necessarily takes place outside of the LArSoft ecosystem, so to make these reconstruction outputs available for analyzers requires a little extra work.
+The `SPINE` (Scalable Particle Imaging with Neural Embeddings) package ([Github](https://github.com/DeepLearnPhysics/spine)) implements an end-to-end reconstruction chain with a machine learning algorithms at the heart of point classification, clustering, and particle identification. The reconstruction chain uses LArCV files as input and produces HDF5 files with the outputs of the reconstruction. This necessarily takes place outside of the LArSoft ecosystem, so to make these reconstruction outputs available for analyzers requires a little extra work.
 
 # Overview of `sbn_ml_cafmaker`
 The `sbn_ml_cafmaker` package provides code for merging the ML reconstruction outputs into existing CAF files (enforcing event-by-event matching) and for producing standalone CAF files with only ML reconstruction outputs. 
@@ -61,3 +61,193 @@ or
     ./make_standalone_data <output_caf_file> <event_offset> <input_hdf5_file(s)>
 
 The `event_offset` is used to introduce a offset to the `image_id` attribute of interactions and particles. This may be useful in some cases for breaking the degeneracy of `image_id`s in multiple input files. The list of HDF5 input files may be one or longer - the code will loop over the remaining arguments and produce a single output file.
+
+# Variables
+
+<!--
+| Variable Name | Variable Type | Units | Access Path | Description | Link to further Documentation |
+| ------------- | ------------- | ----- | ----------- | ----------- | ----------------------------- |
+-->
+## RecoInteraction
+|         Variable Name          |       Variable Type       | Units |                                        Description                                         |
+| ------------------------------ | ------------------------- | ----- | ------------------------------------------------------------------------------------------ |
+| cathode_offset                 | double                    | None  | Distance from the cathode.                                                                 |
+| flash_hypo_pe                  | double                    | None  | Total PE of the hypothesized flash.                                                        |
+| flash_id                       | int64_t                   | None  | Flash ID for the matched flash.                                                            |
+| flash_time                     | double                    | None  | Time of the matched flash.                                                                 |
+| flash_total_pe                 | double                    | None  | Total PE of the matched flash.                                                             |
+| id                             | int64_t                   | None  | Interaction ID.                                                                            |
+| index                          | std::vector<int64_t>      | None  | List of coordinate indices that comprise the interaction.                                  |
+| is_cathode_crosser             | bool                      | None  | Whether the interaction is a cathode-crosser.                                              |
+| is_contained                   | bool                      | None  | Whether the interaction is contained.                                                      |
+| is_fiducial                    | bool                      | None  | Whether the interaction has an interaction in the fiducial volume.                         |
+| is_flash_matched               | bool                      | None  | Whether the flash is matched to the interaction.                                           |
+| is_matched                     | bool                      | None  | Whether the interaction is matched to a true interaction.                                  |
+| is_truth                       | bool                      | None  | Whether the interaction is a truth interaction.                                            |
+| match_ids                      | std::vector<int64_t>      | None  | Interaction IDs of the considered matches (correspond to true interactions).               |
+| match_overlaps                 | std::vector<float>        | None  | Intersection over union (IoU) of the considered matches.                                   |
+| module_ids                     | std::vector<float>        | None  | Module IDs of the interaction.                                                             |
+| particle_ids                   | std::vector<int64_t>      | None  | Particle IDs in the interaction.                                                           |
+| topology                       | char *                    | None  | Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.              |
+| units                          | char *                    | None  | Units in which the position coordinates are expressed.                                     |
+| vertex                         | std::array<float, 3>      | None  | Vertex of the interaction in detector coordinates.                                         |
+
+## RecoParticle
+|         Variable Name          |       Variable Type       | Units |                                        Description                                         |
+| ------------------------------ | ------------------------- | ----- | ------------------------------------------------------------------------------------------ |
+| calo_ke                        | double                    | None  | Calorimetric kinetic energy.                                                               |
+| cathode_offset                 | double                    | None  | Distance from the cathode.                                                                 |
+| csda_ke                        | double                    | None  | Continuous-slowing-down-approximation kinetic energy.                                      |
+| end_dir                        | std::array<float, 3>      | None  | Unit direction vector calculated at the particle end point.                                |
+| end_point                      | std::array<float, 3>      | None  | End point (vector) of the particle.                                                        |
+| fragment_ids                   | std::vector<int32_t>      | None  | Fragment IDs comprising the particle.                                                      |
+| id                             | int64_t                   | None  | Particle ID.                                                                               |
+| index                          | std::vector<int64_t>      | None  | List of coordinate indices that comprise the particle.                                     |
+| interaction_id                 | int64_t                   | None  | Parent interaction ID.                                                                     |
+| is_cathode_crosser             | bool                      | None  | Whether the particle is a cathode-crosser.                                                 |
+| is_contained                   | bool                      | None  | Whether the particle is contained.                                                         |
+| is_matched                     | bool                      | None  | Whether the particle is matched.                                                           |
+| is_primary                     | bool                      | None  | Whether the particle is a primary particle.                                                |
+| is_truth                       | bool                      | None  | Whether the particle is a truth particle.                                                  |
+| is_valid                       | bool                      | None  | Whether the particle passes thresholds and counts towards topology.                        |
+| ke                             | double                    | None  | Kinetic energy according to assumed best energy estimator (CSDA, calorimetric, or MCS).    |
+| length                         | double                    | None  | Length of the particle.                                                                    |
+| match_ids                      | std::vector<int64_t>      | None  | Match ID.                                                                                  |
+| match_overlaps                 | std::vector<float>        | None  | Match overlap.                                                                             |
+| mcs_ke                         | double                    | None  | Multiple Coulomb scattering kinetic energy.                                                |
+| module_ids                     | std::vector<float>        | None  | Module IDs of the particle.                                                                |
+| momentum                       | std::array<float, 3>      | None  | Momentum (vector) of the particle.                                                         |
+| p                              | float                     | None  | Momentum magnitude.                                                                        |
+| pdg_code                       | int64_t                   | None  | PDG code of the particle.                                                                  |
+| pid                            | Pid                       | None  | Particle ID (see Pid enumeration).                                                         |
+| pid_scores                     | std::array<float, 5>      | None  | PID softmax scores.                                                                        |
+| ppn_ids                        | std::vector<int32_t>      | None  | PPN IDs of the particle.                                                                   |
+| primary_scores                 | std::array<float, 2>      | None  | Primary softmax scores.                                                                    |
+| shape                          | Shape                     | None  | Semantic type of the particle (see SemanticType enumeration).                              |
+| start_dir                      | std::array<float, 3>      | None  | Unit direction vector calculated at the particle start point.                              |
+| start_point                    | std::array<float, 3>      | None  | Start point (vector) of the particle.                                                      |
+| units                          | char *                    | None  | Units in which the position coordinates are expressed.                                     |
+
+## TrueInteraction
+|         Variable Name          |       Variable Type       | Units |                                        Description                                         |
+| ------------------------------ | ------------------------- | ----- | ------------------------------------------------------------------------------------------ |
+| bjorken_x                      | double                    | None  | Bjorken x of the neutrino interaction.                                                     |
+| cathode_offset                 | double                    | None  | Distance from the cathode.                                                                 |
+| creation_process               | char *                    | None  | Creation process of the neutrino.                                                          |
+| current_type                   | CurrentType               | None  | Current type of the neutrino.                                                              |
+| energy_init                    | double                    | None  | Initial energy of the neutrino.                                                            |
+| energy_transfer                | double                    | None  | Energy transfer (Q0) of the neutrino interaction.                                          |
+| flash_hypo_pe                  | double                    | None  | Total PE of the hypothesized flash.                                                        |
+| flash_id                       | int64_t                   | None  | Flash ID for the matched flash.                                                            |
+| flash_time                     | double                    | None  | Time of the matched flash.                                                                 |
+| flash_total_pe                 | double                    | None  | Total PE of the matched flash.                                                             |
+| hadronic_invariant_mass        | double                    | None  | Hadronic invariant mass of the neutrino.                                                   |
+| id                             | int64_t                   | None  | Interaction ID.                                                                            |
+| index                          | std::vector<int64_t>      | None  | List of coordinate indices that comprise the interaction.                                  |
+| index_adapt                    | std::vector<int64_t>      | None  | Index corresponding to the true interaction in the adapted cluster label points.           |
+| index_g4                       | std::vector<int64_t>      | None  | Index corresponding to the true interaction in the G4 points (effectively SED).            |
+| inelasticity                   | double                    | None  | Inelasticity of the neutrino interaction.                                                  |
+| interaction_id                 | int64_t                   | None  | Deprecated.                                                                                |
+| interaction_mode               | InteractionMode           | None  | Interaction mode of the neutrino.                                                          |
+| interaction_type               | InteractionType           | None  | Interaction type of the neutrino.                                                          |
+| is_cathode_crosser             | bool                      | None  | Whether the interaction is a cathode-crosser.                                              |
+| is_contained                   | bool                      | None  | Whether the interaction is contained.                                                      |
+| is_fiducial                    | bool                      | None  | Whether the interaction has an interaction in the fiducial volume.                         |
+| is_flash_matched               | bool                      | None  | Whether the flash is matched to the interaction.                                           |
+| is_matched                     | bool                      | None  | Whether the interaction is matched to a true interaction.                                  |
+| is_truth                       | bool                      | None  | Whether the interaction is a truth interaction.                                            |
+| lepton_p                       | double                    | None  | Momentum of the lepton in the interaction.                                                 |
+| lepton_pdg_code                | int64_t                   | None  | PDG code of the lepton in the interaction.                                                 |
+| lepton_track_id                | int64_t                   | None  | Track ID of the lepton in the neutrino interaction.                                        |
+| match_ids                      | std::vector<int64_t>      | None  | Interaction IDs of the considered matches (correspond to true interactions).               |
+| match_overlaps                 | std::vector<float>        | None  | Intersection over union (IoU) of the considered matches.                                   |
+| mct_index                      | int64_t                   | None  | Index of the neutrino in the original MCTruth array.                                       |
+| module_ids                     | std::vector<int32_t>      | None  | Module IDs of the interaction.                                                             |
+| momentum                       | std::array<float, 3>      | None  | Momentum (vector) of the neutrino.                                                         |
+| momentum_transfer              | double                    | None  | Momentum transfer (Q^2) of the neutrino interaction.                                       |
+| momentum_transfer_mag          | double                    | None  | Momentum transfer (Q3) of the neutrino interaction.                                        |
+| nu_id                          | int64_t                   | None  | Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).          |
+| nucleon                        | int64_t                   | None  | Nucleon in the neutrino interaction.                                                       |
+| orig_id                        | int64_t                   | None  | Original ID of the interaction.                                                            |
+| particle_ids                   | std::vector<int64_t>      | None  | Particle IDs in the interaction.                                                           |
+| pdg_code                       | int64_t                   | None  | PDG code of the neutrino.                                                                  |
+| position                       | std::array<float, 3>      | None  | Position of the neutrino interaction.                                                      |
+| quark                          | int64_t                   | None  | Quark in the neutrino interaction.                                                         |
+| reco_vertex                    | std::array<float, 3>      | None  | Vertex of the interaction in detector coordinates (reco).                                  |
+| target                         | int64_t                   | None  | Target in the neutrino interaction.                                                        |
+| theta                          | double                    | None  | Angle of the neutrino interaction.                                                         |
+| topology                       | char *                    | None  | Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.              |
+| track_id                       | int64_t                   | None  | Track ID of the neutrino interaction.                                                      |
+| units                          | char *                    | None  | Units in which the position coordinates are expressed.                                     |
+| vertex                         | std::array<float, 3>      | None  | Vertex of the interaction in detector coordinates (truth).                                 |
+
+## TrueParticle
+|         Variable Name          |       Variable Type       | Units |                                        Description                                         |
+| ------------------------------ | ------------------------- | ----- | ------------------------------------------------------------------------------------------ |
+| ancestor_creation_process      | char *                    | None  | Geant4 creation process of the ancestor particle.                                          |
+| ancestor_pdg_code              | int64_t                   | None  | PDG code of the ancestor particle.                                                         |
+| ancestor_position              | std::array<float, 3>      | None  | Position of the ancestor particle.                                                         |
+| ancestor_t                     | double                    | None  | Time of the ancestor particle.                                                             |
+| ancestor_track_id              | int64_t                   | None  | Track ID of the ancestor particle.                                                         |
+| calo_ke                        | double                    | None  | Calorimetric kinetic energy.                                                               |
+| cathode_offset                 | double                    | None  | Distance from the cathode.                                                                 |
+| children_counts                | std::vector<int64_t>      | None  | Number of children of the particle.                                                        |
+| children_id                    | std::vector<int64_t>      | None  | List of particle ID of children particles.                                                 |
+| creation_process               | char *                    | None  | Geant4 creation process of the particle.                                                   |
+| csda_ke                        | double                    | None  | Continuous-slowing-down-approximation kinetic energy.                                      |
+| end_dir                        | std::array<float, 3>      | None  | Unit direction vector calculated at the particle end point.                                |
+| end_momentum                   | std::array<float, 3>      | None  | Momentum (vector) of the particle at the end.                                              |
+| end_p                          | float                     | None  | Momentum magnitude of the particle at the end.                                             |
+| end_point                      | std::array<float, 3>      | None  | End point (vector) of the particle.                                                        |
+| end_position                   | std::array<float, 3>      | None  | End position (vector) of the particle.                                                     |
+| energy_deposit                 | double                    | None  | Energy deposited by the particle.                                                          |
+| energy_init                    | double                    | None  | Initial energy of the particle.                                                            |
+| first_step                     | std::array<float, 3>      | None  | Coordinates of the first step of the particle.                                             |
+| fragment_ids                   | std::vector<int64_t>      | None  | Fragment IDs comprising the particle.                                                      |
+| gen_id                         | int64_t                   | None  | Generator ID of the particle (may differ from Geant4 or Supera ID).                        |
+| group_id                       | int64_t                   | None  | Group ID of the particle.                                                                  |
+| group_primary                  | int64_t                   | None  | Whether the particle is a primary within its group.                                        |
+| id                             | int64_t                   | None  | Particle ID.                                                                               |
+| index                          | std::vector<int64_t>      | None  | List of coordinate indices that comprise the particle.                                     |
+| index_adapt                    | std::vector<int64_t>      | None  | Index corresponding to the true particle in the adapted cluster label points.              |
+| index_g4                       | std::vector<int64_t>      | None  | Index corresponding to the true particle in the G4 points (effectively SED).               |
+| interaction_id                 | int64_t                   | None  | Parent interaction ID.                                                                     |
+| interaction_primary            | int64_t                   | None  | Whether the particle is a primary within its interaction (equivalent to is_primary).       |
+| is_cathode_crosser             | bool                      | None  | Whether the particle is a cathode-crosser.                                                 |
+| is_contained                   | bool                      | None  | Whether the particle is contained.                                                         |
+| is_matched                     | bool                      | None  | Whether the particle is matched.                                                           |
+| is_primary                     | bool                      | None  | Whether the particle is a primary particle.                                                |
+| is_truth                       | bool                      | None  | Whether the particle is a truth particle.                                                  |
+| is_valid                       | bool                      | None  | (Whether the particle passes thresholds and counts towards topology.                       |
+| ke                             | double                    | None  | Kinetic energy according to assumed best energy estimator (CSDA, calorimetric, or MCS).    |
+| last_step                      | std::array<float, 3>      | None  | Coordinates of the last step of the particle.                                              |
+| length                         | double                    | None  | Length of the particle.                                                                    |
+| match_ids                      | std::vector<int64_t>      | None  | Match ID.                                                                                  |
+| match_overlaps                 | std::vector<float>        | None  | Match overlap.                                                                             |
+| mcs_ke                         | double                    | None  | Multiple Coulomb scattering kinetic energy.                                                |
+| mcst_index                     | int64_t                   | None  | MCST index.                                                                                |
+| mct_index                      | int64_t                   | None  | Index of the particle in the original MCTruth array..                                      |
+| module_ids                     | std::vector<float>        | None  | Module IDs of the particle.                                                                |
+| momentum                       | std::array<float, 3>      | None  | Momentum (vector) of the particle.                                                         |
+| nu_id                          | int64_t                   | None  | Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).          |
+| num_voxels                     | int64_t                   | None  | Number of voxels comprising the particle.                                                  |
+| orig_id                        | int64_t                   | None  | Original ID of the particle.                                                               |
+| orig_interaction_id            | int64_t                   | None  | Interaction ID as it was stored in the parent LArCV file under the interaction_id attribute. |
+| p                              | float                     | None  | Momentum magnitude.                                                                        |
+| parent_creation_process        | char *                    | None  | Geant4 creation process of the parent particle.                                            |
+| parent_id                      | int64_t                   | None  | Parent particle ID.                                                                        |
+| parent_pdg_code                | int64_t                   | None  | PDG code of the parent particle.                                                           |
+| parent_position                | std::array<float, 3>      | None  | Position of the parent particle.                                                           |
+| parent_t                       | double                    | None  | Time of the parent particle.                                                               |
+| parent_track_id                | int64_t                   | None  | Track ID of the parent particle.                                                           |
+| pdg_code                       | int64_t                   | None  | PDG code of the particle.                                                                  |
+| pid                            | Pid                       | None  | Particle ID (see Pid enumeration).                                                         |
+| position                       | std::array<float, 3>      | None  | Position of the particle.                                                                  |
+| shape                          | Shape                     | None  | Semantic type of the particle (see SemanticType enumeration).                              |
+| start_dir                      | std::array<float, 3>      | None  | Unit direction vector calculated at the particle start point.                              |
+| start_point                    | std::array<float, 3>      | None  | Start point (vector) of the particle.                                                      |
+| t                              | double                    | None  | Time of the particle.                                                                      |
+| track_id                       | int64_t                   | None  | Track ID of the particle.                                                                  |
+| truth_end_dir                  | std::array<double, 3>     | None  | Unit direction vector calculated at the truth particle end point.                          |
+| truth_start_dir                | std::array<double, 3>     | None  | Unit direction vector calculated at the truth particle start point.                        |
+| units                          | char *                    | None  | Units in which the position coordinates are expressed.                                     |
