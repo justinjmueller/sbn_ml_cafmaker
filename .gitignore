@@ -42,3 +42,8 @@ CMakeFiles/*
 CMakeCache.txt
 Makefile
 *.cmake
+
+# Other
+*.csv
+*.yaml
+tools/*
