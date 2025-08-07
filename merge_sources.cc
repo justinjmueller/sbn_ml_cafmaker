@@ -33,9 +33,46 @@
 #include "TDirectoryFile.h"
 #include "TTree.h"
 #include "TH1D.h"
+#include "TKey.h"
 
 typedef std::tuple<size_t, size_t, size_t> index_t;
 
+/**
+ * @brief Copy the key/val products from an event in the CAF file to the output
+ * CAF file.
+ * @details This function is used to copy the key/val products from the
+ * input TDirectory to the output TDirectory. Specifically, this represents
+ * metadata and environment variables that are stored in the input CAF file.
+ * @param output The output TDirectory to copy to.
+ * @param input The input TDirectory to copy from.
+ * @param name The name of the TTree to copy.
+ */
+void copy_keyval_tree(TDirectory * output, TDirectory * input, const char * name)
+{
+    output->cd();
+    if(input)
+    {
+        TDirectory * dir = output->mkdir(input->GetName());
+        dir->cd();
+        TTree * tree = static_cast<TTree *>(input->Get(name));
+        TTree * new_tree = new TTree(name, tree->GetTitle());
+        
+        std::string key, value;
+        std::string * pkey = &key;
+        std::string * pvalue = &value;
+        new_tree->Branch("key", &pkey);
+        new_tree->Branch("value", &pvalue);
+        tree->SetBranchAddress("key", &pkey);
+        tree->SetBranchAddress("value", &pvalue);
+        for(Long64_t i(0); i < tree->GetEntries(); ++i)
+        {
+            tree->GetEntry(i);
+            new_tree->Fill();
+        }
+        new_tree->Write();
+        output->cd();
+    }
+}
 int main(int argc, char const * argv[])
 {
     /**
@@ -159,15 +196,37 @@ int main(int argc, char const * argv[])
      * The order probably doesn't matter, but this maintains the same exact
      * order as in the input CAF file.
      */
-    TDirectoryFile *env = (TDirectoryFile*)input_caf.Get("env");
-    env->Write();
-    TH1D *total_pot = (TH1D*)input_caf.Get("TotalPOT");
+    TDirectoryFile * env = (TDirectoryFile *)input_caf.Get("env");
+    copy_keyval_tree(&output_caf, env, "envtree");
+    TH1D * total_pot = (TH1D*)input_caf.Get("TotalPOT");
     total_pot->Write();
-    TH1D *total_events = (TH1D*)input_caf.Get("TotalEvents");
+    TH1D * total_events = (TH1D*)input_caf.Get("TotalEvents");
     total_events->Write();
     output_tree->Write();
-    TDirectoryFile *metadata = (TDirectoryFile*)input_caf.Get("metadata");
-    metadata->Write();
+    TDirectoryFile * metadata = (TDirectoryFile *)input_caf.Get("metadata");
+    copy_keyval_tree(&output_caf, metadata, "metatree");
+    
+    #ifdef MC_NOT_DATA
+    /**
+     * @brief Copy the globalTree and the GenieEvtRecTree
+     */
+    TTree * global_tree = (TTree*)input_caf.Get("globalTree");
+    if(global_tree)
+    {
+        output_caf.cd();
+        TTree * clone = global_tree->CloneTree(-1, "fast");
+        clone->Write();
+        delete clone;
+    }
+    TTree * genie_tree = (TTree*)input_caf.Get("GenieEvtRecTree");
+    if(genie_tree)
+    {
+        output_caf.cd();
+        TTree * clone = genie_tree->CloneTree(-1, "fast");
+        clone->Write();
+        delete clone;
+    }
+    #endif
     
     /**
      * @brief Close the input and output files. 
