@@ -84,6 +84,7 @@ namespace dlp::types
         ctype.insertMember("is_contained", HOFFSET(TruthParticle, is_contained), H5::PredType::STD_U8LE);
         ctype.insertMember("is_matched", HOFFSET(TruthParticle, is_matched), H5::PredType::STD_U8LE);
         ctype.insertMember("is_primary", HOFFSET(TruthParticle, is_primary), H5::PredType::STD_U8LE);
+        ctype.insertMember("is_time_contained", HOFFSET(TruthParticle, is_time_contained), H5::PredType::STD_U8LE);
         ctype.insertMember("is_truth", HOFFSET(TruthParticle, is_truth), H5::PredType::STD_U8LE);
         ctype.insertMember("is_valid", HOFFSET(TruthParticle, is_valid), H5::PredType::STD_U8LE);
         ctype.insertMember("ke", HOFFSET(TruthParticle, ke), H5::PredType::IEEE_F64LE);

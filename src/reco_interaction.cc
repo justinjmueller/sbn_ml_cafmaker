@@ -60,6 +60,7 @@ namespace dlp::types
         ctype.insertMember("is_fiducial", HOFFSET(RecoInteraction, is_fiducial), H5::PredType::STD_U8LE);
         ctype.insertMember("is_flash_matched", HOFFSET(RecoInteraction, is_flash_matched), H5::PredType::STD_U8LE);
         ctype.insertMember("is_matched", HOFFSET(RecoInteraction, is_matched), H5::PredType::STD_U8LE);
+        ctype.insertMember("is_time_contained", HOFFSET(RecoInteraction, is_time_contained), H5::PredType::STD_U8LE);
         ctype.insertMember("is_truth", HOFFSET(RecoInteraction, is_truth), H5::PredType::STD_U8LE);
         ctype.insertMember("match_ids", HOFFSET(RecoInteraction, match_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("match_overlaps", HOFFSET(RecoInteraction, match_overlaps_handle), H5::VarLenType(H5::PredType::IEEE_F32LE));
