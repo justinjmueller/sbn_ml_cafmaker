@@ -81,6 +81,7 @@ namespace dlp::types
         ctype.insertMember("is_fiducial", HOFFSET(TruthInteraction, is_fiducial), H5::PredType::STD_U8LE);
         ctype.insertMember("is_flash_matched", HOFFSET(TruthInteraction, is_flash_matched), H5::PredType::STD_U8LE);
         ctype.insertMember("is_matched", HOFFSET(TruthInteraction, is_matched), H5::PredType::STD_U8LE);
+        ctype.insertMember("is_time_contained", HOFFSET(TruthInteraction, is_time_contained), H5::PredType::STD_U8LE);
         ctype.insertMember("is_truth", HOFFSET(TruthInteraction, is_truth), H5::PredType::STD_U8LE);
         ctype.insertMember("lepton_p", HOFFSET(TruthInteraction, lepton_p), H5::PredType::STD_I64LE);
         ctype.insertMember("lepton_pdg_code", HOFFSET(TruthInteraction, lepton_pdg_code), H5::PredType::STD_I64LE);

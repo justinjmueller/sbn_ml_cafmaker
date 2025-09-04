@@ -69,6 +69,7 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64
     part.is_contained = p.is_contained;
     part.is_matched = p.is_matched;
     part.is_primary = p.is_primary;
+    part.is_time_contained = p.is_time_contained;
     part.is_truth = p.is_truth;
     part.is_valid = p.is_valid;
     part.ke = p.ke;
@@ -146,6 +147,7 @@ caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset)
     part.is_contained = p.is_contained;
     part.is_matched = p.is_matched;
     part.is_primary = p.is_primary;
+    part.is_time_contained = p.is_time_contained;
     part.is_truth = p.is_truth;
     part.is_valid = p.is_valid;
     part.ke = p.ke;
@@ -218,6 +220,7 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
     ret.is_fiducial = in.is_fiducial;
     ret.is_flash_matched = in.is_flash_matched;
     ret.is_matched = in.is_matched;
+    ret.is_time_contained = in.is_time_contained;
     ret.is_truth = in.is_truth;
     ret.lepton_p = in.lepton_p;
     ret.lepton_pdg_code = in.lepton_pdg_code;
@@ -284,6 +287,7 @@ caf::SRInteractionDLP fill_interaction(dlp::types::RecoInteraction &in, std::vec
     ret.is_fiducial = in.is_fiducial;
     ret.is_flash_matched = in.is_flash_matched;
     ret.is_matched = in.is_matched;
+    ret.is_time_contained = in.is_time_contained;
     ret.is_truth = in.is_truth;
     ret.match_ids = std::vector<int64_t>(in.match_ids.begin(), in.match_ids.end());
     ret.match_overlaps = std::vector<float>(in.match_overlaps.begin(), in.match_overlaps.end());
