@@ -115,7 +115,6 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64
     std::copy(std::begin(p.start_point), std::end(p.start_point), std::begin(part.start_point));
     part.t = p.t;
     part.track_id = p.track_id;
-    part.units = p.units;
 
     return part;
 }
@@ -172,7 +171,6 @@ caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset)
     std::copy(std::begin(p.start_dir), std::end(p.start_dir), std::begin(part.start_dir));
     std::copy(std::begin(p.start_point), std::end(p.start_point), std::begin(part.start_point));
     part.start_straightness = p.start_straightness;
-    part.units = p.units;  
     part.vertex_distance = p.vertex_distance;
 
     return part;
@@ -212,7 +210,6 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
     ret.hadronic_invariant_mass = in.hadronic_invariant_mass;
     ret.id = in.id;
     ret.inelasticity = in.inelasticity;
-    ret.interaction_id = in.interaction_id;
     ret.interaction_mode = (int64_t)in.interaction_mode;
     ret.interaction_type = (int64_t)in.interaction_type;
     ret.is_cathode_crosser = in.is_cathode_crosser;
@@ -252,7 +249,6 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
     ret.theta = in.theta;
     ret.topology = in.topology;
     ret.track_id = in.track_id;
-    ret.units = in.units;
     std::copy(std::begin(in.vertex), std::end(in.vertex), std::begin(ret.vertex));
     for(int64_t id : ret.particle_ids)
         ret.particles.push_back(particles.at(id));
@@ -300,7 +296,6 @@ caf::SRInteractionDLP fill_interaction(dlp::types::RecoInteraction &in, std::vec
     ret.primary_particle_ids = std::vector<int64_t>(in.primary_particle_ids.begin(), in.primary_particle_ids.end());
     ret.size = in.size;
     ret.topology = in.topology;
-    ret.units = in.units;
     std::copy(std::begin(in.vertex), std::end(in.vertex), std::begin(ret.vertex));
     for(int64_t id : ret.particle_ids)
         ret.particles.push_back(particles.at(id));
