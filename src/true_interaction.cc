@@ -58,7 +58,7 @@ namespace dlp::types
         ctype.insertMember("current_type", HOFFSET(TruthInteraction, current_type), nu_current_type_enumtype);
         ctype.insertMember("depositions_adapt_q_sum", HOFFSET(TruthInteraction, depositions_adapt_q_sum), H5::PredType::IEEE_F32LE);
         ctype.insertMember("depositions_adapt_sum", HOFFSET(TruthInteraction, depositions_adapt_sum), H5::PredType::IEEE_F32LE);
-        ctype.insertMember("depositions_g4_sum", HOFFSET(TruthInteraction, depositions_g4_sum), H5::PredType::STD_I64LE);
+        ctype.insertMember("depositions_g4_sum", HOFFSET(TruthInteraction, depositions_g4_sum), H5::PredType::IEEE_F32LE);
         ctype.insertMember("depositions_q_sum", HOFFSET(TruthInteraction, depositions_q_sum), H5::PredType::IEEE_F32LE);
         ctype.insertMember("depositions_sum", HOFFSET(TruthInteraction, depositions_sum), H5::PredType::IEEE_F32LE);
         ctype.insertMember("distance_travel", HOFFSET(TruthInteraction, distance_travel), H5::PredType::IEEE_F64LE);
