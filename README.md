@@ -40,6 +40,16 @@ The repository can be easily built using CMake:
     cmake /path/to/sbn_ml_cafmaker -DHDF5_INSTALL="/path/to/hdf5/install"
     make
 
+### Using a taged version of sbnanaobj
+Select a tagged sbnana version available from `ups list -aK+ sbnana`.
+
+For example:
+```
+setup sbnana v10_01_04 -q e26:prof
+cmake /exp/sbnd/app/users/sc5303/sbn_ml_cafmaker -DHDF5_INSTALL="/path/to/hdf5/install"
+make
+```
+
 ## Merging
 The executable that handles the merging of the ML reconstruction outputs into an existing CAF (with the same events) is `merge_sources`. The executable takes as input a standard CAF file (not flattened) and the HDF5 with the reconstruction outputs of the same set of events. It uses the run number and event number to build a look-up table for events in the HDF5 file, then copies them into the `StandardRecord` during the main loop over entries in the CAF file. Finally, the output CAF file is written. There exists a separate executable for data (only contains reconstructed objects) and simulation (additionally has truth objects). The executable can be used as:
 
