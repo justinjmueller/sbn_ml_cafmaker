@@ -7,7 +7,9 @@ find_package(HDF5 REQUIRED COMPONENTS C CXX HL CONFIG PATHS ${HDF5_INSTALL}/)
 find_package(sbnanaobj)
 find_package(ZLIB)
 find_package(ROOT REQUIRED)
-set(SBNANAOBJ_INCLUDE_DIRS "$ENV{MRB_SOURCE}/sbnanaobj/")
+
+set(SBNANAOBJ_INCLUDE_DIRS "$ENV{SBNANAOBJ_INC}" CACHE INTERNAL "")
+
 set(HDF5_INCLUDE_DIR ${HDF5_INSTALL}/include/)
 file(GLOB HDF5_LIBRARIES ${HDF5_INSTALL}/lib/*.so)
 include_directories(include)
