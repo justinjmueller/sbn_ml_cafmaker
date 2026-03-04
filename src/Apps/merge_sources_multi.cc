@@ -15,13 +15,13 @@
 #include <ctype.h>
 #include "H5Cpp.h"
 
-#include "include/products.h"
-#include "include/event.h"
-#include "include/reco_interaction.h"
-#include "include/reco_particle.h"
-#include "include/true_interaction.h"
-#include "include/true_particle.h"
-#include "include/record_fillers.h"
+#include "products.h"
+#include "event.h"
+#include "reco_interaction.h"
+#include "reco_particle.h"
+#include "true_interaction.h"
+#include "true_particle.h"
+#include "record_fillers.h"
 
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
 #include "sbnanaobj/StandardRecord/SRInteractionDLP.h"
@@ -33,46 +33,9 @@
 #include "TDirectoryFile.h"
 #include "TTree.h"
 #include "TH1D.h"
-#include "TKey.h"
 
 typedef std::tuple<size_t, size_t, size_t> index_t;
 
-/**
- * @brief Copy the key/val products from an event in the CAF file to the output
- * CAF file.
- * @details This function is used to copy the key/val products from the
- * input TDirectory to the output TDirectory. Specifically, this represents
- * metadata and environment variables that are stored in the input CAF file.
- * @param output The output TDirectory to copy to.
- * @param input The input TDirectory to copy from.
- * @param name The name of the TTree to copy.
- */
-void copy_keyval_tree(TDirectory * output, TDirectory * input, const char * name)
-{
-    output->cd();
-    if(input)
-    {
-        TDirectory * dir = output->mkdir(input->GetName());
-        dir->cd();
-        TTree * tree = static_cast<TTree *>(input->Get(name));
-        TTree * new_tree = new TTree(name, tree->GetTitle());
-        
-        std::string key, value;
-        std::string * pkey = &key;
-        std::string * pvalue = &value;
-        new_tree->Branch("key", &pkey);
-        new_tree->Branch("value", &pvalue);
-        tree->SetBranchAddress("key", &pkey);
-        tree->SetBranchAddress("value", &pvalue);
-        for(Long64_t i(0); i < tree->GetEntries(); ++i)
-        {
-            tree->GetEntry(i);
-            new_tree->Fill();
-        }
-        new_tree->Write();
-        output->cd();
-    }
-}
 int main(int argc, char const * argv[])
 {
     /**
@@ -88,39 +51,52 @@ int main(int argc, char const * argv[])
      */
     if(argc < 3)
     {
-        std::cerr << "Usage: ./merge_sources <output_file> <input_caf_file> <input_h5_file>" << std::endl;
+        std::cerr << "Usage: ./merge_sources <output_file> <input_caf_file> <input_h5_file(s)>" << std::endl;
+        return 0;
+    }
+
+    if(argc > 28)
+    {
+        std::cerr << "You passed more than 25 input HDF5 files! Absolutely not!" << std::endl;
         return 0;
     }
 
     /**
-     * @brief Configure the output CAF file.
+     * @brief Configure the input HDF5 file(s).
      * @details The merging code will need to access the event records in the
      * file once it has been matched to an event from the input CAF file. This
      * is done by building a map between (Run, Event No.) and the @ref 
      * dlp::types::Event object. This class contains only references to the
-     * actual SPINE data products, so it is not overly heavy.
+     * actual SPINE data products, so it is not overly heavy. Because the input
+     * HDF5 dataset in general is a list of files, the code will maintain a map
+     * of events for each file.
      */
-    H5::H5File input_h5(argv[3], H5F_ACC_RDONLY);
-    std::map<index_t, size_t> event_map;
-    std::vector<dlp::types::Event> events(get_all_events(input_h5));
-    for(size_t e(0); e < events.size(); ++e)
+    std::map<index_t, std::pair<size_t, size_t> > event_map;
+    std::map<size_t, H5::H5File> input_files;
+    std::map<size_t, std::vector<dlp::types::Event> > events;
+    for(size_t f(3); f < argc; ++f)
     {
-        try
+        input_files.insert(std::make_pair(f, H5::H5File(argv[f], H5F_ACC_RDONLY)));
+        events.insert(std::make_pair(f, get_all_events(input_files[f])));
+        for(size_t e(0); e < events[f].size(); ++e)
         {
-            /**
-             * @brief Retrieve the run info for the event.
-             * @details For each event in the input HDF5 file, the run info is
-             * retrieved and emplaced in a map that will allow for efficient
-             * lookup later when copying data into the output CAF file.
-             * @note The index is a tuple of (Run, Subrun, Event No.).
-             */
-            std::vector<dlp::types::RunInfo> run_info(get_product<dlp::types::RunInfo>(input_h5, events.at(e)));
-            index_t index(run_info.back().run, run_info.back().subrun, run_info.back().event);
-            event_map.insert(std::make_pair(index, e));
-        }
-        catch(const H5::ReferenceException & e)
-        {
-            std::cerr << "Found incomplete entry for event." << std::endl;
+            try
+            {
+                /**
+                 * @brief Retrieve the run info for the event.
+                 * @details For each event in the input HDF5 file, the run info is
+                 * retrieved and emplaced in a map that will allow for efficient
+                 * lookup later when copying data into the output CAF file.
+                 * @note The index is a tuple of (Run, Subrun, Event No.).
+                 */
+                std::vector<dlp::types::RunInfo> run_info(get_product<dlp::types::RunInfo>(input_files[f], events[f][e]));
+                index_t index(run_info.back().run, run_info.back().subrun, run_info.back().event);
+                event_map.insert(std::make_pair(index, std::make_pair(f, e)));
+            }
+            catch(const H5::ReferenceException & e)
+            {
+                std::cerr << "Found incomplete entry for event." << std::endl;
+            }
         }
     }
 
@@ -152,6 +128,8 @@ int main(int argc, char const * argv[])
      * @details At each step, check that there is a matching event in the HDF5
      * input file.
      */
+    size_t current_file(3);
+    size_t matched(0), unmatched(0);
     for(size_t n(0); n < input_tree->GetEntries(); ++n)
     {
         input_tree->GetEntry(n);
@@ -169,23 +147,34 @@ int main(int argc, char const * argv[])
         index_t index(rec->hdr.run, rec->hdr.subrun, rec->hdr.evt);
         if(event_map.find(index) != event_map.end())
         {
-	        std::cout << "Matched Event " << std::get<2>(index) << " in (Run, Subrun) = (" << std::get<0>(index) << ", " << std::get<1>(index) << ") of CAF input to HDF5 event." << std::endl;
+            ++matched;
+	        std::cout << "Matched Event " << std::get<2>(index) << " in (Run, Subrun) = (" << std::get<0>(index) << ", " << std::get<1>(index) << ") of CAF input to HDF5 event."
+                      << " Found in file " << std::get<0>(event_map[index]) << " at index " << std::get<1>(event_map[index])
+                      << " (" << argv[std::get<0>(event_map[index])] << ")"
+                      << "."
+                      << std::endl;
+            /**
+             * @brief Package the event data products.
+             * @details The @ref package_event() function is responsible
+             * for copying the data products from the event into the proper
+             * CAF class within the StandardRecord.
+             * @throw H5::ReferenceException if the event is incom
+             */
             try
             {
-                /**
-                 * @brief Package the event data products.
-                 * @details The @ref package_event() function is responsible
-                 * for copying the data products from the event into the proper
-                 * CAF class within the StandardRecord.
-                 */
-                package_event(rec, input_h5, events[event_map[index]]);
+                package_event(rec, input_files[std::get<0>(event_map[index])], events[std::get<0>(event_map[index])][std::get<1>(event_map[index])]);
             }
             catch(const H5::ReferenceException & e)
             {
                 std::cerr << "Found incomplete entry for event." << std::endl;
             }
+            output_tree->Fill();
         }
-        output_tree->Fill();
+        else
+        {
+            ++unmatched;
+            std::cerr << "No matching event found for (Run, Subrun, Event No.) = (" << rec->hdr.run << ", " << rec->hdr.subrun << ", " << rec->hdr.evt << ")." << std::endl;
+        }
     }
 
     /**
@@ -196,44 +185,25 @@ int main(int argc, char const * argv[])
      * The order probably doesn't matter, but this maintains the same exact
      * order as in the input CAF file.
      */
-    TDirectoryFile * env = (TDirectoryFile *)input_caf.Get("env");
-    copy_keyval_tree(&output_caf, env, "envtree");
-    TH1D * total_pot = (TH1D*)input_caf.Get("TotalPOT");
+    TDirectoryFile *env = (TDirectoryFile*)input_caf.Get("env");
+    env->Write();
+    TH1D *total_pot = (TH1D*)input_caf.Get("TotalPOT");
     total_pot->Write();
-    TH1D * total_events = (TH1D*)input_caf.Get("TotalEvents");
+    TH1D *total_events = (TH1D*)input_caf.Get("TotalEvents");
     total_events->Write();
     output_tree->Write();
-    TDirectoryFile * metadata = (TDirectoryFile *)input_caf.Get("metadata");
-    copy_keyval_tree(&output_caf, metadata, "metatree");
-    
-    #ifdef MC_NOT_DATA
-    /**
-     * @brief Copy the globalTree and the GenieEvtRecTree
-     */
-    TTree * global_tree = (TTree*)input_caf.Get("globalTree");
-    if(global_tree)
-    {
-        output_caf.cd();
-        TTree * clone = global_tree->CloneTree(-1, "fast");
-        clone->Write();
-        delete clone;
-    }
-    TTree * genie_tree = (TTree*)input_caf.Get("GenieEvtRecTree");
-    if(genie_tree)
-    {
-        output_caf.cd();
-        TTree * clone = genie_tree->CloneTree(-1, "fast");
-        clone->Write();
-        delete clone;
-    }
-    #endif
+    TDirectoryFile *metadata = (TDirectoryFile*)input_caf.Get("metadata");
+    metadata->Write();
     
     /**
      * @brief Close the input and output files. 
      */
-    input_h5.close();
+    for(auto &f : input_files)
+        f.second.close();
     input_caf.Close();
     output_caf.Close();
+
+    std::cout << "Merged " << matched << " / " << matched+unmatched << " events from the input HDF5 file(s) into the output CAF file." << std::endl;
 
     return 0;
 }

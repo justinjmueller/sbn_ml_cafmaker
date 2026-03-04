@@ -17,10 +17,10 @@ set_target_properties(SBNANAOBJ::SBNANAOBJ PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${sbnanaobj_INCLUDE_DIR}"
   INTERFACE_LINK_LIBRARIES "${sbnanaobj_STANDARDRECORD_LIB}")
 
-# This will mean all code in this project sees $(pwd)/include. Keeping it for now
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(SBN_ML_CAFMAKER_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+#message(WARNING "SBN_ML_CAFMAKER_INCLUDE is ${SBN_ML_CAFMAKER_INCLUDE}")
 
-file(GLOB SPINE_SOURCES src/*.cc)
+add_subdirectory(src)
 
 # The input HDF5 files for data do not have truth products in them, so the
 # same top-level "dlp::types::Event" class should not contain references to
@@ -28,64 +28,64 @@ file(GLOB SPINE_SOURCES src/*.cc)
 # preprocessor flag that checks if "MC_NOT_DATA" is defined and allows for
 # truth products to be defined if it is. Two separate libraries are therefore
 # built and linked against.
-add_library(dlp_simulation SHARED ${SPINE_SOURCES})
+add_library(dlp_simulation SHARED ${SPINE_SOURCES_BASE})
 target_link_libraries(dlp_simulation PRIVATE ZLIB::ZLIB HDF5::HDF5)
-target_include_directories(dlp_simulation PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(dlp_simulation PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 target_compile_definitions(dlp_simulation PRIVATE MC_NOT_DATA)
 
-add_library(dlp_data SHARED ${SPINE_SOURCES})
+add_library(dlp_data SHARED ${SPINE_SOURCES_BASE})
 target_link_libraries(dlp_simulation PRIVATE ZLIB::ZLIB HDF5::HDF5)
-target_include_directories(dlp_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR})
+target_include_directories(dlp_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 # This executable is meant for testing the HDF5 parsing capabilities of the
 # library. It simply connects to the input file and attempts to read the
 # contents of the first/passed event.
-add_executable(test_hdf5 test_hdf5.cc)
+add_executable(test_hdf5 ${SPINE_APP_DIR}/test_hdf5.cc)
 target_link_libraries(test_hdf5 PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
-target_include_directories(test_hdf5 PRIVATE ${HDF5_INCLUDE_DIR})
+target_include_directories(test_hdf5 PRIVATE ${HDF5_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 target_compile_definitions(test_hdf5 PRIVATE MC_NOT_DATA REMOVE_THIS)
 
 # This executable is meant for testing the CAF reading capabilities of the
 # library. It connects to the input file and attempts to read the contents of
 # the first/passed event.
-add_executable(test_caf test_caf.cc)
+add_executable(test_caf ${SPINE_APP_DIR}/test_caf.cc)
 target_link_libraries(test_caf PRIVATE ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ)
-target_include_directories(test_caf PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR})
+target_include_directories(test_caf PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 # This executable is meant for cases where "ML-only" CAFs are desired. It will
 # produce a CAF file with only the ML reconstruction outputs available. There
 # are two versions: one for data and one for simulation
-add_executable(make_standalone_simulation make_standalone.cc)
+add_executable(make_standalone_simulation ${SPINE_APP_DIR}/make_standalone.cc)
 target_compile_definitions(make_standalone_simulation PRIVATE MC_NOT_DATA)
 target_link_libraries(make_standalone_simulation PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
-target_include_directories(make_standalone_simulation PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR})
+target_include_directories(make_standalone_simulation PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
-add_executable(make_standalone_data make_standalone.cc)
+add_executable(make_standalone_data ${SPINE_APP_DIR}/make_standalone.cc)
 target_link_libraries(make_standalone_data PRIVATE ZLIB::ZLIB HDF5::HDF5  ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_data)
-target_include_directories(make_standalone_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR})
+target_include_directories(make_standalone_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 # This executable is meant for merging already existing CAFs (holding Pandora
 # reconstruction outputs) with ML reconstructions outputs. There are two
 # versions available: one for data and one for simulation.
-add_executable(merge_sources_simulation merge_sources.cc)
+add_executable(merge_sources_simulation ${SPINE_APP_DIR}/merge_sources.cc)
 target_compile_definitions(merge_sources_simulation PRIVATE MC_NOT_DATA)
 target_link_libraries(merge_sources_simulation PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
-target_include_directories(merge_sources_simulation PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR})
+target_include_directories(merge_sources_simulation PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
-add_executable(merge_sources_data merge_sources.cc)
+add_executable(merge_sources_data ${SPINE_APP_DIR}/merge_sources.cc)
 target_link_libraries(merge_sources_data PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_data)
-target_include_directories(merge_sources_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR})
+target_include_directories(merge_sources_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 # This executable is meant for merging already existing CAFs (holding Pandora
 # reconstruction outputs) with ML reconstructions outputs. This is different
 # from the previous one in that it is meant to be used with one-to-many merging
 # of one CAF file with many HDF5 files. There are two versions available: one
 # for data and one for simulation.
-add_executable(merge_sources_simulation_multi merge_sources_multi.cc)
+add_executable(merge_sources_simulation_multi ${SPINE_APP_DIR}/merge_sources_multi.cc)
 target_compile_definitions(merge_sources_simulation_multi PRIVATE MC_NOT_DATA)
 target_link_libraries(merge_sources_simulation_multi PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
-target_include_directories(merge_sources_simulation_multi PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR})
+target_include_directories(merge_sources_simulation_multi PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
-add_executable(merge_sources_data_multi merge_sources_multi.cc)
+add_executable(merge_sources_data_multi ${SPINE_APP_DIR}/merge_sources_multi.cc)
 target_link_libraries(merge_sources_data_multi PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_data)
-target_include_directories(merge_sources_data_multi PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR})
+target_include_directories(merge_sources_data_multi PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
