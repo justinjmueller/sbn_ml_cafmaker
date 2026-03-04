@@ -26,6 +26,11 @@ namespace dlp::types
         module_ids.reset(&module_ids_handle);
         particle_ids.reset(&particle_ids_handle);
         primary_particle_ids.reset(&primary_particle_ids_handle);
+        crt_ids.reset(&crt_ids_handle);
+        crt_times.reset(&crt_times_handle);
+        index.reset(&index_handle);
+        index_adapt.reset(&index_adapt_handle);
+        index_g4.reset(&index_g4_handle);
     }
 
     /**
@@ -55,6 +60,8 @@ namespace dlp::types
         ctype.insertMember("bjorken_x", HOFFSET(TruthInteraction, bjorken_x), H5::PredType::IEEE_F64LE);
         ctype.insertMember("cathode_offset", HOFFSET(TruthInteraction, cathode_offset), H5::PredType::IEEE_F64LE);
         ctype.insertMember("creation_process", HOFFSET(TruthInteraction, creation_process), string_type);
+        ctype.insertMember("crt_ids", HOFFSET(TruthInteraction, crt_ids_handle), H5::VarLenType(H5::PredType::STD_I32LE));
+        ctype.insertMember("crt_times", HOFFSET(TruthInteraction, crt_times_handle), H5::VarLenType(H5::PredType::STD_I32LE));
         ctype.insertMember("current_type", HOFFSET(TruthInteraction, current_type), nu_current_type_enumtype);
         ctype.insertMember("depositions_adapt_q_sum", HOFFSET(TruthInteraction, depositions_adapt_q_sum), H5::PredType::IEEE_F32LE);
         ctype.insertMember("depositions_adapt_sum", HOFFSET(TruthInteraction, depositions_adapt_sum), H5::PredType::IEEE_F32LE);
@@ -72,12 +79,16 @@ namespace dlp::types
         ctype.insertMember("flash_volume_ids", HOFFSET(TruthInteraction, flash_volume_ids_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("hadronic_invariant_mass", HOFFSET(TruthInteraction, hadronic_invariant_mass), H5::PredType::IEEE_F64LE);
         ctype.insertMember("id", HOFFSET(TruthInteraction, id), H5::PredType::STD_I64LE);
+        ctype.insertMember("index", HOFFSET(TruthInteraction, index_handle), H5::VarLenType(H5::PredType::STD_I64LE));
+        ctype.insertMember("index_adapt", HOFFSET(TruthInteraction, index_adapt_handle), H5::VarLenType(H5::PredType::STD_I64LE));
+        ctype.insertMember("index_g4", HOFFSET(TruthInteraction, index_g4_handle), H5::VarLenType(H5::PredType::STD_I64LE));
         ctype.insertMember("inelasticity", HOFFSET(TruthInteraction, inelasticity), H5::PredType::IEEE_F64LE);
         ctype.insertMember("interaction_id", HOFFSET(TruthInteraction, interaction_id), H5::PredType::STD_I64LE);
         ctype.insertMember("interaction_mode", HOFFSET(TruthInteraction, interaction_mode), nu_interaction_mode_enumtype);
         ctype.insertMember("interaction_type", HOFFSET(TruthInteraction, interaction_type), nu_interaction_type_enumtype);
         ctype.insertMember("is_cathode_crosser", HOFFSET(TruthInteraction, is_cathode_crosser), H5::PredType::STD_U8LE);
         ctype.insertMember("is_contained", HOFFSET(TruthInteraction, is_contained), H5::PredType::STD_U8LE);
+        ctype.insertMember("is_crt_matched", HOFFSET(TruthInteraction, is_crt_matched), H5::PredType::STD_U8LE);
         ctype.insertMember("is_fiducial", HOFFSET(TruthInteraction, is_fiducial), H5::PredType::STD_U8LE);
         ctype.insertMember("is_flash_matched", HOFFSET(TruthInteraction, is_flash_matched), H5::PredType::STD_U8LE);
         ctype.insertMember("is_matched", HOFFSET(TruthInteraction, is_matched), H5::PredType::STD_U8LE);
@@ -108,6 +119,7 @@ namespace dlp::types
         ctype.insertMember("size", HOFFSET(TruthInteraction, size), H5::PredType::STD_I64LE);
         ctype.insertMember("size_adapt", HOFFSET(TruthInteraction, size_adapt), H5::PredType::STD_I64LE);
         ctype.insertMember("size_g4", HOFFSET(TruthInteraction, size_g4), H5::PredType::STD_I64LE);
+        ctype.insertMember("t", HOFFSET(TruthInteraction, t), H5::PredType::IEEE_F64LE);
         ctype.insertMember("target", HOFFSET(TruthInteraction, target), H5::PredType::STD_I64LE);
         ctype.insertMember("theta", HOFFSET(TruthInteraction, theta), H5::PredType::IEEE_F64LE);
         ctype.insertMember("topology", HOFFSET(TruthInteraction, topology), string_type);

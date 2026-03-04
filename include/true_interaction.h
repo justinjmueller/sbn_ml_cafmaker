@@ -26,6 +26,8 @@ namespace dlp::types
         double bjorken_x;                                   //!< Bjorken x of the neutrino interaction.
         double cathode_offset;                              //!< Distance from the cathode.
         std::string creation_process;                       //!< Creation process of the neutrino.
+        BufferView<int32_t> crt_ids;                        //!< CRT IDs associated with the interaction.
+        BufferView<int32_t> crt_times;                      //!< CRT times associated with the interaction.
         CurrentType current_type;                           //!< Current type of the neutrino.
         float depositions_adapt_q_sum;                      //!< Total tagged (reco non-ghost) charge deposited [ADC].
         float depositions_adapt_sum;                        //!< Total tagged (reco non-ghost) energy deposited [MeV].
@@ -43,12 +45,16 @@ namespace dlp::types
         BufferView<int32_t> flash_volume_ids;               //!< Volume IDs of the matched flashes.
         double hadronic_invariant_mass;                     //!< Hadronic invariant mass of the neutrino.
         int64_t id;                                         //!< Interaction ID.
+        BufferView<int64_t> index;                          //!< Index array.
+        BufferView<int64_t> index_adapt;                    //!< Adapted index array.
+        BufferView<int64_t> index_g4;                       //!< G4 index array.
         double inelasticity;                                //!< Inelasticity of the neutrino interaction.
         int64_t interaction_id;                             //!< Deprecated.
         InteractionMode interaction_mode;                   //!< Interaction mode of the neutrino.
         InteractionType interaction_type;                   //!< Interaction type of the neutrino.
         bool is_cathode_crosser;                            //!< Whether the interaction is a cathode-crosser.
         bool is_contained;                                  //!< Whether the interaction is contained.
+        bool is_crt_matched;                                //!< Whether the interaction is matched to a CRT hit.
         bool is_fiducial;                                   //!< Whether the interaction has an interaction in the fiducial volume.
         bool is_flash_matched;                              //!< Whether the flash is matched to the interaction.
         bool is_matched;                                    //!< Whether the interaction is matched to a true interaction.
@@ -80,6 +86,7 @@ namespace dlp::types
         int64_t size;                                       //!< Number of true non-ghost true-tagged space points.
         int64_t size_adapt;                                 //!< Number of reco non-ghost true-tagged space points.
         int64_t size_g4;                                    //!< Number of (rasterized) g4 energy depositions (no detector effects).
+        double t;                                           //!< Time of the interaction.
         int64_t target;                                     //!< Target in the neutrino interaction.
         double theta;                                       //!< Angle of the neutrino interaction.
         std::string topology;                               //!< Topology of the interaction (e.g. "0g0e1mu0pi2p") considering only primaries.
@@ -107,6 +114,11 @@ namespace dlp::types
         hvl_t module_ids_handle;
         hvl_t particle_ids_handle;
         hvl_t primary_particle_ids_handle;
+        hvl_t crt_ids_handle;
+        hvl_t crt_times_handle;
+        hvl_t index_handle;
+        hvl_t index_adapt_handle;
+        hvl_t index_g4_handle;
     };
 
     /**

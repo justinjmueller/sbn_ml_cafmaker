@@ -65,7 +65,8 @@ namespace dlp::types
         interaction_mode_enumtype.insert("NCQE", enum_ptr{1002});
         interaction_mode_enumtype.insert("NuElectronElastic", enum_ptr{1098});
         interaction_mode_enumtype.insert("NuanceOffset", enum_ptr{1000});
-        interaction_mode_enumtype.insert("QE", enum_ptr{1});
+        interaction_mode_enumtype.insert("QE", enum_ptr{0});
+	interaction_mode_enumtype.insert("Res", enum_ptr{1});
         interaction_mode_enumtype.insert("ResCCNuBarDelta0PiMinus", enum_ptr{1028});
         interaction_mode_enumtype.insert("ResCCNuBarDeltaMinusPiPlus", enum_ptr{1032});
         interaction_mode_enumtype.insert("ResCCNuBarKaon0Lambda0", enum_ptr{1076});
@@ -137,7 +138,8 @@ namespace dlp::types
         interaction_type_enumtype.insert("NCQE", enum_ptr{1002});
         interaction_type_enumtype.insert("NuElectronElastic", enum_ptr{1098});
         interaction_type_enumtype.insert("NuanceOffset", enum_ptr{1000});
-        interaction_type_enumtype.insert("QE", enum_ptr{1});
+        interaction_type_enumtype.insert("QE", enum_ptr{0});
+	interaction_type_enumtype.insert("Res", enum_ptr{1});
         interaction_type_enumtype.insert("ResCCNuBarDelta0PiMinus", enum_ptr{1028});
         interaction_type_enumtype.insert("ResCCNuBarDeltaMinusPiPlus", enum_ptr{1032});
         interaction_type_enumtype.insert("ResCCNuBarKaon0Lambda0", enum_ptr{1076});
