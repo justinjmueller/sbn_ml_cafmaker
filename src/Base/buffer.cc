@@ -31,7 +31,7 @@ namespace dlp
      * @return An iterator to the first object/entry in the buffer.
     */
     template <typename T>
-    BufferView<T>::forward_iterator BufferView<T>::begin() const
+    typename BufferView<T>::forward_iterator BufferView<T>::begin() const
     {
         return forward_iterator(this, 0);
     }
@@ -41,7 +41,7 @@ namespace dlp
      * @return An iterator to one past the last object/entry in the buffer.
     */
     template <typename T>
-    BufferView<T>::forward_iterator BufferView<T>::end() const
+    typename BufferView<T>::forward_iterator BufferView<T>::end() const
     {
         return forward_iterator(this, size());
     }
@@ -92,7 +92,7 @@ namespace dlp
      * @return A reference to the incremented iterator.
     */
     template <typename T>
-    BufferView<T>::forward_iterator& BufferView<T>::forward_iterator::operator++()
+    typename BufferView<T>::forward_iterator& BufferView<T>::forward_iterator::operator++()
     {
         fIdx++;
         return *this;
@@ -103,7 +103,7 @@ namespace dlp
      * @return A copy of the iterator before incrementing.
     */
     template <typename T>
-    BufferView<T>::forward_iterator BufferView<T>::forward_iterator::operator++(int)
+    typename BufferView<T>::forward_iterator BufferView<T>::forward_iterator::operator++(int)
     {
         forward_iterator tmp(*this);
         operator++();
