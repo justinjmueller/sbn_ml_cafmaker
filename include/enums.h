@@ -181,12 +181,30 @@ namespace dlp::types
     {
         kDelta = 3,
         kGhost = 5,
+        kLArcvUnknown = 6,
         kLowEnergy = 4,
         kMichel = 2,
         kShower = 0,
         kTrack = 1,
         kUnknown = -1,
     };
+
+    /**
+     * @brief Enumeration for the interaction scheme of the neutrino.
+    */
+    enum class InteractionScheme : int64_t
+    {
+        kGenie = 1,
+        kLarsoft = 0,
+        kUnknown = -1,
+    };
+
+    /**
+     * @brief Configure the HDF5 enum type matching the FALSE/TRUE enum that
+     * HDF5/h5py uses to represent bool fields on disk.
+     * @return The H5::EnumType for the on-disk bool representation.
+    */
+    H5::EnumType create_bool_enumtype();
 
     /**
      * @brief Configure the HDF5 enum type for NuCurrentType.
@@ -217,6 +235,12 @@ namespace dlp::types
      * @return The H5::EnumType for the SemanticType enum.
     */
     H5::EnumType create_shape_enumtype();
+
+    /**
+     * @brief Configure the HDF5 enum type for InteractionScheme.
+     * @return The H5::EnumType for the InteractionScheme enum.
+    */
+    H5::EnumType create_interaction_scheme_enumtype();
 
 } // namespace dlp::types
 #endif // ENUMS_H

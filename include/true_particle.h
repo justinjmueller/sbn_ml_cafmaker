@@ -15,7 +15,7 @@ namespace dlp::types
 {
     /**
      * @brief A class representing the truth particle in the HDF5 file.
-     * 
+     *
      * This class represents the true particle in the HDF5 file. It contains
      * information about the true particle that was stored by SPINE.
     */
@@ -26,22 +26,25 @@ namespace dlp::types
         float ancestor_position[3];                         //!< Position of the ancestor particle.
         double ancestor_t;                                  //!< Time of the ancestor particle.
         int64_t ancestor_track_id;                          //!< Track ID of the ancestor particle.
-        double calo_ke;                                     //!< Calorimetric kinetic energy.
+        float calo_ke;                                      //!< Calorimetric kinetic energy.
         double cathode_offset;                              //!< Distance from the cathode.
-        BufferView<int64_t> children_counts;                //!< Number of children of the particle.
-        BufferView<int64_t> children_id;                    //!< List of particle ID of children particles.
+        BufferView<int32_t> children_counts;                //!< Number of children of the particle.
+        BufferView<int32_t> children_id;                    //!< List of particle ID of children particles.
         std::string creation_process;                       //!< Geant4 creation process of the particle.
+        BufferView<int32_t> crt_ids;                        //!< CRT IDs associated with the particle.
+        BufferView<float> crt_scores;                       //!< CRT scores associated with the particle.
+        BufferView<float> crt_times;                        //!< CRT times associated with the particle.
         double csda_ke;                                     //!< Continuous-slowing-down-approximation kinetic energy.
-        double csda_ke_per_pid[6];                          //!< CSDA kinetic energy per PID.
-        float depositions_adapt_q_sum;                      //!< Total tagged (reco non-ghost) charge deposited [ADC].
-        float depositions_adapt_sum;                        //!< Total tagged (reco non-ghost) energy deposited [MeV].
-        float depositions_g4_sum;                           //!< Total energy deposited energy at the G4 level [MeV].
-        float depositions_q_sum;                            //!< Total tagged (true non-ghost) charge deposited [ADC].
-        float depositions_sum;                              //!< Total tagged (true non-ghost) energy deposited [MeV].
+        float csda_ke_per_pid[6];                           //!< CSDA kinetic energy per PID.
+        double depositions_adapt_q_sum;                     //!< Total tagged (reco non-ghost) charge deposited [ADC].
+        double depositions_adapt_sum;                       //!< Total tagged (reco non-ghost) energy deposited [MeV].
+        double depositions_g4_sum;                          //!< Total energy deposited energy at the G4 level [MeV].
+        double depositions_q_sum;                           //!< Total tagged (true non-ghost) charge deposited [ADC].
+        double depositions_sum;                             //!< Total tagged (true non-ghost) energy deposited [MeV].
         double distance_travel;                             //!< TO DO.
         float end_dir[3];                                   //!< Unit direction vector calculated at the particle end point.
         float end_momentum[3];                              //!< Momentum (vector) of the particle at the end.
-        float end_p;                                        //!< Momentum magnitude of the particle at the end.
+        double end_p;                                       //!< Momentum magnitude of the particle at the end.
         float end_point[3];                                 //!< End point (vector) of the particle.
         float end_position[3];                              //!< End position (vector) of the particle.
         double end_t;                                       //!< TO DO.
@@ -52,36 +55,41 @@ namespace dlp::types
         int64_t group_id;                                   //!< Group ID of the particle.
         int64_t group_primary;                              //!< Whether the particle is a primary within its group.
         int64_t id;                                         //!< Particle ID.
+        BufferView<int32_t> index;                           //!< Index array.
+        BufferView<int32_t> index_adapt;                     //!< Adapted index array.
+        BufferView<int32_t> index_g4;                        //!< G4 index array.
         int64_t interaction_id;                             //!< Parent interaction ID.
         int64_t interaction_primary;                        //!< Whether the particle is a primary within its interaction (equivalent to is_primary).
         bool is_cathode_crosser;                            //!< Whether the particle is a cathode-crosser.
         bool is_contained;                                  //!< Whether the particle is contained.
+        bool is_crt_matched;                                //!< Whether the particle is matched to a CRT hit.
         bool is_matched;                                    //!< Whether the particle is matched.
         bool is_primary;                                    //!< Whether the particle is a primary particle.
         bool is_time_contained;                             //!< Whether the particle is time-contained (within the "in-time" region of the drift window).
         bool is_truth;                                      //!< Whether the particle is a truth particle.
         bool is_valid;                                      //!< (Whether the particle passes thresholds and counts towards topology.
-        double ke;                                          //!< Kinetic energy according from best energy estimator (CSDA, calorimetric, or MCS).
+        float ke;                                           //!< Kinetic energy according from best energy estimator (CSDA, calorimetric, or MCS).
         float last_step[3];                                 //!< Coordinates of the last step of the particle.
         double length;                                      //!< Length of the particle.
-        double mass;                                        //!< TO DO.
-        BufferView<int64_t> match_ids;                      //!< Match ID.
+        float mass;                                         //!< TO DO.
+        BufferView<int32_t> match_ids;                      //!< Match ID.
         BufferView<float> match_overlaps;                   //!< Match overlap.
         double mcs_ke;                                      //!< Multiple Coulomb scattering kinetic energy.
-        double mcs_ke_per_pid[6];                           //!< MCS kinetic energy per PID.
+        float mcs_ke_per_pid[6];                            //!< MCS kinetic energy per PID.
         int64_t mcst_index;                                 //!< MCST index.
         int64_t mct_index;                                  //!< Index of the particle in the original MCTruth array..
-        BufferView<int64_t> module_ids;                     //!< Module IDs of the particle.
+        BufferView<int32_t> module_ids;                     //!< Module IDs of the particle.
         float momentum[3];                                  //!< Momentum (vector) of the particle.
         int64_t nu_id;                                      //!< Neutrino ID (-1 = not a neutrino, 0 = first neutrino, 1 = second neutrino, etc.).
         int64_t num_fragments;                              //!< TO DO.
         int64_t num_voxels;                                 //!< Number of voxels comprising the particle.
-        BufferView<int64_t> orig_children_id;               //!< Original ID of the children particles.
+        BufferView<int32_t> orig_children_id;               //!< Original ID of the children particles.
         int64_t orig_group_id;                              //!< Original group ID of the particle.
         int64_t orig_id;                                    //!< Original ID of the particle.
+        BufferView<int32_t> orig_index;                      //!< Original index array.
         int64_t orig_interaction_id;                        //!< Interaction ID as it was stored in the parent LArCV file under the interaction_id attribute.
         int64_t orig_parent_id;                             //!< Parent ID as it was stored in the parent LArCV file under the parent_id attribute.
-        float p;                                            //!< Momentum magnitude.
+        double p;                                           //!< Momentum magnitude.
         std::string parent_creation_process;                //!< Geant4 creation process of the parent particle.
         int64_t parent_id;                                  //!< Parent particle ID.
         int64_t parent_pdg_code;                            //!< PDG code of the parent particle.
@@ -92,7 +100,7 @@ namespace dlp::types
         Pid pid;                                            //!< Particle ID (see Pid enumeration).
         float position[3];                                  //!< Position of the particle.
         float reco_end_dir[3];                              //!< TO DO.
-        double reco_ke;                                     //!< TO DO.
+        float reco_ke;                                      //!< TO DO.
         double reco_length;                                 //!< TO DO.
         float reco_momentum[3];                             //!< TO DO.
         float reco_start_dir[3];                            //!< TO DO.
@@ -105,10 +113,10 @@ namespace dlp::types
         double t;                                           //!< Time of the particle.
         int64_t track_id;                                   //!< Track ID of the particle.
         std::string units;                                  //!< Units in which the position coordinates are expressed.
-        
+
         /**
          * @brief Synchronize the BufferView objects.
-         * 
+         *
          * For variable-length arrays, we need to keep track of memory in the
          * variable-length buffers. The SyncVectors() method is used to update
          * the BufferView<T> objects with the current memory locations. The
@@ -119,11 +127,18 @@ namespace dlp::types
 
         hvl_t children_counts_handle;
         hvl_t children_id_handle;
+        hvl_t crt_ids_handle;
+        hvl_t crt_scores_handle;
+        hvl_t crt_times_handle;
         hvl_t fragment_ids_handle;
+        hvl_t index_handle;
+        hvl_t index_adapt_handle;
+        hvl_t index_g4_handle;
         hvl_t match_ids_handle;
         hvl_t match_overlaps_handle;
         hvl_t module_ids_handle;
         hvl_t orig_children_id_handle;
+        hvl_t orig_index_handle;
     };
     /**
      * @brief Build the HDF5 compound type for the TruthParticle class.
