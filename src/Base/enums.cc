@@ -21,8 +21,30 @@ struct enum_ptr
     operator int64_t *() { return &value; }
 };
 
+struct bool_enum_ptr
+{
+    int8_t value;
+    operator int8_t *() { return &value; }
+};
+
 namespace dlp::types
 {
+    /**
+     * @brief Configure the HDF5 enum type matching the FALSE/TRUE enum that
+     * HDF5/h5py uses to represent bool fields on disk. HDF5's bool is an
+     * H5T_ENUM over a single byte with members "FALSE"=0 and "TRUE"=1, not a
+     * plain integer predtype, so it cannot be read directly into
+     * H5::PredType::NATIVE_HBOOL.
+     * @return The H5::EnumType for the on-disk bool representation.
+    */
+    H5::EnumType create_bool_enumtype()
+    {
+        H5::EnumType bool_enumtype(H5::PredType::STD_I8LE);
+        bool_enumtype.insert("FALSE", bool_enum_ptr{0});
+        bool_enumtype.insert("TRUE", bool_enum_ptr{1});
+        return bool_enumtype;
+    }
+
     /**
      * @brief Configure the HDF5 enum type for NuCurrentType.
      * @return The H5::EnumType for the NuCurrentType enum.
@@ -32,7 +54,7 @@ namespace dlp::types
         H5::EnumType current_type_enumtype(H5::PredType::STD_I64LE);
         current_type_enumtype.insert("CC", enum_ptr{0});
         current_type_enumtype.insert("NC", enum_ptr{1});
-        current_type_enumtype.insert("UnknownCurrent", enum_ptr{-1});
+        current_type_enumtype.insert("UNKNOWN", enum_ptr{-1});
         return current_type_enumtype;
     }
 
@@ -189,13 +211,13 @@ namespace dlp::types
     H5::EnumType create_pid_enumtype()
     {
         H5::EnumType pid_enumtype(H5::PredType::STD_I64LE);
-        pid_enumtype.insert("Electron", enum_ptr{1});
-        pid_enumtype.insert("Kaon", enum_ptr{5});
-        pid_enumtype.insert("Muon", enum_ptr{2});
-        pid_enumtype.insert("Photon", enum_ptr{0});
-        pid_enumtype.insert("Pion", enum_ptr{3});
-        pid_enumtype.insert("Proton", enum_ptr{4});
-        pid_enumtype.insert("Unknown", enum_ptr{-1});
+        pid_enumtype.insert("ELECTRON", enum_ptr{1});
+        pid_enumtype.insert("KAON", enum_ptr{5});
+        pid_enumtype.insert("MUON", enum_ptr{2});
+        pid_enumtype.insert("PHOTON", enum_ptr{0});
+        pid_enumtype.insert("PION", enum_ptr{3});
+        pid_enumtype.insert("PROTON", enum_ptr{4});
+        pid_enumtype.insert("UNKNOWN", enum_ptr{-1});
         return pid_enumtype;
     }
 
@@ -206,13 +228,27 @@ namespace dlp::types
     H5::EnumType create_shape_enumtype()
     {
         H5::EnumType semantic_type_enumtype(H5::PredType::STD_I64LE);
-        semantic_type_enumtype.insert("Delta", enum_ptr{3});
-        semantic_type_enumtype.insert("Ghost", enum_ptr{5});
-        semantic_type_enumtype.insert("LE", enum_ptr{4});
-        semantic_type_enumtype.insert("Michel", enum_ptr{2});
-        semantic_type_enumtype.insert("Shower", enum_ptr{0});
-        semantic_type_enumtype.insert("Track", enum_ptr{1});
-        semantic_type_enumtype.insert("Unknown", enum_ptr{-1});
+        semantic_type_enumtype.insert("DELTA", enum_ptr{3});
+        semantic_type_enumtype.insert("GHOST", enum_ptr{5});
+        semantic_type_enumtype.insert("LARCV_UNKNOWN", enum_ptr{6});
+        semantic_type_enumtype.insert("LOWE", enum_ptr{4});
+        semantic_type_enumtype.insert("MICHEL", enum_ptr{2});
+        semantic_type_enumtype.insert("SHOWER", enum_ptr{0});
+        semantic_type_enumtype.insert("TRACK", enum_ptr{1});
+        semantic_type_enumtype.insert("UNKNOWN", enum_ptr{-1});
         return semantic_type_enumtype;
+    }
+
+    /**
+     * @brief Configure the HDF5 enum type for InteractionScheme.
+     * @return The H5::EnumType for the InteractionScheme enum.
+    */
+    H5::EnumType create_interaction_scheme_enumtype()
+    {
+        H5::EnumType interaction_scheme_enumtype(H5::PredType::STD_I64LE);
+        interaction_scheme_enumtype.insert("GENIE", enum_ptr{1});
+        interaction_scheme_enumtype.insert("LARSOFT", enum_ptr{0});
+        interaction_scheme_enumtype.insert("UNKNOWN", enum_ptr{-1});
+        return interaction_scheme_enumtype;
     }
 }

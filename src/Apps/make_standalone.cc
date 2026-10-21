@@ -16,13 +16,13 @@
 #include <ctype.h>
 #include "H5Cpp.h"
 
-#include "include/record_fillers.h"
-#include "include/products.h"
-#include "include/event.h"
-#include "include/reco_interaction.h"
-#include "include/reco_particle.h"
-#include "include/true_interaction.h"
-#include "include/true_particle.h"
+#include "record_fillers.h"
+#include "products.h"
+#include "event.h"
+#include "reco_interaction.h"
+#include "reco_particle.h"
+#include "true_interaction.h"
+#include "true_particle.h"
 
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
 #include "sbnanaobj/StandardRecord/SRInteractionDLP.h"

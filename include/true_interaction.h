@@ -15,7 +15,7 @@ namespace dlp::types
 {
     /**
      * @brief A class representing the truth interaction in the HDF5 file.
-     * 
+     *
      * This class represents the truth interaction in the HDF5 file. It
      * contains truth information about the interaction that was stored by
      * SPINE. This includes information about the interaction itself and some
@@ -27,14 +27,15 @@ namespace dlp::types
         double cathode_offset;                              //!< Distance from the cathode.
         std::string creation_process;                       //!< Creation process of the neutrino.
         BufferView<int32_t> crt_ids;                        //!< CRT IDs associated with the interaction.
+        BufferView<float> crt_scores;                       //!< CRT scores associated with the interaction.
         BufferView<int32_t> crt_times;                      //!< CRT times associated with the interaction.
         CurrentType current_type;                           //!< Current type of the neutrino.
-        float depositions_adapt_q_sum;                      //!< Total tagged (reco non-ghost) charge deposited [ADC].
-        float depositions_adapt_sum;                        //!< Total tagged (reco non-ghost) energy deposited [MeV].
-        float depositions_g4_sum;                           //!< Total energy deposited energy at the G4 level [MeV].
-        float depositions_q_sum;                            //!< Total tagged (true non-ghost) charge deposited [ADC].
-        float depositions_sum;                              //!< Total tagged (true non-ghost) energy deposited [MeV].
-        double distance_travel;                             //!< Distance traveled by the neutrino from production to the interaction.
+        double depositions_adapt_q_sum;                     //!< Total tagged (reco non-ghost) charge deposited [ADC].
+        double depositions_adapt_sum;                       //!< Total tagged (reco non-ghost) energy deposited [MeV].
+        double depositions_g4_sum;                          //!< Total energy deposited energy at the G4 level [MeV].
+        double depositions_q_sum;                           //!< Total tagged (true non-ghost) charge deposited [ADC].
+        double depositions_sum;                             //!< Total tagged (true non-ghost) energy deposited [MeV].
+        float distance_travel;                              //!< Distance traveled by the neutrino from production to the interaction.
         double energy_init;                                 //!< Initial energy of the neutrino.
         double energy_transfer;                             //!< Energy transfer (Q0) of the neutrino interaction.
         double flash_hypo_pe;                               //!< Total PE of the hypothesized flash.
@@ -45,12 +46,13 @@ namespace dlp::types
         BufferView<int32_t> flash_volume_ids;               //!< Volume IDs of the matched flashes.
         double hadronic_invariant_mass;                     //!< Hadronic invariant mass of the neutrino.
         int64_t id;                                         //!< Interaction ID.
-        BufferView<int64_t> index;                          //!< Index array.
-        BufferView<int64_t> index_adapt;                    //!< Adapted index array.
-        BufferView<int64_t> index_g4;                       //!< G4 index array.
+        BufferView<int32_t> index;                          //!< Index array.
+        BufferView<int32_t> index_adapt;                    //!< Adapted index array.
+        BufferView<int32_t> index_g4;                       //!< G4 index array.
         double inelasticity;                                //!< Inelasticity of the neutrino interaction.
         int64_t interaction_id;                             //!< Deprecated.
         InteractionMode interaction_mode;                   //!< Interaction mode of the neutrino.
+        InteractionScheme interaction_scheme;                //!< Interaction scheme of the neutrino.
         InteractionType interaction_type;                   //!< Interaction type of the neutrino.
         bool is_cathode_crosser;                            //!< Whether the interaction is a cathode-crosser.
         bool is_contained;                                  //!< Whether the interaction is contained.
@@ -63,10 +65,10 @@ namespace dlp::types
         double lepton_p;                                    //!< Momentum of the lepton in the interaction.
         int64_t lepton_pdg_code;                            //!< PDG code of the lepton in the interaction.
         int64_t lepton_track_id;                            //!< Track ID of the lepton in the neutrino interaction.
-        BufferView<int64_t> match_ids;                      //!< Interaction IDs of the considered matches (correspond to true interactions).
+        BufferView<int32_t> match_ids;                      //!< Interaction IDs of the considered matches (correspond to true interactions).
         BufferView<float> match_overlaps;                   //!< Intersection over union (IoU) of the considered matches.
         int64_t mct_index;                                  //!< Index of the neutrino in the original MCTruth array.
-        BufferView<int64_t> module_ids;                     //!< Module IDs of the interaction.
+        BufferView<int32_t> module_ids;                     //!< Module IDs of the interaction.
         float momentum[3];                                  //!< Momentum (vector) of the neutrino.
         double momentum_transfer;                           //!< Momentum transfer (Q^2) of the neutrino interaction.
         double momentum_transfer_mag;                       //!< Momentum transfer (Q3) of the neutrino interaction.
@@ -75,12 +77,13 @@ namespace dlp::types
         int64_t num_particles;                              //!< Number of particles in the interaction.
         int64_t num_primary_particles;                      //!< Number of primary particles in the interaction.
         int64_t orig_id;                                    //!< Original ID of the interaction.
-        int64_t particle_counts[6];                         //!< Number of particles of each type in the interaction.
+        BufferView<int32_t> orig_index;                     //!< Original index array.
+        int32_t particle_counts[6];                         //!< Number of particles of each type in the interaction.
         BufferView<int64_t> particle_ids;                   //!< Particle IDs in the interaction.
         int64_t pdg_code;                                   //!< PDG code of the neutrino.
         float position[3];                                  //!< Position of the neutrino interaction.
-        int64_t primary_particle_counts[6];                 //!< Number of primary particles of each type in the interaction.
-        BufferView<int64_t> primary_particle_ids;           //!< Particle IDs of the primary particles in the interaction.
+        int32_t primary_particle_counts[6];                 //!< Number of primary particles of each type in the interaction.
+        BufferView<int32_t> primary_particle_ids;           //!< Particle IDs of the primary particles in the interaction.
         int64_t quark;                                      //!< Quark in the neutrino interaction.
         float reco_vertex[3];                               //!< Vertex of the interaction in detector coordinates (reco).
         int64_t size;                                       //!< Number of true non-ghost true-tagged space points.
@@ -96,7 +99,7 @@ namespace dlp::types
 
         /**
          * @brief Synchronize the BufferView objects.
-         * 
+         *
          * For variable-length arrays, we need to keep track of memory in the
          * variable-length buffers. The SyncVectors() method is used to update
          * the BufferView<T> objects with the current memory locations. The
@@ -115,10 +118,12 @@ namespace dlp::types
         hvl_t particle_ids_handle;
         hvl_t primary_particle_ids_handle;
         hvl_t crt_ids_handle;
+        hvl_t crt_scores_handle;
         hvl_t crt_times_handle;
         hvl_t index_handle;
         hvl_t index_adapt_handle;
         hvl_t index_g4_handle;
+        hvl_t orig_index_handle;
     };
 
     /**
