@@ -83,16 +83,16 @@ int main(int argc, char const * argv[])
      * set of events. The merging code will match the events in the input CAF
      * file to the events in the input HDF5 file by (Run, Subrun, Event No.).
      */
-    if(argc < 3)
+    if(argc < 4)
     {
         std::cerr << "Usage: ./merge_sources <output_file> <input_caf_file> <input_h5_file(s)>" << std::endl;
-        return 0;
+        return 1;
     }
 
     if(argc > 28)
     {
         std::cerr << "You passed more than 25 input HDF5 files! Absolutely not!" << std::endl;
-        return 0;
+        return 1;
     }
 
     /**
@@ -129,9 +129,28 @@ int main(int argc, char const * argv[])
      * simultaneously copy in the SPINE reconstruction outputs.
      */
     TFile input_caf(argv[2], "read");
+    if(input_caf.IsZombie())
+    {
+        std::cerr << "Cannot open the input CAF " << argv[2] << std::endl;
+        return 1;
+    }
     TTree *input_tree = (TTree*)input_caf.Get("recTree");
+    if(!input_tree)
+    {
+        std::cerr << "Input CAF " << argv[2] << " has no recTree." << std::endl;
+        return 1;
+    }
     caf::StandardRecord *rec = new caf::StandardRecord;
-    input_tree->SetBranchAddress("rec", &rec);
+    if(input_tree->SetBranchAddress("rec", &rec) < 0)
+    {
+        std::cerr << "The recTree of input CAF " << argv[2] << " has no rec branch." << std::endl;
+        return 1;
+    }
+    if(!input_caf.Get("TotalPOT") || !input_caf.Get("TotalEvents"))
+    {
+        std::cerr << "Input CAF " << argv[2] << " has no TotalPOT or no TotalEvents histogram." << std::endl;
+        return 1;
+    }
 
     /**
      * @brief Configure the output CAF file.
@@ -142,6 +161,11 @@ int main(int argc, char const * argv[])
      * changes will effectively copy the StandardRecord entry.
      */
     TFile output_caf(argv[1], "recreate");
+    if(output_caf.IsZombie())
+    {
+        std::cerr << "Cannot create the output CAF " << argv[1] << std::endl;
+        return 1;
+    }
     TTree *output_tree = new TTree("recTree", "records");
     output_tree->Branch("rec", &rec);
 

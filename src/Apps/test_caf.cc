@@ -28,7 +28,7 @@ int main(int argc, char const * argv[])
     if(argc < 2)
     {
         std::cerr << "Usage: ./test_caf <input file>" << std::endl;
-        return 0;
+        return 1;
     }
     else if(argc == 3) event_number = std::stoi(argv[2]);
 
@@ -53,7 +53,11 @@ int main(int argc, char const * argv[])
      * connect the StandardRecord object to it.
     */
     TTree * tree = (TTree*)f->Get("recTree");
-    tree->SetBranchAddress("rec", &sr);
+    if(!tree || tree->SetBranchAddress("rec", &sr) < 0)
+    {
+        std::cerr << "Error: " << argv[1] << " has no recTree with a rec branch." << std::endl;
+        return 1;
+    }
 
     /**
      * @brief Read in the event from the CAF file and print out some basic

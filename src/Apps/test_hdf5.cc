@@ -27,7 +27,7 @@ int main(int argc, char const * argv[])
     if(argc < 2)
     {
         std::cerr << "Usage: ./test_hdf5 <input file>" << std::endl;
-        return 0;
+        return 1;
     }
     else if(argc == 3) event_number = std::stoi(argv[2]);
 

@@ -43,7 +43,33 @@ int main(int argc, char const *argv[])
     if(argc < 4)
     {
         std::cerr << "Usage: ./make_standalone <output file> <event offset> <input file(s)>" << std::endl;
-        return 0;
+        return 1;
+    }
+
+    /**
+     * @brief Open all the input HDF5 files.
+     * @details The input files are opened with spine-reader before the output
+     * file is created, so that an unusable input is reported (exit status 1)
+     * without leaving a partial output file behind. Only the products that
+     * this tool uses are requested (the truth products only in MC mode).
+     */
+    spine::ReaderOptions options;
+    options.products = {"run_info", "reco_particles", "reco_interactions"};
+    #ifdef MC_NOT_DATA
+    options.products.insert(options.products.end(), {"truth_particles", "truth_interactions"});
+    #endif
+    std::vector<std::unique_ptr<spine::Reader> > inputs;
+    for(int n(3); n < argc; ++n)
+    {
+        try
+        {
+            inputs.push_back(std::make_unique<spine::Reader>(argv[n], options));
+        }
+        catch(const spine::Error & e)
+        {
+            std::cerr << e.what() << std::endl;
+            return 1;
+        }
     }
 
     /**
@@ -54,6 +80,11 @@ int main(int argc, char const *argv[])
      * the TTree.
      */
     TFile caf(argv[1], "recreate");
+    if(caf.IsZombie())
+    {
+        std::cerr << "Cannot create the output CAF " << argv[1] << std::endl;
+        return 1;
+    }
     TTree rec_tree("recTree", "Event tree for ML reconstruction");
     caf::StandardRecord *rec = new caf::StandardRecord;
     rec_tree.Branch("rec", &rec);
@@ -76,27 +107,9 @@ int main(int argc, char const *argv[])
     for(size_t n(3); n < argc; ++n)
     {
         /**
-         * @brief Open the input HDF5 file.
-         * @details Open the input HDF5 file with spine-reader, asking only for
-         * the products that this tool uses (the truth products are only
-         * requested in MC mode). The reader hands out one spine::Event at a
-         * time, so no event list is held in memory.
+         * @brief Select the input HDF5 file (already opened above).
          */
-        spine::ReaderOptions options;
-        options.products = {"run_info", "reco_particles", "reco_interactions"};
-        #ifdef MC_NOT_DATA
-        options.products.insert(options.products.end(), {"truth_particles", "truth_interactions"});
-        #endif
-        std::unique_ptr<spine::Reader> file;
-        try
-        {
-            file = std::make_unique<spine::Reader>(argv[n], options);
-        }
-        catch(const spine::Error & e)
-        {
-            std::cerr << e.what() << std::endl;
-            return 1;
-        }
+        spine::Reader * file = inputs[n - 3].get();
         std::cout << "Opened file: " << argv[n] << std::endl;
 
         /**
