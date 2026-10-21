@@ -87,6 +87,10 @@ int main(int argc, char const *argv[])
     }
     TTree rec_tree("recTree", "Event tree for ML reconstruction");
     caf::StandardRecord *rec = new caf::StandardRecord;
+    // No constructor of the StandardRecord (nor `new StandardRecord()`: its constructor is user-provided) sets
+    // hdr.first_in_file, and this tool never did: it would hold whatever the heap contained. hdr.first_in_subrun
+    // is set for every event below.
+    rec->hdr.first_in_file = false;
     rec_tree.Branch("rec", &rec);
 
     /**
