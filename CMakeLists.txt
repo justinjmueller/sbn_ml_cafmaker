@@ -77,7 +77,7 @@ target_compile_definitions(dlp_simulation PRIVATE MC_NOT_DATA)
 
 add_library(dlp_data SHARED ${SPINE_SOURCES_BASE})
 add_sbnml_library(dlp_data)
-target_link_libraries(dlp_simulation PRIVATE ZLIB::ZLIB HDF5::HDF5)
+target_link_libraries(dlp_data PRIVATE ZLIB::ZLIB HDF5::HDF5)
 target_include_directories(dlp_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 # This executable is meant for testing the HDF5 parsing capabilities of the
