@@ -3,34 +3,20 @@
  * @brief Implementation of various functions for filling the SPINE
  * reconstruction output objects for use within the CAF files.
  * @details This file contains the implementation of the functions that are
- * responsible for copying the SPINE reconstruction output data products from
- * the HDF5 files into the CAF objects. The functions are designed to be
+ * responsible for copying the SPINE reconstruction output data products, as
+ * read by spine-reader, into the CAF objects. The functions are designed to be
  * called from either the standalone CAF generator or the merged CAF generator.
  * @author mueller@fnal.gov
  */
 #include <vector>
 #include <ctype.h>
-#include "H5Cpp.h"
 
 #include "record_fillers.h"
-#include "event.h"
-#include "reco_interaction.h"
-#include "reco_particle.h"
-#include "true_interaction.h"
-#include "true_particle.h"
 
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
 
-caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64_t offset)
+caf::SRParticleTruthDLP fill_truth_particle(const spine::TruthParticle &p, uint64_t offset)
 {
-    p.children_counts.reset(&p.children_counts_handle);
-    p.children_id.reset(&p.children_id_handle);
-    p.fragment_ids.reset(&p.fragment_ids_handle);
-    p.match_ids.reset(&p.match_ids_handle);
-    p.match_overlaps.reset(&p.match_overlaps_handle);
-    p.module_ids.reset(&p.module_ids_handle);
-    p.orig_children_id.reset(&p.orig_children_id_handle);
-
     caf::SRParticleTruthDLP part;
     part.ancestor_creation_process = p.ancestor_creation_process;
     part.ancestor_pdg_code = p.ancestor_pdg_code;
@@ -119,14 +105,8 @@ caf::SRParticleTruthDLP fill_truth_particle(dlp::types::TruthParticle &p, uint64
     return part;
 }
 
-caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset)
+caf::SRParticleDLP fill_particle(const spine::RecoParticle &p, uint64_t offset)
 {
-    p.fragment_ids.reset(&p.fragment_ids_handle);
-    p.match_ids.reset(&p.match_ids_handle);
-    p.match_overlaps.reset(&p.match_overlaps_handle);
-    p.module_ids.reset(&p.module_ids_handle);
-    p.ppn_ids.reset(&p.ppn_ids_handle);
-
     caf::SRParticleDLP part;
     part.axial_spread = p.axial_spread;
     part.calo_ke = p.calo_ke;
@@ -176,18 +156,8 @@ caf::SRParticleDLP fill_particle(dlp::types::RecoParticle &p, uint64_t offset)
     return part;
 }
 
-caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &in, std::vector<caf::SRParticleTruthDLP> &particles, uint64_t offset)
+caf::SRInteractionTruthDLP fill_truth_interaction(const spine::TruthInteraction &in, std::vector<caf::SRParticleTruthDLP> &particles, uint64_t offset)
 {
-    in.flash_ids.reset(&in.flash_ids_handle);
-    in.flash_scores.reset(&in.flash_scores_handle);
-    in.flash_times.reset(&in.flash_times_handle);
-    in.flash_volume_ids.reset(&in.flash_volume_ids_handle);
-    in.match_ids.reset(&in.match_ids_handle);
-    in.match_overlaps.reset(&in.match_overlaps_handle);
-    in.module_ids.reset(&in.module_ids_handle);
-    in.particle_ids.reset(&in.particle_ids_handle);
-    in.primary_particle_ids.reset(&in.primary_particle_ids_handle);
-
     caf::SRInteractionTruthDLP ret;
     ret.bjorken_x = in.bjorken_x;
     ret.cathode_offset = in.cathode_offset;
@@ -256,18 +226,8 @@ caf::SRInteractionTruthDLP fill_truth_interaction(dlp::types::TruthInteraction &
     return ret;
 }
 
-caf::SRInteractionDLP fill_interaction(dlp::types::RecoInteraction &in, std::vector<caf::SRParticleDLP> &particles, uint64_t offset)
+caf::SRInteractionDLP fill_interaction(const spine::RecoInteraction &in, std::vector<caf::SRParticleDLP> &particles, uint64_t offset)
 {
-    in.flash_ids.reset(&in.flash_ids_handle);
-    in.flash_scores.reset(&in.flash_scores_handle);
-    in.flash_times.reset(&in.flash_times_handle);
-    in.flash_volume_ids.reset(&in.flash_volume_ids_handle);
-    in.match_ids.reset(&in.match_ids_handle);
-    in.match_overlaps.reset(&in.match_overlaps_handle);
-    in.module_ids.reset(&in.module_ids_handle);
-    in.particle_ids.reset(&in.particle_ids_handle);
-    in.primary_particle_ids.reset(&in.primary_particle_ids_handle);
-
     caf::SRInteractionDLP ret;
     ret.cathode_offset = in.cathode_offset;
     ret.depositions_sum = in.depositions_sum;
@@ -303,59 +263,59 @@ caf::SRInteractionDLP fill_interaction(dlp::types::RecoInteraction &in, std::vec
     return ret;
 }
 
-void package_event(caf::StandardRecord * rec, H5::H5File & file, dlp::types::Event & evt, uint64_t offset)
+void package_event(caf::StandardRecord * rec, const spine::Event & evt, uint64_t offset)
 {
     /**
      * @brief Retrieve and copy the reconstructed particle products.
-     * @details Retrieve the reconstructed particle data products from the H5
-     * file for the specified event. The data in each particle is copied into
-     * an instance of the SRParticleDLP class, which will later be added to its
-     * parent interaction.
+     * @details Retrieve the reconstructed particle data products of the
+     * specified event. The data in each particle is copied into an instance of
+     * the SRParticleDLP class, which will later be added to its parent
+     * interaction.
      */
-    std::vector<dlp::types::RecoParticle> reco_particles(get_product<dlp::types::RecoParticle>(file, evt));
+    const std::vector<spine::RecoParticle> & reco_particles(evt.reco_particles());
     std::vector<caf::SRParticleDLP> caf_reco_particles;
-    for(dlp::types::RecoParticle &p : reco_particles)
+    for(const spine::RecoParticle &p : reco_particles)
         caf_reco_particles.push_back(fill_particle(p, offset));
 
     /**
      * @brief Retrieve and copy the true particle products.
-     * @details Retrieve the true particle data products from the H5 file for
-     * the specified event. The data in each particle is copied into an
-     * instance of the SRParticleTruthDLP class, which will later be added to
-     * its parent interaction.
+     * @details Retrieve the true particle data products of the specified
+     * event. The data in each particle is copied into an instance of the
+     * SRParticleTruthDLP class, which will later be added to its parent
+     * interaction.
      * @note This block is only included if run in MC mode.
      */
     #ifdef MC_NOT_DATA
-    std::vector<dlp::types::TruthParticle> true_particles(get_product<dlp::types::TruthParticle>(file, evt));
+    const std::vector<spine::TruthParticle> & true_particles(evt.truth_particles());
     std::vector<caf::SRParticleTruthDLP> caf_true_particles;
-    for(dlp::types::TruthParticle &p : true_particles)
+    for(const spine::TruthParticle &p : true_particles)
         caf_true_particles.push_back(fill_truth_particle(p, offset));
     #endif
 
     /**
      * @brief Retrieve the reconstructed interaction data products.
-     * @details Retrieve the reconstructed interaction data products from the
-     * H5 file for the specified event. The data in each interaction is copied
-     * into an instance of the SRInteractionDLP class, along with the subset of
+     * @details Retrieve the reconstructed interaction data products of the
+     * specified event. The data in each interaction is copied into an
+     * instance of the SRInteractionDLP class, along with the subset of
      * particles in the event that belong to it.
      */
-    std::vector<dlp::types::RecoInteraction> reco_interactions(get_product<dlp::types::RecoInteraction>(file, evt));
+    const std::vector<spine::RecoInteraction> & reco_interactions(evt.reco_interactions());
     std::vector<caf::SRInteractionDLP> caf_reco_interactions;
-    for(dlp::types::RecoInteraction &i : reco_interactions)
+    for(const spine::RecoInteraction &i : reco_interactions)
         caf_reco_interactions.push_back(fill_interaction(i, caf_reco_particles, offset));
 
     /**
      * @brief Retrieve the true interaction data products.
-     * @details Retrieve the true interaction data products from the H5 file
-     * for the specified event. The data in each interaction is copied into an
-     * instance of the SRInteractionTruthDLP class, along with the subset of
-     * particles in the event that belong to it.
+     * @details Retrieve the true interaction data products of the specified
+     * event. The data in each interaction is copied into an instance of the
+     * SRInteractionTruthDLP class, along with the subset of particles in the
+     * event that belong to it.
      * @note This block is only included if run in MC mode.
      */
     #ifdef MC_NOT_DATA
-    std::vector<dlp::types::TruthInteraction> true_interactions(get_product<dlp::types::TruthInteraction>(file, evt));
+    const std::vector<spine::TruthInteraction> & true_interactions(evt.truth_interactions());
     std::vector<caf::SRInteractionTruthDLP> caf_true_interactions;
-    for(dlp::types::TruthInteraction &i : true_interactions)
+    for(const spine::TruthInteraction &i : true_interactions)
         caf_true_interactions.push_back(fill_truth_interaction(i, caf_true_particles, offset));
     #endif
 

@@ -5,9 +5,8 @@
 */
 #include <iostream>
 #include <vector>
-#include "H5Cpp.h"
-#include "products.h"
-#include "event.h"
+#include <spine/error.hpp>
+#include <spine/reader.hpp>
 
 /**
  * @brief A basic test program for reading in the H5 files produced by the
@@ -37,42 +36,46 @@ int main(int argc, char const * argv[])
     */
     std::string input_file(argv[1]);
     std::cout << "Reading in test file: " << input_file << std::endl;
-    H5::H5File file(input_file, H5F_ACC_RDONLY);
-    std::cout << "Opened test file: " << input_file << std::endl;
-    
-    /**
-     * @brief Get the events from the file and print out the number of events.
-    */
-    std::vector<dlp::types::Event> events(get_all_events(file));
-    std::vector<dlp::types::RunInfo> run_info(get_product<dlp::types::RunInfo>(file, events[event_number]));
-    std::cout << "Number of events in file: " << events.size() << std::endl;
-    
-    /**
-     * @brief Print out the run, subrun, and event numbers for the specified
-     * event. This validates that the RunInfo product is being read in
-     * correctly.
-    */
-    std::cout << "Run: " << run_info[0].run << std::endl;
-    std::cout << "Subrun: " << run_info[0].subrun << std::endl;
-    std::cout << "Event: " << run_info[0].event << std::endl;
+    try
+    {
+        spine::Reader file(input_file);
+        std::cout << "Opened test file: " << input_file << std::endl;
 
-    /**
-     * @brief Get the reco and truth products from the file and print out the
-     * number of reco and truth interactions and particles.
-    */
-    std::vector<dlp::types::RecoInteraction> reco_interactions(get_product<dlp::types::RecoInteraction>(file, events[event_number]));
-    std::cout << "Number of reco interactions: " << reco_interactions.size() << std::endl;
-    std::vector<dlp::types::RecoParticle> reco_particles(get_product<dlp::types::RecoParticle>(file, events[event_number]));
-    std::cout << "Number of reco particles: " << reco_particles.size() << std::endl;
-    std::vector<dlp::types::TruthInteraction> truth_interactions(get_product<dlp::types::TruthInteraction>(file, events[event_number]));
-    std::cout << "Number of truth interactions: " << truth_interactions.size() << std::endl;
-    std::vector<dlp::types::TruthParticle> truth_particles(get_product<dlp::types::TruthParticle>(file, events[event_number]));
-    std::cout << "Number of truth particles: " << truth_particles.size() << std::endl;
+        /**
+         * @brief Get the events from the file and print out the number of events.
+        */
+        std::cout << "Number of events in file: " << file.num_events() << std::endl;
+        const spine::Event evt = file.event(event_number);
 
-    /**
-     * @brief Close the input file.
-    */
-    file.close();
+        /**
+         * @brief Print out the run, subrun, and event numbers for the specified
+         * event. This validates that the RunInfo product is being read in
+         * correctly.
+        */
+        const spine::RunInfo * run_info = evt.run_info();
+        if(!run_info)
+        {
+            std::cerr << "The file has no run_info." << std::endl;
+            return 1;
+        }
+        std::cout << "Run: " << run_info->run << std::endl;
+        std::cout << "Subrun: " << run_info->subrun << std::endl;
+        std::cout << "Event: " << run_info->event << std::endl;
+
+        /**
+         * @brief Get the reco and truth products from the file and print out the
+         * number of reco and truth interactions and particles.
+        */
+        std::cout << "Number of reco interactions: " << evt.reco_interactions().size() << std::endl;
+        std::cout << "Number of reco particles: " << evt.reco_particles().size() << std::endl;
+        std::cout << "Number of truth interactions: " << evt.truth_interactions().size() << std::endl;
+        std::cout << "Number of truth particles: " << evt.truth_particles().size() << std::endl;
+    }
+    catch(const spine::Error & e)
+    {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
 
     return 0;
 }

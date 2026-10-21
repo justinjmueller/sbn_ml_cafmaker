@@ -13,16 +13,13 @@
  */
 #include <iostream>
 #include <vector>
+#include <memory>
+#include <string>
 #include <ctype.h>
-#include "H5Cpp.h"
+#include <spine/error.hpp>
+#include <spine/reader.hpp>
 
 #include "record_fillers.h"
-#include "products.h"
-#include "event.h"
-#include "reco_interaction.h"
-#include "reco_particle.h"
-#include "true_interaction.h"
-#include "true_particle.h"
 
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
 #include "sbnanaobj/StandardRecord/SRInteractionDLP.h"
@@ -80,18 +77,32 @@ int main(int argc, char const *argv[])
     {
         /**
          * @brief Open the input HDF5 file.
-         * @details Configure the input HDF5 file and retrieve the list of all
-         * events. The dlp::types::Event class contains only references to the
-         * actual ML data products, so it is not overly heavy.
+         * @details Open the input HDF5 file with spine-reader, asking only for
+         * the products that this tool uses (the truth products are only
+         * requested in MC mode). The reader hands out one spine::Event at a
+         * time, so no event list is held in memory.
          */
-        H5::H5File file(argv[n], H5F_ACC_RDONLY);
-        std::cout << "Opened file: " << argv[n] << std::endl;    
-        std::vector<dlp::types::Event> events(get_all_events(file));
+        spine::ReaderOptions options;
+        options.products = {"run_info", "reco_particles", "reco_interactions"};
+        #ifdef MC_NOT_DATA
+        options.products.insert(options.products.end(), {"truth_particles", "truth_interactions"});
+        #endif
+        std::unique_ptr<spine::Reader> file;
+        try
+        {
+            file = std::make_unique<spine::Reader>(argv[n], options);
+        }
+        catch(const spine::Error & e)
+        {
+            std::cerr << e.what() << std::endl;
+            return 1;
+        }
+        std::cout << "Opened file: " << argv[n] << std::endl;
 
         /**
          * @brief Loop over all events in the current HDF5 file.
         */
-        for(dlp::types::Event &evt : events)
+        for(uint64_t i_evt(0); i_evt < file->num_events(); ++i_evt)
         {
             /**
              * @brief Reset the ML reconstruction output branches.
@@ -111,23 +122,25 @@ int main(int argc, char const *argv[])
                  * for copying the data products from the event into the proper
                  * CAF class within the StandardRecord.
                 */
-                package_event(rec, file, evt, std::atoi(argv[2]));
-                std::vector<dlp::types::RunInfo> run_info(get_product<dlp::types::RunInfo>(file, evt));
-                rec->hdr.run = run_info[0].run;
-                rec->hdr.subrun = run_info[0].subrun;
-                rec->hdr.evt = run_info[0].event;
+                const spine::Event evt = file->event(i_evt);
+                package_event(rec, evt, std::atoi(argv[2]));
+                const spine::RunInfo * run_info = evt.run_info();
+                if(!run_info)
+                    throw spine::Error("no run_info for event " + std::to_string(i_evt));
+                rec->hdr.run = run_info->run;
+                rec->hdr.subrun = run_info->subrun;
+                rec->hdr.evt = run_info->event;
                 rec->hdr.pot = 1;
                 rec->hdr.first_in_subrun = true;
                 pot->Fill(1);
                 nevt->Fill(1);
                 rec_tree.Fill();
             }
-            catch(const H5::ReferenceException & e)
+            catch(const spine::Error & e)
             {
-                std::cerr << "Found incomplete entry for event." << std::endl;
+                std::cerr << "Found incomplete entry for event: " << e.what() << std::endl;
             }
         }
-        file.close();
     }
     /**
      * @brief Write the output CAF file.

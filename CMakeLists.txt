@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.19)
 
 # CMake colourised text! See https://stackoverflow.com/questions/18968979/
 if(NOT WIN32)
@@ -47,8 +47,8 @@ function(add_sbnml_library name)
   set_property(GLOBAL APPEND PROPERTY SBN_ML_CAFMAKER_LIBRARIES ${name})
 endfunction()
 
-find_package(ZLIB)
-find_package(HDF5 REQUIRED COMPONENTS C CXX HL)
+# SPINE HDF5 files are read by spine-reader, which needs only the HDF5 C library.
+find_package(SpineReader 0.1 REQUIRED)
 find_package(ROOT REQUIRED)
 find_package(sbnanaobj)
 
@@ -64,28 +64,27 @@ set(SBN_ML_CAFMAKER_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_subdirectory(src)
 
 # The input HDF5 files for data do not have truth products in them, so the
-# same top-level "dlp::types::Event" class should not contain references to
-# them when handling events from data. This is accomplished by means of a
-# preprocessor flag that checks if "MC_NOT_DATA" is defined and allows for
-# truth products to be defined if it is. Two separate libraries are therefore
-# built and linked against.
+# record fillers must not ask spine-reader for them when handling events from
+# data. This is accomplished by means of a preprocessor flag that checks if
+# "MC_NOT_DATA" is defined and allows for truth products to be used. Two
+# separate libraries are therefore built and linked against.
 add_library(dlp_simulation SHARED ${SPINE_SOURCES_BASE})
 add_sbnml_library(dlp_simulation)
-target_link_libraries(dlp_simulation PRIVATE ZLIB::ZLIB HDF5::HDF5)
-target_include_directories(dlp_simulation PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
+target_link_libraries(dlp_simulation PRIVATE SpineReader::spine_reader)
+target_include_directories(dlp_simulation PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 target_compile_definitions(dlp_simulation PRIVATE MC_NOT_DATA)
 
 add_library(dlp_data SHARED ${SPINE_SOURCES_BASE})
 add_sbnml_library(dlp_data)
-target_link_libraries(dlp_data PRIVATE ZLIB::ZLIB HDF5::HDF5)
-target_include_directories(dlp_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
+target_link_libraries(dlp_data PRIVATE SpineReader::spine_reader)
+target_include_directories(dlp_data PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 # This executable is meant for testing the HDF5 parsing capabilities of the
 # library. It simply connects to the input file and attempts to read the
 # contents of the first/passed event.
 add_sbnml_executable(test_hdf5 ${SPINE_APP_DIR}/test_hdf5.cc)
-target_link_libraries(test_hdf5 PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
-target_include_directories(test_hdf5 PRIVATE ${HDF5_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
+target_link_libraries(test_hdf5 PRIVATE SpineReader::spine_reader ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
+target_include_directories(test_hdf5 PRIVATE ${SBN_ML_CAFMAKER_INCLUDE})
 target_compile_definitions(test_hdf5 PRIVATE MC_NOT_DATA REMOVE_THIS)
 
 # This executable is meant for testing the CAF reading capabilities of the
@@ -100,24 +99,24 @@ target_include_directories(test_caf PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INC
 # are two versions: one for data and one for simulation
 add_sbnml_executable(make_standalone_simulation ${SPINE_APP_DIR}/make_standalone.cc)
 target_compile_definitions(make_standalone_simulation PRIVATE MC_NOT_DATA)
-target_link_libraries(make_standalone_simulation PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
-target_include_directories(make_standalone_simulation PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
+target_link_libraries(make_standalone_simulation PRIVATE SpineReader::spine_reader ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
+target_include_directories(make_standalone_simulation PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 add_sbnml_executable(make_standalone_data ${SPINE_APP_DIR}/make_standalone.cc)
-target_link_libraries(make_standalone_data PRIVATE ZLIB::ZLIB HDF5::HDF5  ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_data)
-target_include_directories(make_standalone_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
+target_link_libraries(make_standalone_data PRIVATE SpineReader::spine_reader ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_data)
+target_include_directories(make_standalone_data PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 # This executable is meant for merging already existing CAFs (holding Pandora
 # reconstruction outputs) with ML reconstructions outputs. There are two
 # versions available: one for data and one for simulation.
 add_sbnml_executable(merge_sources_simulation ${SPINE_APP_DIR}/merge_sources.cc)
 target_compile_definitions(merge_sources_simulation PRIVATE MC_NOT_DATA)
-target_link_libraries(merge_sources_simulation PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
-target_include_directories(merge_sources_simulation PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
+target_link_libraries(merge_sources_simulation PRIVATE SpineReader::spine_reader ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
+target_include_directories(merge_sources_simulation PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 add_sbnml_executable(merge_sources_data ${SPINE_APP_DIR}/merge_sources.cc)
-target_link_libraries(merge_sources_data PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_data)
-target_include_directories(merge_sources_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
+target_link_libraries(merge_sources_data PRIVATE SpineReader::spine_reader ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_data)
+target_include_directories(merge_sources_data PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 # This executable is meant for merging already existing CAFs (holding Pandora
 # reconstruction outputs) with ML reconstructions outputs. This is different
@@ -126,12 +125,12 @@ target_include_directories(merge_sources_data PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT
 # for data and one for simulation.
 add_sbnml_executable(merge_sources_simulation_multi ${SPINE_APP_DIR}/merge_sources_multi.cc)
 target_compile_definitions(merge_sources_simulation_multi PRIVATE MC_NOT_DATA)
-target_link_libraries(merge_sources_simulation_multi PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
-target_include_directories(merge_sources_simulation_multi PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
+target_link_libraries(merge_sources_simulation_multi PRIVATE SpineReader::spine_reader ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_simulation)
+target_include_directories(merge_sources_simulation_multi PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 add_sbnml_executable(merge_sources_data_multi ${SPINE_APP_DIR}/merge_sources_multi.cc)
-target_link_libraries(merge_sources_data_multi PRIVATE ZLIB::ZLIB HDF5::HDF5 ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_data)
-target_include_directories(merge_sources_data_multi PRIVATE ${HDF5_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
+target_link_libraries(merge_sources_data_multi PRIVATE SpineReader::spine_reader ${ROOT_LIBRARIES} SBNANAOBJ::SBNANAOBJ dlp_data)
+target_include_directories(merge_sources_data_multi PRIVATE ${ROOT_INCLUDE_DIRS} ${sbnanaobj_INCLUDE_DIR} ${SBN_ML_CAFMAKER_INCLUDE})
 
 get_property(SBN_ML_CAFMAKER_LIBRARIES GLOBAL PROPERTY SBN_ML_CAFMAKER_LIBRARIES)
 install(TARGETS ${SBN_ML_CAFMAKER_LIBRARIES} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
