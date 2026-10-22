@@ -8,14 +8,15 @@ The `sbn_ml_cafmaker` package provides code for merging the ML reconstruction ou
 
 ## Dependencies
 The package has two main requirements:
-* `spine-reader`, a C++17 library that reads the HDF5 files written by SPINE (both the V1 and the V2 layout). It needs only the HDF5 **C** library (1.12 or newer), so the `hdf5` UPS product works as it is: no HDF5 C++ API and no hand-built HDF5 are needed any more (instructions below)
+* [`spine-reader`](https://github.com/DeepLearnPhysics/spine-reader), a C++17 library that reads the HDF5 files written by SPINE (both the V1 and the V2 layout). It needs only the HDF5 **C** library (1.12 or newer), so the `hdf5` UPS product works as it is: no HDF5 C++ API and no hand-built HDF5 are needed any more (instructions below)
 * `sbnanaobj` (must have ML variables implemented in `StandardRecord`)
 
 ### Building `spine-reader`
 Set up the HDF5 library from UPS (the C++ API of the product is not used), then build and install `spine-reader`:
 
     setup hdf5 v1_12_2b -q e26:prof
-    cmake -S /path/to/spine-reader -B spine-reader-build -DHDF5_ROOT=$HDF5_FQ_DIR -DCMAKE_INSTALL_PREFIX=$PWD/spine-reader-install -DSPINE_READER_BUILD_TESTS=OFF
+    git clone https://github.com/DeepLearnPhysics/spine-reader.git
+    cmake -S spine-reader -B spine-reader-build -DHDF5_ROOT=$HDF5_FQ_DIR -DCMAKE_INSTALL_PREFIX=$PWD/spine-reader-install -DSPINE_READER_BUILD_TESTS=OFF
     cmake --build spine-reader-build -j8 && cmake --install spine-reader-build
 
 ### Building `sbnanaobj`
