@@ -13,16 +13,13 @@
  */
 #include <iostream>
 #include <vector>
+#include <memory>
+#include <string>
 #include <ctype.h>
-#include "H5Cpp.h"
+#include <spine/error.hpp>
+#include <spine/reader.hpp>
 
 #include "record_fillers.h"
-#include "products.h"
-#include "event.h"
-#include "reco_interaction.h"
-#include "reco_particle.h"
-#include "true_interaction.h"
-#include "true_particle.h"
 
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
 #include "sbnanaobj/StandardRecord/SRInteractionDLP.h"
@@ -46,7 +43,33 @@ int main(int argc, char const *argv[])
     if(argc < 4)
     {
         std::cerr << "Usage: ./make_standalone <output file> <event offset> <input file(s)>" << std::endl;
-        return 0;
+        return 1;
+    }
+
+    /**
+     * @brief Open all the input HDF5 files.
+     * @details The input files are opened with spine-reader before the output
+     * file is created, so that an unusable input is reported (exit status 1)
+     * without leaving a partial output file behind. Only the products that
+     * this tool uses are requested (the truth products only in MC mode).
+     */
+    spine::ReaderOptions options;
+    options.products = {"run_info", "reco_particles", "reco_interactions"};
+    #ifdef MC_NOT_DATA
+    options.products.insert(options.products.end(), {"truth_particles", "truth_interactions"});
+    #endif
+    std::vector<std::unique_ptr<spine::Reader> > inputs;
+    for(int n(3); n < argc; ++n)
+    {
+        try
+        {
+            inputs.push_back(std::make_unique<spine::Reader>(argv[n], options));
+        }
+        catch(const spine::Error & e)
+        {
+            std::cerr << e.what() << std::endl;
+            return 1;
+        }
     }
 
     /**
@@ -57,8 +80,17 @@ int main(int argc, char const *argv[])
      * the TTree.
      */
     TFile caf(argv[1], "recreate");
+    if(caf.IsZombie())
+    {
+        std::cerr << "Cannot create the output CAF " << argv[1] << std::endl;
+        return 1;
+    }
     TTree rec_tree("recTree", "Event tree for ML reconstruction");
     caf::StandardRecord *rec = new caf::StandardRecord;
+    // No constructor of the StandardRecord (nor `new StandardRecord()`: its constructor is user-provided) sets
+    // hdr.first_in_file, and this tool never did: it would hold whatever the heap contained. hdr.first_in_subrun
+    // is set for every event below.
+    rec->hdr.first_in_file = false;
     rec_tree.Branch("rec", &rec);
 
     /**
@@ -79,19 +111,15 @@ int main(int argc, char const *argv[])
     for(size_t n(3); n < argc; ++n)
     {
         /**
-         * @brief Open the input HDF5 file.
-         * @details Configure the input HDF5 file and retrieve the list of all
-         * events. The dlp::types::Event class contains only references to the
-         * actual ML data products, so it is not overly heavy.
+         * @brief Select the input HDF5 file (already opened above).
          */
-        H5::H5File file(argv[n], H5F_ACC_RDONLY);
-        std::cout << "Opened file: " << argv[n] << std::endl;    
-        std::vector<dlp::types::Event> events(get_all_events(file));
+        spine::Reader * file = inputs[n - 3].get();
+        std::cout << "Opened file: " << argv[n] << std::endl;
 
         /**
          * @brief Loop over all events in the current HDF5 file.
         */
-        for(dlp::types::Event &evt : events)
+        for(uint64_t i_evt(0); i_evt < file->num_events(); ++i_evt)
         {
             /**
              * @brief Reset the ML reconstruction output branches.
@@ -111,23 +139,25 @@ int main(int argc, char const *argv[])
                  * for copying the data products from the event into the proper
                  * CAF class within the StandardRecord.
                 */
-                package_event(rec, file, evt, std::atoi(argv[2]));
-                std::vector<dlp::types::RunInfo> run_info(get_product<dlp::types::RunInfo>(file, evt));
-                rec->hdr.run = run_info[0].run;
-                rec->hdr.subrun = run_info[0].subrun;
-                rec->hdr.evt = run_info[0].event;
+                const spine::Event evt = file->event(i_evt);
+                package_event(rec, evt, std::atoi(argv[2]));
+                const spine::RunInfo * run_info = evt.run_info();
+                if(!run_info)
+                    throw spine::Error("no run_info for event " + std::to_string(i_evt));
+                rec->hdr.run = run_info->run;
+                rec->hdr.subrun = run_info->subrun;
+                rec->hdr.evt = run_info->event;
                 rec->hdr.pot = 1;
                 rec->hdr.first_in_subrun = true;
                 pot->Fill(1);
                 nevt->Fill(1);
                 rec_tree.Fill();
             }
-            catch(const H5::ReferenceException & e)
+            catch(const spine::Error & e)
             {
-                std::cerr << "Found incomplete entry for event." << std::endl;
+                std::cerr << "Found incomplete entry for event: " << e.what() << std::endl;
             }
         }
-        file.close();
     }
     /**
      * @brief Write the output CAF file.

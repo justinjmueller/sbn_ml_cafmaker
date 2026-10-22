@@ -12,15 +12,12 @@
 #include <iostream>
 #include <vector>
 #include <tuple>
+#include <memory>
+#include <optional>
 #include <ctype.h>
-#include "H5Cpp.h"
+#include <spine/error.hpp>
+#include <spine/reader.hpp>
 
-#include "products.h"
-#include "event.h"
-#include "reco_interaction.h"
-#include "reco_particle.h"
-#include "true_interaction.h"
-#include "true_particle.h"
 #include "record_fillers.h"
 
 #include "sbnanaobj/StandardRecord/StandardRecord.h"
@@ -86,42 +83,34 @@ int main(int argc, char const * argv[])
      * set of events. The merging code will match the events in the input CAF
      * file to the events in the input HDF5 file by (Run, Subrun, Event No.).
      */
-    if(argc < 3)
+    if(argc < 4)
     {
         std::cerr << "Usage: ./merge_sources <output_file> <input_caf_file> <input_h5_file>" << std::endl;
-        return 0;
+        return 1;
     }
 
     /**
-     * @brief Configure the output CAF file.
+     * @brief Open the input HDF5 file.
      * @details The merging code will need to access the event records in the
      * file once it has been matched to an event from the input CAF file. This
-     * is done by building a map between (Run, Event No.) and the @ref 
-     * dlp::types::Event object. This class contains only references to the
-     * actual SPINE data products, so it is not overly heavy.
+     * is done through spine-reader, which indexes the events of the file by
+     * (Run, Subrun, Event No.) from the run_info product. Only the products
+     * that this tool uses are requested (the truth products only in MC mode).
      */
-    H5::H5File input_h5(argv[3], H5F_ACC_RDONLY);
-    std::map<index_t, size_t> event_map;
-    std::vector<dlp::types::Event> events(get_all_events(input_h5));
-    for(size_t e(0); e < events.size(); ++e)
+    spine::ReaderOptions options;
+    options.products = {"run_info", "reco_particles", "reco_interactions"};
+    #ifdef MC_NOT_DATA
+    options.products.insert(options.products.end(), {"truth_particles", "truth_interactions"});
+    #endif
+    std::unique_ptr<spine::Reader> input_h5;
+    try
     {
-        try
-        {
-            /**
-             * @brief Retrieve the run info for the event.
-             * @details For each event in the input HDF5 file, the run info is
-             * retrieved and emplaced in a map that will allow for efficient
-             * lookup later when copying data into the output CAF file.
-             * @note The index is a tuple of (Run, Subrun, Event No.).
-             */
-            std::vector<dlp::types::RunInfo> run_info(get_product<dlp::types::RunInfo>(input_h5, events.at(e)));
-            index_t index(run_info.back().run, run_info.back().subrun, run_info.back().event);
-            event_map.insert(std::make_pair(index, e));
-        }
-        catch(const H5::ReferenceException & e)
-        {
-            std::cerr << "Found incomplete entry for event." << std::endl;
-        }
+        input_h5 = std::make_unique<spine::Reader>(argv[3], options);
+    }
+    catch(const spine::Error & e)
+    {
+        std::cerr << e.what() << std::endl;
+        return 1;
     }
 
     /**
@@ -131,9 +120,28 @@ int main(int argc, char const * argv[])
      * simultaneously copy in the SPINE reconstruction outputs.
      */
     TFile input_caf(argv[2], "read");
+    if(input_caf.IsZombie())
+    {
+        std::cerr << "Cannot open the input CAF " << argv[2] << std::endl;
+        return 1;
+    }
     TTree *input_tree = (TTree*)input_caf.Get("recTree");
+    if(!input_tree)
+    {
+        std::cerr << "Input CAF " << argv[2] << " has no recTree." << std::endl;
+        return 1;
+    }
     caf::StandardRecord *rec = new caf::StandardRecord;
-    input_tree->SetBranchAddress("rec", &rec);
+    if(input_tree->SetBranchAddress("rec", &rec) < 0)
+    {
+        std::cerr << "The recTree of input CAF " << argv[2] << " has no rec branch." << std::endl;
+        return 1;
+    }
+    if(!input_caf.Get("TotalPOT") || !input_caf.Get("TotalEvents"))
+    {
+        std::cerr << "Input CAF " << argv[2] << " has no TotalPOT or no TotalEvents histogram." << std::endl;
+        return 1;
+    }
 
     /**
      * @brief Configure the output CAF file.
@@ -144,6 +152,11 @@ int main(int argc, char const * argv[])
      * changes will effectively copy the StandardRecord entry.
      */
     TFile output_caf(argv[1], "recreate");
+    if(output_caf.IsZombie())
+    {
+        std::cerr << "Cannot create the output CAF " << argv[1] << std::endl;
+        return 1;
+    }
     TTree *output_tree = new TTree("recTree", "records");
     output_tree->Branch("rec", &rec);
 
@@ -167,23 +180,29 @@ int main(int argc, char const * argv[])
         rec->ndlp_true = 0;
 
         index_t index(rec->hdr.run, rec->hdr.subrun, rec->hdr.evt);
-        if(event_map.find(index) != event_map.end())
+        try
         {
-	        std::cout << "Matched Event " << std::get<2>(index) << " in (Run, Subrun) = (" << std::get<0>(index) << ", " << std::get<1>(index) << ") of CAF input to HDF5 event." << std::endl;
-            try
+            /**
+             * @brief Look up the HDF5 event.
+             * @details If the same (Run, Subrun, Event No.) occurs more than
+             * once in the HDF5 file, the first one is used.
+             */
+            std::optional<uint64_t> entry = input_h5->find(std::get<0>(index), std::get<1>(index), std::get<2>(index));
+            if(entry)
             {
+                std::cout << "Matched Event " << std::get<2>(index) << " in (Run, Subrun) = (" << std::get<0>(index) << ", " << std::get<1>(index) << ") of CAF input to HDF5 event." << std::endl;
                 /**
                  * @brief Package the event data products.
                  * @details The @ref package_event() function is responsible
                  * for copying the data products from the event into the proper
                  * CAF class within the StandardRecord.
                  */
-                package_event(rec, input_h5, events[event_map[index]]);
+                package_event(rec, input_h5->event(*entry));
             }
-            catch(const H5::ReferenceException & e)
-            {
-                std::cerr << "Found incomplete entry for event." << std::endl;
-            }
+        }
+        catch(const spine::Error & e)
+        {
+            std::cerr << "Found incomplete entry for event: " << e.what() << std::endl;
         }
         output_tree->Fill();
     }
@@ -231,7 +250,6 @@ int main(int argc, char const * argv[])
     /**
      * @brief Close the input and output files. 
      */
-    input_h5.close();
     input_caf.Close();
     output_caf.Close();
 
